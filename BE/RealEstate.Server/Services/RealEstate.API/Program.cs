@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using RealEstate.API.Middlewares;
 using RealEstate.ApplicationBase.Localization;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
