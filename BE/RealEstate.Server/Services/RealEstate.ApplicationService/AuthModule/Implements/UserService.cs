@@ -25,7 +25,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
         {
             var user = _dbContext.Users.FirstOrDefault(u => u.Username == username && !u.Deleted)
                 ?? throw new UserFriendlyException(ErrorCode.UsernameOrPasswordIncorrect);
-            if (user.Password != CryptographyUtils.CreateMD5(password))
+            if (user.Password != PasswordHasher.HashPassword(password))
             {
                 throw new UserFriendlyException(ErrorCode.UsernameOrPasswordIncorrect);
             }
@@ -40,7 +40,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
         {
             _logger.LogInformation($"{nameof(CreateUser)}: input = {JsonSerializer.Serialize(input)}");
             var userId = CommonUtils.GetCurrentUserId(_httpContext);
-            input.Password = CryptographyUtils.CreateMD5(input.Password);
+            input.Password = PasswordHasher.HashPassword(input.Password);
             var user = _mapper.Map<User>(input);
             var transaction = _dbContext.Database.BeginTransaction();
             if (input.Status == null)
@@ -188,7 +188,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var user = _dbContext.Users.FirstOrDefault(e => e.Id == input.Id && !e.Deleted)
                 ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
 
-            user.Password = CryptographyUtils.CreateMD5(input.Password);
+            user.Password = PasswordHasher.HashPassword(input.Password);
             _dbContext.SaveChanges();
         }
 
@@ -199,12 +199,12 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var user = _dbContext.Users.FirstOrDefault(e => e.Id == userId && !e.Deleted)
                 ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
 
-            if (CryptographyUtils.CreateMD5(user.Password) != CryptographyUtils.CreateMD5(input.OldPassword))
+            if (PasswordHasher.HashPassword(user.Password) != PasswordHasher.HashPassword(input.OldPassword))
             {
                 throw new UserFriendlyException(ErrorCode.UserOldPasswordIncorrect);
             }
 
-            user.Password = CryptographyUtils.CreateMD5(input.NewPassword);
+            user.Password = PasswordHasher.HashPassword(input.NewPassword);
             _dbContext.SaveChanges();
         }
     }

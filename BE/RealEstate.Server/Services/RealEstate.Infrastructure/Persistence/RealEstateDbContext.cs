@@ -35,7 +35,6 @@ namespace RealEstate.Infrastructure.Persistence
                 e.HasMany(c => c.Wallets).WithOne(c => c.User).HasForeignKey(c => c.UserId);
                 e.HasMany(c => c.UserIdentifications).WithOne(c => c.User).HasForeignKey(c => c.UserId);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
-                e.Property(c => c.CreateDate).HasDefaultValue(DateTime.Now);
             });
 
             modelBuilder.Entity<Wallet>(e =>

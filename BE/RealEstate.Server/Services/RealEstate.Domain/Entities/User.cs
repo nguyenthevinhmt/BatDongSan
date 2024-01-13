@@ -43,7 +43,6 @@ namespace RealEstate.Domain.Entities
         [MaxLength(128)]
         [Unicode(false)]
         public string? Phone { get; set; }
-        public DateTime CreateDate { get; set; }
         public List<Wallet> Wallets { get; } = new();
         public List<Favorite> Favorites { get; } = new();
         public List<Post> Posts { get; } = new();
