@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.ApplicationService.AuthModule.Dtos;
+using RealEstate.ApplicationService.Common;
 using RealEstate.Domain.Entities;
 using RealEstate.Utils.ConstantVariables.Shared;
 using RealEstate.Utils.ConstantVariables.User;

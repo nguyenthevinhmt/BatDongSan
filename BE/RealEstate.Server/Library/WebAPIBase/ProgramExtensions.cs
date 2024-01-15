@@ -44,8 +44,8 @@ namespace WebAPIBase
             {
                 //options.Filters.Add<ResultFilter>();
                 //options.Filters.Add<ActionFilter>();
-                //options.Filters.Add<ExceptionFilter>();
-                //options.Filters.Add(typeof(CustomValidationError));
+                options.Filters.Add<ExceptionFilter>();
+                options.Filters.Add(typeof(CustomValidationError));
             });
 
             ConfigureAutoMap(services);
@@ -269,6 +269,7 @@ namespace WebAPIBase
 
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseSession();
         }
     }

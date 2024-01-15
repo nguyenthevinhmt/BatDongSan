@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using RealEstate.ApplicationBase.Localization;
+using RealEstate.Utils.Localization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace WebAPIBase.Filters

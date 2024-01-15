@@ -13,10 +13,15 @@ namespace RealEstate.IdentityServerBase.StartUp
             ConfigurationManager configuration) where TDbContext : DbContext
         {
             services.AddOpenIddict()
+            // Register the OpenIddict core components.
             .AddCore(options =>
             {
-                options.UseEntityFrameworkCore().UseDbContext<TDbContext>();
+                // Configure OpenIddict to use the Entity Framework Core stores and models.
+                // Note: call ReplaceDefaultEntities() to replace the default entities.
+                options.UseEntityFrameworkCore()
+                    .UseDbContext<TDbContext>();
             })
+            // Register the OpenIddict server components.
             .AddServer(options =>
             {
                 // Enable the token endpoint.
@@ -49,6 +54,7 @@ namespace RealEstate.IdentityServerBase.StartUp
                        .EnableLogoutEndpointPassthrough()
                        .DisableTransportSecurityRequirement(); //không bắt https
             })
+            // Register the OpenIddict validation components.
             .AddValidation(options =>
             {
 
@@ -58,6 +64,9 @@ namespace RealEstate.IdentityServerBase.StartUp
                 // Register the ASP.NET Core host.
                 options.UseAspNetCore();
             });
+
+            // Register the worker responsible of seeding the database with the sample clients.
+            // Note: in a real world application, this step should be part of a setup script.
             services.AddHostedService<Worker<TDbContext>>();
         }
     }

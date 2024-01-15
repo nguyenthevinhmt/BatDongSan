@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<localizationDictionary culture="en">
+<localizationDictionary culture="vi">
 	<texts>
 		<text name="error_System">Error System</text>
 		<text name="error_UsernameOrPasswordIncorrect">Incorrect user name or password</text>
@@ -8,3 +8,4 @@
 		<text name="error_UserIsDeactive">User has been locked</text>
 	</texts>
 </localizationDictionary>
+

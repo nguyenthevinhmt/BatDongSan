@@ -1,21 +1,20 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
-using RealEstate.ApplicationBase.Localization;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.Domain.Entities;
 using RealEstate.IdentityServerBase.Controllers;
 using RealEstate.IdentityServerBase.Dto;
+using RealEstate.Utils;
 using RealEstate.Utils.ConstantVariables.User;
 using RealEstate.Utils.CustomException;
-using RealEstate.Utils;
-using static OpenIddict.Abstractions.OpenIddictConstants;
+using RealEstate.Utils.Localization;
 using System.Security.Claims;
-using Microsoft.AspNetCore;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace RealEstate.API.Controllers
 {
@@ -36,7 +35,6 @@ namespace RealEstate.API.Controllers
         {
             _tokenManager = tokenManager;
             _userServices = userServices;
-            _mapErrorCode = mapErrorCode;
             _localization = localization;
         }
 
@@ -155,7 +153,7 @@ namespace RealEstate.API.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("~/connect/logout"), IgnoreAntiforgeryToken, Produces("application/json")]
+        [HttpPost("~/connect/logout"), IgnoreAntiforgeryToken, Produces("application/json"), Consumes("application/x-www-form-urlencoded")]
         public async Task<IActionResult> Logout()
         {
             var authorizationId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "oi_au_id")?.Value;
@@ -163,8 +161,8 @@ namespace RealEstate.API.Controllers
             {
                 return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
-
             var tokens = _tokenManager.FindByAuthorizationIdAsync(authorizationId);
+            //HttpContext.Request.Headers["Content-Type"] = "application/x-www-form-urlencoded";
             await foreach (var token in tokens)
             {
                 await _tokenManager.TryRevokeAsync(token);

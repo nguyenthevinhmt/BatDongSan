@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace RealEstate.ApplicationService
+namespace RealEstate.ApplicationService.Common
 {
     public class MappingProfile : Profile
     {

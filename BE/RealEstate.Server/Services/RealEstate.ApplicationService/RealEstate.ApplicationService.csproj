@@ -1,14 +1,36 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<NoWarn>1701;1702;1591</NoWarn>
+	</PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RealEstate.Library\RealEstate.ApplicationBase\RealEstate.ApplicationBase.csproj" />
+    <ProjectReference Include="..\..\Library\ApplicationBase\RealEstate.ApplicationBase.csproj" />
     <ProjectReference Include="..\RealEstate.Infrastructure\RealEstate.Infrastructure.csproj" />
   </ItemGroup>
+	<ItemGroup>
+		<None Remove="Common\Localization\SourceFiles\en.xml" />
+		<None Remove="Common\Localization\SourceFiles\vi.xml" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Common\Localization\SourceFiles\en.xml" />
+		<EmbeddedResource Include="Common\Localization\SourceFiles\vi.xml" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Common\Localization\SourceFiles\*.xml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="ClosedXML" Version="0.102.0" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+	</ItemGroup>
 
 </Project>

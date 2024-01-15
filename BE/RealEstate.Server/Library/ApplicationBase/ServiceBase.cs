@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RealEstate.ApplicationBase.Localization;
+using RealEstate.Utils.Localization;
 
 namespace RealEstate.ApplicationBase
 {
@@ -14,40 +14,20 @@ namespace RealEstate.ApplicationBase
         protected readonly LocalizationBase _localization;
         protected readonly IHttpContextAccessor _httpContext;
         protected readonly IMapper _mapper;
-        protected readonly IMapErrorCode? _mapErrorCode;
 
         protected ServiceBase(ILogger logger, IHttpContextAccessor httpContext)
         {
             _logger = logger;
             _httpContext = httpContext;
-            _dbContext = httpContext.HttpContext!.RequestServices.GetRequiredService<TDbContext>();
-            _localization = httpContext.HttpContext!.RequestServices.GetRequiredService<LocalizationBase>();
-            _mapper = _httpContext.HttpContext!.RequestServices.GetRequiredService<IMapper>();
-        }
-
-        protected ServiceBase(ILogger logger, IHttpContextAccessor httpContext, TDbContext dbContext, LocalizationBase localizationBase, IMapper mapper)
-        {
-            _logger = logger;
-            _httpContext = httpContext;
-            _dbContext = dbContext;
-            _localization = localizationBase;
-            _mapper = mapper;
-        }
-
-        protected ServiceBase(ILogger logger, IMapErrorCode mapErrorCode, IHttpContextAccessor httpContext, TDbContext dbContext, LocalizationBase localizationBase, IMapper mapper)
-        {
-            _logger = logger;
-            _httpContext = httpContext;
-            _dbContext = dbContext;
-            _localization = localizationBase;
-            _mapper = mapper;
-            _mapErrorCode = mapErrorCode;
+            _dbContext = httpContext.HttpContext.RequestServices.GetService<TDbContext>()!;
+            _localization = httpContext.HttpContext.RequestServices.GetService<LocalizationBase>()!;
+            _mapper = _httpContext.HttpContext.RequestServices.GetService<IMapper>()!;
         }
 
         /// <summary>
         /// Dịch sang ngôn ngữ đích dựa theo keyName và request ngôn ngữ là gì <br/>
         /// Input: <paramref name="keyName"/> = "error_System" <br/>
-        /// Return: "Error System" hoặc "Lỗi" tuỳ theo request ngôn ngữ đang là gì ví dụ ở đây là "en" và "VI"
+        /// Return: "Error System" hoặc "エラーシステム" tuỳ theo request ngôn ngữ đang là gì ví dụ ở đây là "en" và "jp"
         /// </summary>
         /// <param name="keyName"></param>
         /// <returns></returns>

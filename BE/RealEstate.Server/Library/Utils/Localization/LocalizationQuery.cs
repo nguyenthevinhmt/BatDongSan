@@ -1,4 +1,4 @@
-﻿namespace RealEstate.ApplicationBase.Localization
+﻿namespace RealEstate.Utils.Localization
 {
     public static class LocalizationQuery
     {

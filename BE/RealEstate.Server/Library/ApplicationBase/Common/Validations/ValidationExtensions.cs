@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RealEstate.ApplicationBase.Localization;
+using RealEstate.Utils.Localization;
 using System.ComponentModel.DataAnnotations;
 
 namespace RealEstate.ApplicationBase.Common.Validations

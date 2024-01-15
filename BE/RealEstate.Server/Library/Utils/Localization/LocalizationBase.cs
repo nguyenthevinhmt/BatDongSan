@@ -2,24 +2,21 @@
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace RealEstate.ApplicationBase.Localization
+namespace RealEstate.Utils.Localization
 {
-    public abstract class LocalizationBase : ILocalization
+    public abstract class LocalizationBase
     {
-        protected Dictionary<string, Dictionary<string, string>> Dictionary = new();
+        protected readonly string RootNameSpace;
+        public readonly Dictionary<string, Dictionary<string, string>> Dictionary = new();
         public const string DicNameDefault = LocalizationNames.Vietnamese;
         protected readonly IHttpContextAccessor _httpContextAccessor;
 
-        protected LocalizationBase(IHttpContextAccessor httpContextAccessor, string v)
+        public LocalizationBase(IHttpContextAccessor httpContextAccessor, string rootNameSpace)
         {
             _httpContextAccessor = httpContextAccessor;
-        }
-
-        protected void LoadDictionary(string nameSpace)
-        {
-            string rootNameSpace = nameSpace ?? throw new ArgumentNullException(nameof(nameSpace));
+            RootNameSpace = rootNameSpace ?? throw new ArgumentNullException(nameof(rootNameSpace));
             var assembly = Assembly.GetCallingAssembly();
-            foreach (var resourceName in assembly.GetManifestResourceNames().Where(r => r.StartsWith(rootNameSpace)))
+            foreach (var resourceName in assembly.GetManifestResourceNames())
             {
                 using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
                 XElement element = XElement.Load(stream);
@@ -27,18 +24,7 @@ namespace RealEstate.ApplicationBase.Localization
 
                 var dicValues = element.Elements("texts").Elements("text")
                     .ToDictionary(e => e.Attribute("name")!.Value, e => e.Attribute("value")?.Value ?? e.Value);
-
-                if (!Dictionary.ContainsKey(dicName))
-                {
-                    Dictionary[dicName] = dicValues;
-                }
-                else
-                {
-                    foreach (var item in dicValues)
-                    {
-                        Dictionary[dicName][item.Key] = item.Value;
-                    }
-                }
+                Dictionary[dicName] = dicValues;
             }
         }
 
@@ -62,14 +48,8 @@ namespace RealEstate.ApplicationBase.Localization
 
         public string Localize(string keyName)
         {
-            string localizationName = _httpContextAccessor.HttpContext?.Items[LocalizationQuery.QueryName]?.ToString() ?? DicNameDefault;
+            string localizationName = _httpContextAccessor.HttpContext.Items[LocalizationQuery.QueryName].ToString()!;
             return Localize(localizationName, keyName);
-        }
-
-        public string Localize(string dicName, string[]? listParam)
-        {
-            string localizationName = _httpContextAccessor.HttpContext?.Items[LocalizationQuery.QueryName]?.ToString() ?? DicNameDefault;
-            return string.Format(Localize(localizationName, dicName), listParam!);
         }
     }
 }

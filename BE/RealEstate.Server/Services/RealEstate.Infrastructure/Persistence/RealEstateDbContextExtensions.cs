@@ -15,7 +15,7 @@ namespace RealEstate.Infrastructure.Persistence
                 {
                     Id = 1,
                     Email = "admin",
-                    Password = PasswordHasher.HashPassword("123qwe"),
+                    Password = CryptographyUtils.CreateMD5("123qwe"),
                     Fullname = "admin",
                     UserType = UserTypes.ADMIN,
                     Status = UserStatus.ACTIVE,
@@ -26,7 +26,7 @@ namespace RealEstate.Infrastructure.Persistence
                 {
                     Id = 2,
                     Email = "customer",
-                    Password = PasswordHasher.HashPassword("123qwe"),
+                    Password = CryptographyUtils.CreateMD5("123qwe"),
                     Fullname = "customer",
                     UserType = UserTypes.CUSTOMER,
                     Status = UserStatus.ACTIVE,

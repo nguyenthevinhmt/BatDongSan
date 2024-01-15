@@ -1,13 +1,13 @@
-﻿namespace RealEstate.ApplicationBase.Localization
+﻿namespace RealEstate.Utils.Localization
 {
     public static class LocalizationNames
     {
+        public const string Vietnamese = "vi";
         public const string English = "en";
-        public const string Vietnamese = "vn";
 
         public static readonly string[] All = new string[]
         {
-            English, Vietnamese,
+            Vietnamese,English,
         };
     }
 }

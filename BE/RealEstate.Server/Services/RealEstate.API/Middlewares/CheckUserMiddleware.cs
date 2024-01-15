@@ -1,9 +1,9 @@
-﻿using RealEstate.ApplicationBase.Localization;
-using RealEstate.Utils.ConstantVariables.Shared;
+﻿using RealEstate.Utils.ConstantVariables.Shared;
 using RealEstate.Utils.ConstantVariables.User;
 using RealEstate.Utils;
 using System.Net;
 using RealEstate.Infrastructure.Persistence;
+using RealEstate.Utils.Localization;
 
 namespace RealEstate.API.Middlewares
 {

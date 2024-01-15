@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using RealEstate.ApplicationBase.Localization;
+using RealEstate.Utils.Localization;
 
 namespace WebAPIBase.MiddleWares
 {

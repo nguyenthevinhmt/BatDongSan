@@ -1,25 +1,13 @@
 using RealEstate.API.Middlewares;
-using RealEstate.ApplicationBase.Localization;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.ApplicationService.AuthModule.Implements;
 using RealEstate.ApplicationService.Common.Localization;
 using RealEstate.IdentityServerBase.StartUp;
 using RealEstate.Infrastructure.Persistence;
+using RealEstate.Utils.Localization;
 using WebAPIBase;
 
 var builder = WebApplication.CreateBuilder(args);
-//entity framework
-//builder.Services.AddDbContext<RealEstateDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), options => options.MigrationsAssembly("RealEstate.API"));
-//    options.UseOpenIddict();
-
-//}, ServiceLifetime.Scoped);
-
-//builder.Services.AddDbContext<RealEstateDbContextTransient>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
-//}, ServiceLifetime.Transient);
 builder.ConfigureCors();
 builder.ConfigureServices(isIdentityServer: true);
 builder.Services.AddCommonIdentityServer<RealEstateDbContext>(builder.Configuration);

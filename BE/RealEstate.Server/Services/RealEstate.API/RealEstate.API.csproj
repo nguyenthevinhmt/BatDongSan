@@ -28,13 +28,9 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
-	<ItemGroup>
-		<Folder Include="Migrations\" />
-	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RealEstate.Library\RealEstate.IdentityServerBase\RealEstate.IdentityServerBase.csproj" />
-    <ProjectReference Include="..\..\RealEstate.Library\RealEstate.Utils\RealEstate.Utils.csproj" />
-    <ProjectReference Include="..\..\RealEstate.Library\WebAPIBase\WebAPIBase.csproj" />
+    <ProjectReference Include="..\..\Library\IdentityServerBase\IdentityServerBase.csproj" />
+    <ProjectReference Include="..\..\Library\WebAPIBase\WebAPIBase.csproj" />
     <ProjectReference Include="..\RealEstate.ApplicationService\RealEstate.ApplicationService.csproj" />
     <ProjectReference Include="..\RealEstate.Infrastructure\RealEstate.Infrastructure.csproj" />
   </ItemGroup>

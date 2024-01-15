@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using RealEstate.Utils.ConstantVariables.Shared;
-using System.Reflection;
 
-namespace RealEstate.ApplicationBase.Localization
+namespace RealEstate.Utils.Localization
 {
     public class MapErrorCodeBase
     {
@@ -46,7 +45,7 @@ namespace RealEstate.ApplicationBase.Localization
         /// <exception cref="InvalidOperationException"></exception>
         public string GetErrorMessageKey(ErrorCode errorCode)
         {
-            Map.TryGetValue(errorCode, out string messageKey);
+            Map.TryGetValue(errorCode, out string? messageKey);
             return messageKey ?? throw new InvalidOperationException($"Not found messageKey for errorCode: {errorCode}");
         }
 

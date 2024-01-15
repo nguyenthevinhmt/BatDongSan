@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\RealEstate.Library\EntitiesBase\EntitiesBase.csproj" />
-    <ProjectReference Include="..\..\RealEstate.Library\RealEstate.Utils\RealEstate.Utils.csproj" />
+    <ProjectReference Include="..\..\Library\EntitiesBase\EntitiesBase.csproj" />
+    <ProjectReference Include="..\..\Library\Utils\RealEstate.Utils.csproj" />
   </ItemGroup>
 
 </Project>
