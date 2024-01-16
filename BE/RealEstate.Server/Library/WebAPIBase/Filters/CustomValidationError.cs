@@ -19,9 +19,9 @@ namespace WebAPIBase.Filters
                 if (badRequestObjectResult.Value is ValidationProblemDetails)
                 {
                     var errorFull = ToDictionary(badRequestObjectResult.Value);
-                    errorFull.TryGetValue("Errors", out object errors);
+                    errorFull.TryGetValue("Errors", out object? errors);
                     logger?.LogWarning($"{errStr} Errors: {JsonSerializer.Serialize(errors)}");
-                    context.Result = new OkObjectResult(new APIResponse(StatusCode.Error, errors, (int)ErrorCode.BadRequest, "Bad Request"));
+                    context.Result = new OkObjectResult(new ApiResponse(StatusCode.Error, errors, (int)ErrorCode.BadRequest, "Bad Request"));
                 }
 
             base.OnResultExecuting(context);

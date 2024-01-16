@@ -28,8 +28,8 @@ namespace WebAPIBase.Filters
                 try
                 {
                     message = !string.IsNullOrWhiteSpace(userFriendlyException.MessageLocalize)
-                        ? localization.Localize(userFriendlyException.MessageLocalize)
-                            : mapErrorCode.GetErrorMessage(userFriendlyException.ErrorCode);
+                        ? localization!.Localize(userFriendlyException.MessageLocalize)
+                            : mapErrorCode!.GetErrorMessage(userFriendlyException.ErrorCode);
                 }
                 catch (Exception ex)
                 {
@@ -42,7 +42,7 @@ namespace WebAPIBase.Filters
                 logger?.LogError(context.Exception, $"{context.Exception.GetType()}: {errStr}, Message = {message}");
                 errorCode = ErrorCode.InternalServerError;
             }
-            APIResponse response = new(StatusCode.Error, nameof(ExceptionFilter), (int)errorCode, message);
+            ApiResponse response = new(StatusCode.Error, nameof(ExceptionFilter), (int)errorCode, message);
             context.Result = new JsonResult(response);
         }
     }

@@ -1,13 +1,13 @@
 ﻿namespace RealEstate.Utils
 {
-    public class APIResponse
+    public class ApiResponse
     {
         public StatusCode Status { get; set; }
         public object? Data { get; set; }
         public int Code { get; set; }
         public string Message { get; set; }
 
-        public APIResponse(StatusCode status, object? data, int code, string message)
+        public ApiResponse(StatusCode status, object? data, int code, string message)
         {
             Status = status;
             Data = data;
@@ -15,7 +15,7 @@
             Message = message;
         }
 
-        public APIResponse(object? data)
+        public ApiResponse(object? data)
         {
             Status = StatusCode.Success;
             Data = data;
@@ -23,7 +23,7 @@
             Message = "Ok";
         }
 
-        public APIResponse()
+        public ApiResponse()
         {
             Status = StatusCode.Success;
             Data = null;
@@ -32,7 +32,7 @@
         }
     }
 
-    public class ApiResponse<T> : APIResponse
+    public class ApiResponse<T> : ApiResponse
     {
         public new T Data { get; set; }
 

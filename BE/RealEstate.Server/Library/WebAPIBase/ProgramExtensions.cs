@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,10 +19,16 @@ using WebAPIBase.MiddleWares;
 
 namespace WebAPIBase
 {
+    /// <summary>
+    /// Các hàm mở rộng cho program web api, cấu hình services, middleware pipeline
+    /// </summary>
     public static class ProgramExtensions
     {
         public const string DbConnection = "Default";
+        public const string Redis = "Redis";
+        public const string Jwk = "Jwk";
         public const string CorsPolicy = "cors_policy";
+
         /// <summary>
         /// Config default services <br/>
         /// <paramref name="isIdentityServer"/> Có phải là identity server không <br/>
@@ -42,8 +49,6 @@ namespace WebAPIBase
 
             services.AddControllersWithViews(options =>
             {
-                //options.Filters.Add<ResultFilter>();
-                //options.Filters.Add<ActionFilter>();
                 options.Filters.Add<ExceptionFilter>();
                 options.Filters.Add(typeof(CustomValidationError));
             });
@@ -152,6 +157,12 @@ namespace WebAPIBase
                     }
                 };
             });
+
+            // Add your logging handler
+            //builder.Logging.AddLog4Net();
+
+            //nếu có cấu hình redis
+            string redisConnectionString = builder.Configuration.GetConnectionString(Redis)!;
             string connectionString = builder.Configuration.GetConnectionString(DbConnection)!;
 
             //entity framework
@@ -177,7 +188,104 @@ namespace WebAPIBase
             services.AddDistributedMemoryCache();
             services.AddSession();
             services.AddDataProtection();
+
+            // Add Hangfire services.
+            //services.AddHangfire(configuration =>
+            //{
+            //    configuration
+            //        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            //        .UseLog4NetLogProvider()
+            //        .UseSimpleAssemblyNameTypeSerializer()
+            //        .UseSerializerSettings(new JsonSerializerSettings
+            //        {
+            //            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //        });
+            //    if (!string.IsNullOrWhiteSpace(redisConnectionString))
+            //    {
+            //        configuration.UseRedisStorage(redisConnectionString, new RedisStorageOptions
+            //        {
+            //            Prefix = $"{{hangfire-{Assembly.GetExecutingAssembly().GetName().Name}}}:",
+            //        });
+            //    }
+            //    else
+            //    {
+            //        configuration.UseInMemoryStorage();
+            //    }
+            //});
+
+            // Add the processing server as IHostedService
+            //services.AddHangfireServer((service, options) =>
+            //{
+            //    options.ServerName = Assembly.GetExecutingAssembly().GetName().Name;
+            //    options.WorkerCount = 100;
+            //});
+
+            ////signalR
+            //var signalRBuilder = services.AddSignalR();
+            //if (!string.IsNullOrWhiteSpace(redisConnectionString))
+            //{
+            //    signalRBuilder.AddStackExchangeRedis(redisConnectionString, options =>
+            //    {
+            //        options.Configuration.ChannelPrefix = $"{{SignalR-{Assembly.GetExecutingAssembly().GetName().Name}}}";
+            //    });
+            //}
         }
+
+        /// <summary>
+        /// Config default middleware pipeline
+        /// </summary>
+        public static void Configure(this WebApplication app)
+        {
+            if (EnvironmentNames.DevelopEnv.Contains(app.Environment.EnvironmentName))
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Assembly.GetExecutingAssembly().GetName().Name} v1");
+                    options.DocExpansion(DocExpansion.None);
+                });
+            }
+            //app.UseHttpsRedirection();
+
+            app.UseMiniProfiler();
+            app.UseRequestLocalizationCustom();
+            app.UseForwardedHeaders();
+            app.UseRouting();
+            app.UseCors(CorsPolicy);
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseSession();
+        }
+
+        public static void ConfigureEndpoint(this WebApplication app)
+        {
+            //app.UseHangfireDashboard();
+            app.MapHealthChecks("/health");
+            //app.MapHangfireDashboard("/hangfire");
+            app.MapControllers();
+        }
+
+        /// <summary>
+        /// Kiểm tra resolve service
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="services"></param>
+        public static void TestResolveService(this WebApplication app, IServiceCollection services)
+        {
+            using var scope = app.Services.CreateScope();
+            foreach (var service in services)
+            {
+                var type = service.ServiceType;
+                if (!type.FullName!.Contains("Service"))
+                {
+                    continue;
+                }
+                app.Services.GetService(type);
+            }
+        }
+
         /// <summary>
         /// Tự tìm trong các Project Dependencies xem có định nghĩa class AutoMapProfile nào không nếu có thì thêm vào hàm AddAutoMapper
         /// </summary>
@@ -188,11 +296,11 @@ namespace WebAPIBase
                                                                     .SelectMany(c => c.ConstructorArguments.Select(ca => ca.Value?.ToString()))
                                                                     .Where(o => o != null)
                                                                     .ToList()!);
-            projectDependencyNames.AddRange(Assembly.GetExecutingAssembly()!.CustomAttributes
+            projectDependencyNames.AddRange(Assembly.GetExecutingAssembly().CustomAttributes
                                                                     .SelectMany(c => c.ConstructorArguments.Select(ca => ca.Value?.ToString()))
                                                                     .Where(o => o != null)
                                                                     .ToList()!);
-            projectDependencyNames.AddRange(Assembly.GetCallingAssembly()!.CustomAttributes
+            projectDependencyNames.AddRange(Assembly.GetCallingAssembly().CustomAttributes
                                                                     .SelectMany(c => c.ConstructorArguments.Select(ca => ca.Value?.ToString()))
                                                                     .Where(o => o != null)
                                                                     .ToList()!);
@@ -221,56 +329,25 @@ namespace WebAPIBase
 
             services.AddAutoMapper(autoMapProfiles.ToArray());
         }
+
         public static void ConfigureCors(this WebApplicationBuilder builder)
         {
             string allowOrigins = builder.Configuration.GetSection("AllowedOrigins").Value!;
             //File.WriteAllText("cors.now.txt", $"CORS: {allowOrigins}");
+            var origins = allowOrigins.Split(';').Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(CorsPolicy,
                     builder =>
                     {
                         builder
-                            .WithOrigins("localhost:4200")
+                            .WithOrigins(origins)
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials()
                             .WithExposedHeaders("Content-Disposition");
                     });
             });
-        }
-        public static void ConfigureEndpoint(this WebApplication app)
-        {
-            app.MapHealthChecks("/health");
-            app.MapControllers();
-        }
-        /// <summary>
-        /// Config default middleware pipeline
-        /// </summary>
-        public static void Configure(this WebApplication app)
-        {
-            if (EnvironmentNames.DevelopEnv.Contains(app.Environment.EnvironmentName))
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{Assembly.GetExecutingAssembly().GetName().Name} v1");
-                    options.DocExpansion(DocExpansion.None);
-                });
-            }
-            //app.UseHttpsRedirection();
-
-            app.UseMiniProfiler();
-            app.UseRequestLocalizationCustom();
-            app.UseForwardedHeaders();
-            app.UseRouting();
-            app.UseCors(CorsPolicy);
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseSession();
         }
     }
 }

@@ -2,8 +2,8 @@
 {
     public class FileConfig
     {
-        public string Path { get; set; }
+        public string Path { get; set; } = null!;
         public double LimitUpload { get; set; }
-        public string AllowExtension { get; set; }
+        public string AllowExtension { get; set; } = null!;
     }
 }

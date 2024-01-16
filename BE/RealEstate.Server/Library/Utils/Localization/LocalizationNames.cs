@@ -7,7 +7,7 @@
 
         public static readonly string[] All = new string[]
         {
-            Vietnamese,English,
+            English,Vietnamese,
         };
     }
 }

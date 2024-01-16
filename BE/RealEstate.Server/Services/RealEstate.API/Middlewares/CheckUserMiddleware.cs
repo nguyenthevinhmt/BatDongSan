@@ -24,7 +24,7 @@ namespace RealEstate.API.Middlewares
         public async Task InvokeAsync(HttpContext context)
         {
             var claim = context.User.FindFirst(UserClaimTypes.UserId);
-            var dbContext = context.RequestServices.GetService<RealEstateDbContext>();
+            var dbContext = context.RequestServices.GetService<RealEstateDbContext>()!;
 
             if (claim != null)
             {
@@ -34,10 +34,10 @@ namespace RealEstate.API.Middlewares
                     u.Id,
                     u.Status
                 }).FirstOrDefault(u => u.Id == userId);
-                if (user.Status != UserStatus.ACTIVE)
+                if (user!.Status != UserStatus.ACTIVE)
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    await context.Response.WriteAsJsonAsync(new APIResponse(StatusCode.Error, string.Empty,
+                    await context.Response.WriteAsJsonAsync(new ApiResponse(StatusCode.Error, string.Empty,
                         (int)ErrorCode.UserIsDeactive, _mapErrorCode.GetErrorMessage(ErrorCode.UserIsDeactive)));
                     return;
                 }

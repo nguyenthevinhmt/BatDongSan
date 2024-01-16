@@ -36,6 +36,7 @@ namespace RealEstate.API.Controllers
             _tokenManager = tokenManager;
             _userServices = userServices;
             _localization = localization;
+            _mapErrorCode = mapErrorCode;
         }
 
         [HttpPost("~/connect/token"), IgnoreAntiforgeryToken, Produces("application/json"), Consumes("application/x-www-form-urlencoded")]

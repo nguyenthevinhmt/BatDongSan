@@ -11,7 +11,7 @@ namespace RealEstate.ApplicationBase.Common
         {
             var claims = httpContextAccessor.HttpContext?.User?.Identity as ClaimsIdentity;
             var claim = claims?.FindFirst(UserClaimTypes.UserType);
-            return claim == null ? throw new Exception($"Claim {UserClaimTypes.UserType} not found.") : int.Parse(claim?.Value);
+            return claim == null ? throw new Exception($"Claim {UserClaimTypes.UserType} not found.") : int.Parse(claim!.Value);
         }
 
         public static int GetCurrentUserId(IHttpContextAccessor httpContextAccessor)
@@ -33,13 +33,13 @@ namespace RealEstate.ApplicationBase.Common
 
         public static string GetCurrentRemoteIpAddress(IHttpContextAccessor httpContextAccessor)
         {
-            string senderIpv4 = null;
+            string senderIpv4 = null!;
             try
             {
                 senderIpv4 = httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
                 if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedIps))
                 {
-                    senderIpv4 = forwardedIps.FirstOrDefault();
+                    senderIpv4 = forwardedIps.FirstOrDefault()!;
                 }
             }
             catch
@@ -50,7 +50,7 @@ namespace RealEstate.ApplicationBase.Common
 
         public static string GetCurrentXForwardedFor(IHttpContextAccessor httpContextAccessor)
         {
-            string forwardedIpsStr = null;
+            string forwardedIpsStr = null!;
             try
             {
                 if (httpContextAccessor.HttpContext.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedIps))

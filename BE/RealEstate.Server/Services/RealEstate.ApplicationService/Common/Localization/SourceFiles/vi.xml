@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="vi">
 	<texts>
-		<text name="error_System">Error System</text>
-		<text name="error_UsernameOrPasswordIncorrect">Incorrect user name or password</text>
-		<text name="error_UserNotFound">User not found</text>
-		<text name="error_UserOldPasswordIncorrect">Old password is incorrect</text>
-		<text name="error_UserIsDeactive">User has been locked</text>
+		<text name="error_System">Lỗi hệ thống</text>
+		<text name="error_UsernameOrPasswordIncorrect">Tài khoản hoặc mật khẩu không chính xác</text>
+		<text name="error_UserNotFound">Không tìm thấy người dùng</text>
+		<text name="error_UserOldPasswordIncorrect">Mật khẩu cũ không chính xác</text>
+		<text name="error_UserIsDeactive">Tài khoản người dùng đã bị khóa</text>
+		<text name="error_Unauthorized">Tài khoản không có quyền truy cập</text>
 	</texts>
 </localizationDictionary>
 

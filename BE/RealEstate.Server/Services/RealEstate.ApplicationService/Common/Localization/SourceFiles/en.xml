@@ -6,5 +6,6 @@
 		<text name="error_UserNotFound">User not found</text>
 		<text name="error_UserOldPasswordIncorrect">Old password is incorrect</text>
 		<text name="error_UserIsDeactive">User has been locked</text>
+		<text name="error_Unauthorized">Unauthorized</text>
 	</texts>
 </localizationDictionary>

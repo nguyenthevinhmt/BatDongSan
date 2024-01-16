@@ -44,7 +44,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             input.Password = CryptographyUtils.CreateMD5(input.Password);
             var user = _mapper.Map<User>(input);
             var transaction = _dbContext.Database.BeginTransaction();
-            if (input.Status == null)
+            if (input?.Status == null)
             {
                 user.Status = UserStatus.ACTIVE;
             }
