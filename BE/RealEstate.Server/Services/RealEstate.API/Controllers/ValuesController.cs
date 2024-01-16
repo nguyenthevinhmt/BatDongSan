@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RealEstate.ApplicationBase.Common.Validations;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.Utils.ConstantVariables.Shared;
 using RealEstate.Utils.CustomException;
@@ -16,7 +17,7 @@ namespace RealEstate.API.Controllers
         public ValuesController(IUserService service) {
             _service = service;
         }
-        [Authorize]
+        [AuthorizeCustomerTypeFilter]
         [HttpGet("Ping")]
         public IActionResult Get() {
             return Ok("Pong");

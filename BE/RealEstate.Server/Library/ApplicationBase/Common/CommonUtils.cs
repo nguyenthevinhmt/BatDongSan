@@ -7,17 +7,17 @@ namespace RealEstate.ApplicationBase.Common
 {
     public static class CommonUtils
     {
-        public static int GetCurrentUserType(IHttpContextAccessor httpContextAccessor)
+        public static int GetCurrentUserType(this IHttpContextAccessor httpContextAccessor)
         {
             var claims = httpContextAccessor.HttpContext?.User?.Identity as ClaimsIdentity;
             var claim = claims?.FindFirst(UserClaimTypes.UserType);
-            return claim == null ? throw new Exception($"Claim {UserClaimTypes.UserType} not found.") : int.Parse(claim!.Value);
+            return claim == null ? throw new InvalidOperationException($"Claim {UserClaimTypes.UserType} not found.") : int.Parse(claim!.Value!);
         }
 
-        public static int GetCurrentUserId(IHttpContextAccessor httpContextAccessor)
+        public static int GetCurrentUserId(this IHttpContextAccessor httpContextAccessor)
         {
             var claims = httpContextAccessor.HttpContext?.User?.Identity as ClaimsIdentity;
-            var claim = (claims?.FindFirst(UserClaimTypes.UserId)) ?? throw new Exception($"Claim {UserClaimTypes.UserId} not found.");
+            var claim = (claims?.FindFirst(UserClaimTypes.UserId)) ?? throw new InvalidOperationException($"Claim {UserClaimTypes.UserId} not found.");
             int userId = int.Parse(claim.Value);
             return userId;
         }
@@ -31,7 +31,7 @@ namespace RealEstate.ApplicationBase.Common
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public static string GetCurrentRemoteIpAddress(IHttpContextAccessor httpContextAccessor)
+        public static string GetCurrentRemoteIpAddress(this IHttpContextAccessor httpContextAccessor)
         {
             string senderIpv4 = null!;
             try
@@ -48,7 +48,7 @@ namespace RealEstate.ApplicationBase.Common
             return senderIpv4;
         }
 
-        public static string GetCurrentXForwardedFor(IHttpContextAccessor httpContextAccessor)
+        public static string GetCurrentXForwardedFor(this IHttpContextAccessor httpContextAccessor)
         {
             string forwardedIpsStr = null!;
             try

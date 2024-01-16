@@ -14,6 +14,7 @@
         UserNotFound = 1001,
         UserIsDeactive = 1002,
         UserOldPasswordIncorrect = 1003,
+        UserNotHavePermission = 1004,
 
 
         // Image && File 2xxx

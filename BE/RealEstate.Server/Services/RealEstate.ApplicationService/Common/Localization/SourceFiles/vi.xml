@@ -6,7 +6,9 @@
 		<text name="error_UserNotFound">Không tìm thấy người dùng</text>
 		<text name="error_UserOldPasswordIncorrect">Mật khẩu cũ không chính xác</text>
 		<text name="error_UserIsDeactive">Tài khoản người dùng đã bị khóa</text>
-		<text name="error_Unauthorized">Tài khoản không có quyền truy cập</text>
+		<text name="error_Unauthorized">Unauthorized</text>
+		<text name="error_UserNotHavePermission">Tài khoản không có quyền truy cập</text>
+		
 	</texts>
 </localizationDictionary>
 
