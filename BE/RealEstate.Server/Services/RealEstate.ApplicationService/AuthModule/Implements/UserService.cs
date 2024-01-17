@@ -42,41 +42,35 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             _logger.LogInformation($"{nameof(CreateUser)}: input = {JsonSerializer.Serialize(input)}");
             var userId = CommonUtils.GetCurrentUserId(_httpContext);
             input.Password = CryptographyUtils.CreateMD5(input.Password);
-            var user = _mapper.Map<User>(input);
-            var transaction = _dbContext.Database.BeginTransaction();
+            var user = new User()
+            {
+                UserType = UserTypes.CUSTOMER,
+                Username = input.Username,
+                Email = input.Email,
+                Password = input.Password,
+                Fullname = input.FullName,
+                PhoneNumber = input.Phone
+            };
             if (input?.Status == null)
             {
                 user.Status = UserStatus.ACTIVE;
             }
 
             var result = _dbContext.Users.Add(user);
-
-
             _dbContext.SaveChanges();
-
-            ////Thêm role
-            //if (input.RoleIds != null)
-            //{
-            //    foreach (var item in input.RoleIds)
-            //    {
-            //        var role = _dbContext.Roles.FirstOrDefault(e => e.Id == item) ?? throw new UserFriendlyException(ErrorCode.RoleNotFound);
-            //        _dbContext.UserRoles.Add(new UserRole
-            //        {
-            //            UserId = result.Entity.Id,
-            //            RoleId = item
-            //        });
-            //    }
-            //    _dbContext.SaveChanges();
-            //}
-
-            transaction.Commit();
-
         }
 
         public User FindById(int id)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == id && u.Status == UserStatus.ACTIVE && !u.Deleted);
-            return user ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == id && u.Status == UserStatus.ACTIVE && !u.Deleted)
+                ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            return user;
+        }
+        public UserDetailDto FindUserDetail(int id)
+        {
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == id && u.Status == UserStatus.ACTIVE && !u.Deleted)
+                ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            return _mapper.Map<UserDetailDto>(user);
         }
 
         public PagingResult<UserDto> FindAll(FilterUserDto input)
@@ -85,7 +79,8 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var result = new PagingResult<UserDto>();
             var users = _dbContext.Users.Where(u => !u.Deleted && (input.Username == null || u.Username.Contains(input.Username))
                                                                && (input.FullName == null || u.Fullname.Contains(input.FullName))
-                                                               && (input.Status == null || u.Status == input.Status));
+                                                               && (input.Status == null || u.Status == input.Status)
+                                                               && (input.PhoneNumber == null || u.PhoneNumber == input.PhoneNumber));
             // đếm tổng trước khi phân trang
             result.TotalItems = users.Count();
             users = users.OrderDynamic(input.Sort);
@@ -95,62 +90,21 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
                 users = users.Skip(input.GetSkip()).Take(input.PageSize);
             }
             result.Items = _mapper.Map<List<UserDto>>(users);
-            //foreach (var item in result.Items)
-            //{
-            //    var userRoles = _dbContext.UserRoles.Where(e => e.UserId == item.Id && !e.Deleted).Select(e => e.RoleId);
-            //    item.RoleIds = userRoles.ToList();
-            //}
             return result;
         }
 
-        public void Update(UpdateUserDto input)
+        public UserDetailDto Update(UpdateUserDto input)
         {
             var userId = CommonUtils.GetCurrentUserId(_httpContext);
             _logger.LogInformation($"{nameof(Update)}: input = {JsonSerializer.Serialize(input)}, userId = {userId}");
 
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == input.Id && u.Status == UserStatus.ACTIVE && !u.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserNotFound); ;
             user.Email = input.Email;
-            user.Phone = input.Phone;
+            user.PhoneNumber = input.Phone;
             user.Fullname = input.FullName;
 
-            //Thêm role
-            //if (input.RoleIds != null)
-            //{
-            //    foreach (var item in input.RoleIds)
-            //    {
-            //        var role = _dbContext.Roles.FirstOrDefault(e => e.Id == item) ?? throw new UserFriendlyException(ErrorCode.RoleNotFound);
-            //    }
-            //}
-
-            var insertUserRole = new List<int>();
-            var removeUserRole = new List<int>();
-            //var inputUserRole = input.RoleIds;
-            //Danh sách role hiện tại được gán cho user
-            //var currentUserRole = _dbContext.UserRoles.Where(e => e.UserId == input.Id).Select(e => e.RoleId).ToList();
-
-            ////Xóa những role gán với user
-            //removeUserRole = currentUserRole.Except(inputUserRole).ToList();
-            //foreach (var item in removeUserRole)
-            //{
-            //    var userRole = _dbContext.UserRoles.FirstOrDefault(e => e.UserId == input.Id && e.RoleId == item);
-            //    if (userRole != null)
-            //    {
-            //        userRole.Deleted = true;
-            //    }
-            //}
-
-            ////Thêm những role trong input chưa  có trong db
-            //insertUserRole = inputUserRole.Except(currentUserRole).ToList();
-            //foreach (var item in insertUserRole)
-            //{
-            //    _dbContext.UserRoles.Add(new UserRole
-            //    {
-            //        UserId = input.Id,
-            //        RoleId = item
-            //    });
-            //}
-
             _dbContext.SaveChanges();
+            return _mapper.Map<UserDetailDto>(user);
         }
 
         public void Delete(int id)
@@ -172,7 +126,6 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             if (user.Status == UserStatus.ACTIVE)
             {
                 user.Status = UserStatus.DEACTIVE;
-
             }
             else
             {

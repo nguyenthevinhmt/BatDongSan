@@ -11,7 +11,7 @@ namespace RealEstate.IdentityServerBase.Dto
         [FromForm(Name = "password")]
         public string? Password { get; set; } 
         [FromForm(Name = "scope")]
-        public string Scope { get; set; } = null!;
+        public string? Scope { get; set; }
         [FromForm(Name = "client_id")]
         public string ClientId { get; set; } = null!;
         [FromForm(Name = "client_secret")]

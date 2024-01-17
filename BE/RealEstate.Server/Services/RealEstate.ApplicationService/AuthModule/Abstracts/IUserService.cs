@@ -12,6 +12,12 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// <param name="id"></param>
         /// <returns></returns>
         User FindById(int id);
+        /// <summary>
+        /// Thông tin chi tiết user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        UserDetailDto FindUserDetail(int id);
 
         /// <summary>
         /// Validate user
@@ -39,12 +45,16 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// Cập nhật thông tin tài khoản
         /// </summary>
         /// <param name="input"></param>
-        void Update(UpdateUserDto input);
+        UserDetailDto Update(UpdateUserDto input);
         /// <summary>
         /// Cập nhật trạng thái tài khoản
         /// </summary>
         /// <param name="id"></param>
         void ChangeStatus(int id);
+        /// <summary>
+        /// Xóa người dùng
+        /// </summary>
+        /// <param name="id"></param>
         void Delete(int id);
         /// <summary>
         /// Set password cho user

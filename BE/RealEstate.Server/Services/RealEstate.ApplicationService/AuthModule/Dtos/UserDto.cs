@@ -13,11 +13,6 @@
         public string Username { get; set; } = null!;
 
         /// <summary>
-        /// Mật khẩu
-        /// </summary>
-        public string Password { get; set; } = null!;
-
-        /// <summary>
         /// Email
         /// </summary>
         public string Email { get; set; } = null!;

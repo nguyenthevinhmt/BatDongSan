@@ -1,4 +1,7 @@
-﻿namespace RealEstate.ApplicationService.AuthModule.Dtos
+﻿using RealEstate.ApplicationBase.Common.Validations;
+using RealEstate.Utils.ConstantVariables.User;
+
+namespace RealEstate.ApplicationService.AuthModule.Dtos
 {
     public class CreateUserDto
     {
@@ -52,12 +55,7 @@
             get => _fullName;
             set => _fullName = value.Trim();
         }
-
-
-        /// <summary>
-        /// Loại tài khoản
-        /// </summary>
-        public int UserType { get; set; }
+        [IntegerRange(AllowableValues = new int[] { UserStatus.ACTIVE, UserStatus.DEACTIVE})]
         public int Status { get; set; }
     }
 }

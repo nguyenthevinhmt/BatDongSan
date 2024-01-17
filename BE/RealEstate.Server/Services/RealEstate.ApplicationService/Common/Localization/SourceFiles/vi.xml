@@ -8,6 +8,7 @@
 		<text name="error_UserIsDeactive">Tài khoản người dùng đã bị khóa</text>
 		<text name="error_Unauthorized">Unauthorized</text>
 		<text name="error_UserNotHavePermission">Tài khoản không có quyền truy cập</text>
+		<text name="error_UserIsExist">Tên người dùng đã tồn tại</text>
 		
 	</texts>
 </localizationDictionary>

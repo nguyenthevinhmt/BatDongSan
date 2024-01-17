@@ -21,9 +21,6 @@ namespace RealEstate.Domain.Entities
         public string Password { get; set; } = null!;
         [MaxLength(12)]
         public string PhoneNumber { get; set; } = null!;
-        [MaxLength(512)]
-        public string? RefreshToken { get; set; }
-        public DateTime? RefreshTokenExpiryTime { get; set; }
         /// <summary>
         /// Đường dẫn link ảnh
         /// </summary>
@@ -40,9 +37,6 @@ namespace RealEstate.Domain.Entities
         /// Mã OTP
         /// </summary>
         public string? Otp { get; set; }
-        [MaxLength(128)]
-        [Unicode(false)]
-        public string? Phone { get; set; }
         public DateTime CreateDate { get; set; }
         public List<Wallet> Wallets { get; } = new();
         public List<Favorite> Favorites { get; } = new();
