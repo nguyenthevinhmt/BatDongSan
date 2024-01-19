@@ -5,6 +5,8 @@ using RealEstate.ApplicationService.AuthModule.Implements;
 using RealEstate.ApplicationService.Common.Localization;
 using RealEstate.ApplicationService.ConfigurationModule.Abstracts;
 using RealEstate.ApplicationService.ConfigurationModule.Implements;
+using RealEstate.ApplicationService.EmailModule.Abstracts;
+using RealEstate.ApplicationService.EmailModule.Implements;
 using RealEstate.IdentityServerBase.StartUp;
 using RealEstate.Infrastructure.Persistence;
 using RealEstate.Utils.Localization;
@@ -21,6 +23,7 @@ builder.Services.AddSingleton<LocalizationBase, RealEstateLocalization>();
 builder.Services.AddSingleton<MapErrorCodeBase>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 var app = builder.Build();
 
 app.Configure();

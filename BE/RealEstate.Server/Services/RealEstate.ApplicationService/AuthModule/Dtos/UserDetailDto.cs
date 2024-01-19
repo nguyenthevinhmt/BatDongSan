@@ -28,5 +28,9 @@ namespace RealEstate.ApplicationService.AuthModule.Dtos
         /// <see cref="UserTypes"/>
         /// </summary>
         public int UserType {  get; set; }
+        /// <summary>
+        /// Đã xác thực giấy tờ chưa
+        /// </summary>
+        public bool isConfirm {  get; set; }
     }
 }

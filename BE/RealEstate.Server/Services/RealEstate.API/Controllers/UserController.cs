@@ -93,5 +93,23 @@ namespace RealEstate.API.Controllers
             _userService.ChangePassword(input);
             return new();
         }
+        /// <summary>
+        /// Xác thực otp
+        /// </summary>
+        /// <param name="otp"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPut("validate-otp")]
+        public ApiResponse ValidateOTP(string otp, int userId)
+        {
+            _userService.CheckUserOTP(otp, userId);
+            return new();
+        }
+        [HttpPut("refresh-otp")]
+        public ApiResponse RefreshOTP(string username)
+        {
+            _userService.RefreshOTP(username);
+            return new();
+        }
     }
 }

@@ -9,5 +9,7 @@
 		<text name="error_Unauthorized">Unauthorized</text>
 		<text name="error_UserNotHavePermission">Account has no permissions</text>
 		<text name="error_UserIsExist">Username has been exist yet</text>
+		<text name="error_VerifiedOtpFailed">The OTP is not valid</text>
+
 	</texts>
 </localizationDictionary>
