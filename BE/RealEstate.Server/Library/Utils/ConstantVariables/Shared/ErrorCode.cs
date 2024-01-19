@@ -25,5 +25,8 @@
         FileExtention = 2002,
 
         SysVarsIsNotConfig = 2003,
+
+        //Post
+        PostNotFound = 3000,
     }
 }
