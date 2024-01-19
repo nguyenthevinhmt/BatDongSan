@@ -87,6 +87,7 @@ namespace RealEstate.Infrastructure.Persistence
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging(); // Thêm dòng này
             base.OnConfiguring(optionsBuilder);
         }
     }
