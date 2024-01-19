@@ -9,6 +9,7 @@
 		<text name="error_Unauthorized">Unauthorized</text>
 		<text name="error_UserNotHavePermission">Tài khoản không có quyền truy cập</text>
 		<text name="error_UserIsExist">Tên người dùng đã tồn tại</text>
+		<text name="error_VerifiedOtpFailed">Mã OTP không hợp lệ</text>
 		
 	</texts>
 </localizationDictionary>

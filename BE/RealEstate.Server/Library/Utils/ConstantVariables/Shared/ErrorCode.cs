@@ -16,6 +16,7 @@
         UserOldPasswordIncorrect = 1003,
         UserNotHavePermission = 1004,
         UserIsExist = 1005,
+        VerifiedOtpFailed = 1006,
 
 
         // Image && File 2xxx

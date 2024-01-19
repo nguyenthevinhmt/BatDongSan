@@ -1,4 +1,5 @@
-﻿using RealEstate.ApplicationBase.Common;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Dtos;
 using RealEstate.Domain.Entities;
 
@@ -67,5 +68,22 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         void ChangePassword(ChangePasswordDto input);
+        /// <summary>
+        /// Check otp 
+        /// </summary>
+        /// <param name="otp"></param>
+        /// <returns></returns>
+        void CheckUserOTP(string otp, int userId);
+
+        /// <summary>
+        /// Thông tin người dùng hiện tại
+        /// </summary>
+        /// <returns></returns>
+        UserDetailDto FindCurrentUserInfo();
+        /// <summary>
+        /// Tạo lại OTP
+        /// </summary>
+        /// <param name="username"></param>
+        void RefreshOTP(string username);
     }
 }

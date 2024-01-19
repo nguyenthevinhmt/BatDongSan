@@ -37,6 +37,14 @@ namespace RealEstate.Domain.Entities
         /// Mã OTP
         /// </summary>
         public string? Otp { get; set; }
+        /// <summary>
+        /// Thời gian hết hạn
+        /// </summary>
+        public DateTime OtpExpiredTime { get; set; }
+        /// <summary>
+        /// Đã xác thực OTP chưa
+        /// </summary>
+        public bool isOtpConfirm {  get; set; }
         public DateTime CreateDate { get; set; }
         public List<Wallet> Wallets { get; } = new();
         public List<Favorite> Favorites { get; } = new();

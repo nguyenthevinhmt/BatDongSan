@@ -35,7 +35,6 @@ namespace RealEstate.Infrastructure.Persistence
                 e.HasMany(c => c.Wallets).WithOne(c => c.User).HasForeignKey(c => c.UserId);
                 e.HasMany(c => c.UserIdentifications).WithOne(c => c.User).HasForeignKey(c => c.UserId);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
-                e.Property(c => c.CreateDate).HasDefaultValue(DateTime.Now);
             });
 
             modelBuilder.Entity<Wallet>(e =>
@@ -50,37 +49,31 @@ namespace RealEstate.Infrastructure.Persistence
                 e.HasMany(c => c.Medias).WithOne(c => c.Post).HasForeignKey(c => c.PostId);
                 e.HasOne(c => c.PostType).WithMany(c => c.Posts).HasForeignKey(c => c.PostTypeId);
                 e.HasOne(c => c.RealEstateType).WithMany(c => c.Posts).HasForeignKey(c => c.RealEstateTypeId);
-                e.Property(c => c.CreatedDate).HasDefaultValue(DateTime.Now);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
             });
             modelBuilder.Entity<PostType>(e =>
             {
                 e.HasKey(c => c.Id);
-                e.Property(c => c.CreatedDate).HasDefaultValue(DateTime.Now);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
             });
             modelBuilder.Entity<RealEstateType>(e =>
             {
                 e.HasKey(c => c.Id);
-                e.Property(c => c.CreatedDate).HasDefaultValue(DateTime.Now);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
             });
             modelBuilder.Entity<Transaction>(e =>
             {
                 e.HasKey(c => c.Id);
-                e.Property(c => c.CreateDate).HasDefaultValue(DateTime.Now);
             });
             modelBuilder.Entity<Media>(e =>
             {
                 e.HasKey(c => c.Id);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
-                e.Property(c => c.CreatedDate).HasDefaultValue(DateTime.Now);
             });
             modelBuilder.Entity<UserIdentification>(e =>
             {
                 e.HasKey(c => c.Id);
                 e.Property(c => c.Deleted).HasDefaultValue(false);
-                e.Property(c => c.CreateDate).HasDefaultValue(DateTime.Now);
             });
             modelBuilder.SeedData();
             base.OnModelCreating(modelBuilder);

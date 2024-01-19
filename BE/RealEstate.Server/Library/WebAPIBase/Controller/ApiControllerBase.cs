@@ -1,5 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Drawing;
+using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
+using RealEstate.Utils.ConstantVariables.Shared;
+using RealEstate.Utils.CustomException;
+using RealEstate.Utils.Localization;
+using RealEstate.Utils;
 using RealEstate.Utils.Net.MimeTypes;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace WebAPIBase.Controller
 {
@@ -8,7 +20,7 @@ namespace WebAPIBase.Controller
         [NonAction]
         protected FileContentResult FileByFormat(byte[] fileByte, string fileName)
         {
-            string ext = Path.GetExtension(fileName)!.ToLower();
+            string ext = System.IO.Path.GetExtension(fileName)!.ToLower();
 
             return ext switch
             {
