@@ -98,11 +98,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// Loại bất động sản
         /// </summary>
         public int RealEstateTypeId { get; set; }
-        /// <summary>
-        /// Trạng thái
-        /// </summary>
-        [IntegerRange(AllowableValues = new int[] {PostStatuses.INIT, PostStatuses.PENDING, PostStatuses.POSTED})]
-        public int Status { get; set; }
 
         public List<Media> ListMedia { get; set; } = new();
     }

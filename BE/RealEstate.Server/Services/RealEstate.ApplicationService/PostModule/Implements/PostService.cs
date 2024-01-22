@@ -1,15 +1,11 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using DocumentFormat.OpenXml.VariantTypes;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Org.BouncyCastle.Asn1.Crmf;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.Common;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Dtos;
 using RealEstate.Domain.Entities;
+using RealEstate.Utils.ConstantVariables.Post;
 using RealEstate.Utils.ConstantVariables.Shared;
 using RealEstate.Utils.CustomException;
 using RealEstate.Utils.Linq;
@@ -44,7 +40,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 YoutubeLink = input.YoutubeLink,
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
-                Status = input.Status,
+                Status = PostStatuses.INIT,
             };
 
             var post = _dbContext.Posts.Add(newPost).Entity;
@@ -52,7 +48,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var listMedia = input.ListMedia;
             if (listMedia != null)
             {
-                foreach ( var media in listMedia )
+                foreach (var media in listMedia)
                 {
                     var imageMedia = new Media()
                     {
@@ -190,6 +186,20 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             findPost.Medias = input.ListMedia;
             _dbContext.SaveChanges();
             return findPost;
+        }
+
+        public void UpdateStatus(UpdatePostStatusDto input)
+        {
+            var currentUserId = _httpContext.GetCurrentUserId();
+            _logger.LogInformation($"{nameof(UpdateStatus)}: userId: {currentUserId} input: {JsonSerializer.Serialize(input)}");
+            var findPost = _dbContext.Posts.FirstOrDefault(c => c.Id == input.Id) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            findPost.Status = input.PostStatus;
+            if (input.PostStatus == PostStatuses.POSTED)
+            {
+                findPost.ApproveAt = DateTime.Now;
+                findPost.ApproveBy = currentUserId;
+            }
+            _dbContext.SaveChanges();
         }
     }
 }

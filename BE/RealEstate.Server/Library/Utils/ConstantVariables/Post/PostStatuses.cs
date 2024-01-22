@@ -14,5 +14,9 @@
         /// Đã đăng
         /// </summary>
         public const int POSTED = 3;
+        /// <summary>
+        /// Đã gỡ
+        /// </summary>
+        public const int REMOVED = 4;
     }
 }

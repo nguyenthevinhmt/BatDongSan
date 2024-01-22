@@ -10,6 +10,9 @@
 		<text name="error_UserNotHavePermission">Tài khoản không có quyền truy cập</text>
 		<text name="error_UserIsExist">Tên người dùng đã tồn tại</text>
 		<text name="error_VerifiedOtpFailed">Mã OTP không hợp lệ</text>
+		<text name="error_PostTypeNotFound">Không tìm thấy loại bài viết</text>
+		<text name="error_PostNotFound">Không tìm thấy bài viết</text>
+		<text name="error_RealEstateTypeNotFound">Không tìm thấy loại bất động sản</text>
 		
 	</texts>
 </localizationDictionary>

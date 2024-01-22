@@ -10,6 +10,9 @@
 		<text name="error_UserNotHavePermission">Account has no permissions</text>
 		<text name="error_UserIsExist">Username has been exist yet</text>
 		<text name="error_VerifiedOtpFailed">The OTP is not valid</text>
+		<text name="error_PostTypeNotFound">Not found post type</text>
+		<text name="error_PostNotFound">Not found post</text>
+		<text name="error_RealEstateTypeNotFound">Not found real estate type</text>
 
 	</texts>
 </localizationDictionary>

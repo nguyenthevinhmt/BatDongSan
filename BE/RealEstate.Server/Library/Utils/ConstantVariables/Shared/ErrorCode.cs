@@ -28,5 +28,7 @@
 
         //Post
         PostNotFound = 3000,
+        PostTypeNotFound = 3001,
+        RealEstateTypeNotFound = 3002,
     }
 }

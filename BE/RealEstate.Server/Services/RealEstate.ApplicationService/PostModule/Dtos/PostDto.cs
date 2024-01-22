@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RealEstate.ApplicationService.PostModule.Dtos
+﻿namespace RealEstate.ApplicationService.PostModule.Dtos
 {
     public class PostDto
     {
