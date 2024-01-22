@@ -11,10 +11,12 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.2",
     "@ant-design/nextjs-registry": "^1.0.0",
+    "@reduxjs/toolkit": "^2.0.1",
     "antd": "^5.13.1",
     "next": "14.1.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-redux": "^9.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
