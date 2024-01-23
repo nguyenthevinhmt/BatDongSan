@@ -31,7 +31,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
 
         public User ValidateUser(string username, string password)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Username == username && !u.Deleted && !u.isOtpConfirm)
+            var user = _dbContext.Users.FirstOrDefault(u => u.Username == username && !u.Deleted && u.isOtpConfirm)
                 ?? throw new UserFriendlyException(ErrorCode.UsernameOrPasswordIncorrect);
             if (user.Password != CryptographyUtils.CreateMD5(password))
             {

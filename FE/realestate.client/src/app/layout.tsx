@@ -1,10 +1,13 @@
 import React from 'react';
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import StoreProvider from './StoreProvider';
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
   <html lang="en">
     <body>
-      <AntdRegistry>{children}</AntdRegistry>
+      <StoreProvider>
+        <AntdRegistry>{children}</AntdRegistry>
+      </StoreProvider>
     </body>
   </html>
 );

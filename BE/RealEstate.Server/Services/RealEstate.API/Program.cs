@@ -19,7 +19,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureCors();
 builder.ConfigureServices(isIdentityServer: true);
 builder.Services.AddCommonIdentityServer<RealEstateDbContext>(builder.Configuration);
-
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddSingleton<LocalizationBase, RealEstateLocalization>();
 builder.Services.AddSingleton<MapErrorCodeBase>();
