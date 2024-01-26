@@ -1,8 +1,10 @@
 import { LoginConfig } from "@/shared/configs/authConfig";
 import { environment } from "@/shared/environment/environment";
 import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-import { LoginModel } from "@/shared/models/LoginModel";
+import { LoginType } from "@/shared/types/LoginType";
+import { RegisterType } from "@/shared/types/RegisterType";
 import axios, { AxiosInstance } from "axios";
+import {ECommonStatus} from "@/shared/enums/CommonStatusEnum"
 
 export class AuthService{
     private api : AxiosInstance;
@@ -11,7 +13,7 @@ export class AuthService{
             baseURL : `${environment.baseUrl}`
         })
     }
-    async Login(body: LoginModel) {
+    async Login(body: LoginType) {
         let param = {
             grant_type: LoginConfig.grant_type,
             username: body.username,
@@ -21,13 +23,51 @@ export class AuthService{
             client_secret: LoginConfig.client_secret
         }
         try{
-            const response = await this.api.post<ITokenResponse>("/connect/token",param);
-            const res = response.data
-            return res;
+            const response = await this.api.post<ITokenResponse>("/connect/token", param);
+            return response.data;
         }
         catch (error) {
             console.error('Lỗi khi đăng nhập', error);
             throw error;
         }
     }   
+    async Register(body: RegisterType){
+        let param: RegisterType = {
+            username: body.username,
+            password: body.password,
+            fullname: body.fullname,
+            email: body.email,
+            phone: body.phone,
+            status: ECommonStatus.ACTIVE
+        }
+        try{
+            const res = await this.api.post<any>("/register", param);
+            return res.data
+        }
+        catch (error) {
+            console.error('Lỗi khi đăng ký', error);
+            throw error;
+        }
+    }
+
+    async ValidateOtp(otp: string, userId: number){
+        try{
+            const res = await this.api.put<any>("/validate-otp", {otp, userId} );
+            return res.data;
+        }
+        catch (error) {
+            console.error('Lỗi khi xác thực OTP', error);
+            throw error;
+        }
+    }
+    async RefreshOtp(username: string){
+        try{
+            const res = await this.api.put<any>("/refresh-otp", {username} );
+            return res.data;
+        }
+        catch (error) {
+            console.error('Lỗi khi refresh otp', error);
+            throw error;
+        }
+    }
 }
