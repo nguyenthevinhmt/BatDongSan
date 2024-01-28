@@ -1,6 +1,8 @@
 import React from "react";
 import HeaderComponent from "@/components/shareLayout/header";
 import { Flex, MenuProps } from "antd";
+import loginBg from "@/assets/image/loginbackgroud.png";
+import Image from "next/image";
 
 const AuthLayout = ({ children }: { children: React.ReactElement }) => {
   const headerItems: MenuProps["items"] = [
@@ -24,7 +26,26 @@ const AuthLayout = ({ children }: { children: React.ReactElement }) => {
     <div>
       <HeaderComponent prop={headerItems} />
       <Flex vertical align="center" justify="center" gap="middle">
-        {children}
+        <div style={{ marginTop: "20px" }}>
+          <Flex
+            style={{
+              backgroundColor: "#fafafa",
+              boxShadow: "0px 2px 8px #ccc",
+              borderRadius: "5px",
+            }}
+            align="center"
+          >
+            <Image
+              src={loginBg}
+              alt="batdongsan.com"
+              style={{ objectFit: "cover" }}
+              priority={true}
+              width={400}
+              height={650}
+            />
+            {children}
+          </Flex>
+        </div>
       </Flex>
     </div>
   );
