@@ -13,6 +13,7 @@
 		<text name="error_PostTypeNotFound">Không tìm thấy loại bài viết</text>
 		<text name="error_PostNotFound">Không tìm thấy bài viết</text>
 		<text name="error_RealEstateTypeNotFound">Không tìm thấy loại bất động sản</text>
+		<text name="error_AccountIsNotVerifiedOtp">Tài khoản chưa xác minh OTP</text>
 		
 	</texts>
 </localizationDictionary>

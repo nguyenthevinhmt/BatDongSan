@@ -31,16 +31,21 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
 
         public User ValidateUser(string username, string password)
         {
-            var user = _dbContext.Users.FirstOrDefault(u => u.Username == username && !u.Deleted && u.isOtpConfirm)
+            var user = _dbContext.Users.FirstOrDefault(u => u.Username == username && !u.Deleted)
                 ?? throw new UserFriendlyException(ErrorCode.UsernameOrPasswordIncorrect);
             if (user.Password != CryptographyUtils.CreateMD5(password))
             {
                 throw new UserFriendlyException(ErrorCode.UsernameOrPasswordIncorrect);
             }
-            if (user.Status != UserStatus.ACTIVE)
+            else if (!user.isOtpConfirm)
+            {
+                throw new UserFriendlyException(ErrorCode.AccountIsNotVerifiedOtp);
+            }
+            else if (user.Status != UserStatus.ACTIVE)
             {
                 throw new UserFriendlyException(ErrorCode.UserIsDeactive);
             }
+            
             return user;
         }
 

@@ -13,6 +13,8 @@
 		<text name="error_PostTypeNotFound">Not found post type</text>
 		<text name="error_PostNotFound">Not found post</text>
 		<text name="error_RealEstateTypeNotFound">Not found real estate type</text>
+		<text name="error_AccountIsNotVerifiedOtp">The Account is not verified OTP</text>
+
 
 	</texts>
 </localizationDictionary>
