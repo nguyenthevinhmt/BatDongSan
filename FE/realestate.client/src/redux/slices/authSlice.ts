@@ -1,24 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
+import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-    value:0,
-}
+const initialState: ITokenResponse = {
+  access_token: "",
+  expires_in: 0,
+  refresh_token: "",
+  token_type: "",
+};
 
 const authSlice = createSlice({
-    name : "auth",
-    initialState,
-    reducers: {
-        increment: (state) => {
-          state.value += 1;
-        },
-        decrement: (state) => {
-          state.value -= 1;
-        },
-      },
-    extraReducers: (builder) => {
-        //builder.addCase()
-    }
+  name: "auth",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    //builder.addCase()
+  },
 });
 
-export const { increment, decrement } = authSlice.actions;
-export default authSlice.reducer;
+// export const { increment, decrement } = authSlice.actions;
+const authReducer = authSlice.reducer;
+export default authReducer;
