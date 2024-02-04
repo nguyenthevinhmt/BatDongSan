@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Button, Flex, Form, Input } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { useRouter } from "next/navigation";
 
 type RegisterType = {
   username: string;
@@ -13,6 +14,7 @@ type RegisterType = {
 };
 
 const Register = () => {
+  const router = useRouter();
   return (
     <Form style={{ padding: "10px 20px 40px" }}>
       <div
@@ -141,6 +143,9 @@ const Register = () => {
               color: "#FF4D4F",
               fontWeight: "500",
               cursor: "pointer",
+            }}
+            onClick={() => {
+              router.replace("/auth/login");
             }}
           >
             {" "}

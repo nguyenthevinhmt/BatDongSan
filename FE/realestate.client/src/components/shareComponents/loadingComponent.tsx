@@ -1,4 +1,4 @@
-import { Alert, Flex, Spin } from "antd";
+import { Spin } from "antd";
 import React from "react";
 
 const LoadingComponent = () => {
@@ -12,8 +12,12 @@ const LoadingComponent = () => {
         flexDirection: "column",
       }}
     >
-      <Spin size="large" tip="loading ..." />
-      <span style={{ marginTop: "20px", color: "#ccc" }}>Loading... </span>
+      <Spin size="large" />
+      <span
+        style={{ marginTop: "20px", color: "#aaa", fontFamily: "sans-serif" }}
+      >
+        Đợi một chút ...
+      </span>
     </div>
   );
 };

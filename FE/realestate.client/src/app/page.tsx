@@ -5,16 +5,16 @@ import { redirect } from "next/navigation";
 
 const App = () => {
   return (
-    <Flex
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-      justify="center"
-      align="center"
-    >
-      <LoadingComponent />
-    </Flex>
+    // <Flex
+    //   style={{
+    //     width: "100%",
+    //     height: "100%",
+    //   }}
+    //   justify="center"
+    //   align="center"
+    // >
+    // </Flex>
+    <LoadingComponent />
   );
 };
 
