@@ -51,6 +51,27 @@ const PrivateLayout = ({ children }: { children: React.ReactElement }) => {
     UserOutlined,
     UserOutlined,
     UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+    UserOutlined,
+   
   ].map((icon, index) => {
     const key = String(index + 1);
 
@@ -77,7 +98,7 @@ const PrivateLayout = ({ children }: { children: React.ReactElement }) => {
   return (
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
-        <Layout style={{ backgroundColor: "#fff", height: "100vh" }}>
+        <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
           <HeaderComponent prop={headerItems} />
           <Layout hasSider style={{ position: "relative" }}>
             <Sider

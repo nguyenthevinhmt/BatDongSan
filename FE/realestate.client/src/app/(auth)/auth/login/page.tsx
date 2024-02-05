@@ -25,14 +25,13 @@ const Page = () => {
   });
   useEffect(() => {
     if (isError) {
-      console.log("Login Error:");
-      // console.log("Login Error:", error.);
+      console.log("Login Error");
     } else if (isSuccess) {
       console.log("Login Success");
       console.log("data", data);
       router.push("/");
     }
-  }, [isSuccess, error, router, isError]);
+  }, [isSuccess,data, error, router, isError]);
   const handleLogin = async (formValue: any) => {
     const loginBody = {
       ...loginFormValue,
