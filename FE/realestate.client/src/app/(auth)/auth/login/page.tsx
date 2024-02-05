@@ -1,37 +1,47 @@
 "use client";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Flex, Form, Input } from "antd";
+import { Alert, Button, Flex, Form, Input,message  } from "antd";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useLoginMutation } from "../_services/auth.service";
 import SpinComponent from "@/components/shareComponents/spinComponent";
+import { LoginConfig } from "@/shared/configs/authConfig";
+import { CookieService } from "@/shared/services/cookies.service";
+import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
+
 
 type LoginType = {
   username: string;
   password: string;
 };
 
-const Page = () => {
+const Page = () => {  
   const router = useRouter();
-  const [login, { data, error, isError, isLoading, isSuccess }] =
-    useLoginMutation();
+  const [login, { data, error, isError, isLoading, isSuccess }] = useLoginMutation();
+  const [form] = Form.useForm();
   const [loginFormValue, setLoginFormValue] = useState({
     username: "",
     password: "",
-    grant_type: "password",
-    scope: "offline_access",
-    client_id: "client-react",
-    client_secret: "52F4A9A45C1F21B53B62F56DA52F7",
+    grant_type: LoginConfig.grant_type,
+    scope: LoginConfig.scope,
+    client_id: LoginConfig.client_id,
+    client_secret: LoginConfig.client_secret,
   });
   useEffect(() => {
+    let errorMessage = error as any;
     if (isError) {
-      console.log("Login Error");
+      message.error(errorMessage?.data?.error_description || "Đăng nhập không thành công!");
+      if(errorMessage?.status === '400'){
+        form.setFieldsValue({username: loginFormValue.username, password: loginFormValue.password});
+      }
     } else if (isSuccess) {
       console.log("Login Success");
       console.log("data", data);
+      CookieService.saveToken(data as ITokenResponse);
       router.push("/");
     }
-  }, [isSuccess,data, error, router, isError]);
+  }, [isSuccess, form, data, error, router, isError, loginFormValue.username, loginFormValue.password]);
+
   const handleLogin = async (formValue: any) => {
     const loginBody = {
       ...loginFormValue,
@@ -39,15 +49,14 @@ const Page = () => {
       password: formValue.password,
     };
     try {
-      await login(loginBody);
+      const res = await login(loginBody);
+      console.log(res);
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
-  const handleLoginFailed = () => {
-    if (error) {
-      console.log("login failed");
-    }
+  const handleLoginFailed = ({ values }:any) => {
+    console.log("Form values when login fails:", values);
   };
   return (
     <>
@@ -56,8 +65,13 @@ const Page = () => {
       ) : (
         <Form
           style={{ padding: "20px 20px 40px" }}
-          onFinish={handleLogin}
+          onFinish={(formValue) => {
+            handleLogin(formValue);
+          }}
           onFinishFailed={handleLoginFailed}
+          autoComplete="off"
+
+          name="login"
         >
           <div
             style={{
@@ -109,6 +123,7 @@ const Page = () => {
               }
             />
           </Form.Item>
+          {/* {isError && <span>{{errorMessage}}</span>} */}
           <Form.Item style={{ width: "100%" }}>
             <Button
               style={{
@@ -123,9 +138,6 @@ const Page = () => {
               Đăng nhập
             </Button>
           </Form.Item>
-          {/* <Divider style={{ fontWeight: "normal", color: "#999" }}>
-            Hoặc
-          </Divider> */}
           <Flex align="center" justify="center" style={{ width: "390px" }}>
             <p
               style={{

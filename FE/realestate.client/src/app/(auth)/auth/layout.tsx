@@ -21,7 +21,6 @@ const AuthLayout = ({ children }: { children: React.ReactElement }) => {
       lineHeight: "20px",
     },
   }));
-
   return (
     <div>
       <HeaderComponent prop={headerItems} />
