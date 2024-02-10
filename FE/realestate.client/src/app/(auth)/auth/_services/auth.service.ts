@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { url } from "inspector";
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -22,6 +23,7 @@ export const authApi = createApi({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
+      invalidatesTags: [],
       extraOptions: (builder: any) => {
         builder.onError((error: any, { dispatch, queryFulfilled }: any) => {
           // Xử lý lỗi ở đây
@@ -35,7 +37,40 @@ export const authApi = createApi({
         });
       },
     }),
+    register: builder.mutation({
+      query: (credentials) => ({
+        url: "api/user/register",
+        method: "POST",
+        body: {
+          ...credentials,
+        },
+      }),
+    }),
+    validateOtp: builder.mutation({
+      query: (credential) => ({
+        url: "api/user/validate-otp",
+        method: "PUT",
+        params: {
+          otp: credential.otp,
+          userId: credential.userId,
+        },
+      }),
+    }),
+    refreshOtp: builder.mutation({
+      query: (credentials) => ({
+        url: "api/user/refresh-otp",
+        method: "PUT",
+        params: {
+          username: credentials,
+        },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useValidateOtpMutation,
+  useRefreshOtpMutation,
+} = authApi;

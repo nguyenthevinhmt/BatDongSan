@@ -17,7 +17,9 @@
         UserNotHavePermission = 1004,
         UserIsExist = 1005,
         VerifiedOtpFailed = 1006,
-        AccountIsNotVerifiedOtp = 1007,
+        AccountIsNotVerifiedOtp = 1007, 
+        UsernameIsExist = 1008,
+        EmailIsExist = 1009,
 
 
         // Image && File 2xxx

@@ -14,6 +14,8 @@
 		<text name="error_PostNotFound">Không tìm thấy bài viết</text>
 		<text name="error_RealEstateTypeNotFound">Không tìm thấy loại bất động sản</text>
 		<text name="error_AccountIsNotVerifiedOtp">Tài khoản chưa xác minh OTP</text>
+		<text name="error_UsernameIsExist">Tên người dùng đã tồn tại!</text>
+		<text name="error_EmailIsExist">Email đã tồn tại trong hệ thống!</text>
 		
 	</texts>
 </localizationDictionary>

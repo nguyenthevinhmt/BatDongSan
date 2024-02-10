@@ -16,10 +16,15 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
-  const isLogin = false;
+  const isLogin = true;
   const router = useRouter();
+  const userInfo = useSelector((state: RootState) => {
+    state.auth;
+  });
   const items: MenuProps["items"] = [
     {
       key: "1",

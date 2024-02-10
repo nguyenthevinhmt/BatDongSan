@@ -1,24 +1,32 @@
 "use client";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Alert, Button, Flex, Form, Input,message  } from "antd";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { useLoginMutation } from "../_services/auth.service";
+import { Alert, Button, Flex, Form, Input, message } from "antd";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+// import { useRouter as useNextRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  useLoginMutation,
+  useRefreshOtpMutation,
+} from "../_services/auth.service";
 import SpinComponent from "@/components/shareComponents/spinComponent";
 import { LoginConfig } from "@/shared/configs/authConfig";
 import { CookieService } from "@/shared/services/cookies.service";
 import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-
+import { authConst } from "../const/authConst";
+import { useDispatch } from "react-redux";
+import { saveLoginInfo } from "@/redux/slices/authSlice";
 
 type LoginType = {
   username: string;
   password: string;
 };
-
-const Page = () => {  
+const Page = () => {
   const router = useRouter();
-  const [login, { data, error, isError, isLoading, isSuccess }] = useLoginMutation();
-  const [form] = Form.useForm();
+  const url = usePathname();
+  // const nextRouter = useNextRouter();
+  const [login, { data, error, isError, isLoading, isSuccess }] =
+    useLoginMutation();
+  // const [form] = Form.useForm();
   const [loginFormValue, setLoginFormValue] = useState({
     username: "",
     password: "",
@@ -27,20 +35,34 @@ const Page = () => {
     client_id: LoginConfig.client_id,
     client_secret: LoginConfig.client_secret,
   });
+  const [refreshOtp, refreshOtpParam] = useRefreshOtpMutation();
+  const [errorMessage, setErrorMessage] = useState();
+  const [checkValidateOTP, setCheckValidateOTP] = useState<boolean>(false);
+  const formRef = useRef({});
+  const dispatch = useDispatch();
   useEffect(() => {
-    let errorMessage = error as any;
-    if (isError) {
-      message.error(errorMessage?.data?.error_description || "Đăng nhập không thành công!");
-      if(errorMessage?.status === '400'){
-        form.setFieldsValue({username: loginFormValue.username, password: loginFormValue.password});
-      }
+    formRef.current = loginFormValue;
+    let getErrorMessage = error as any;
+    if (
+      isError &&
+      error &&
+      getErrorMessage?.data?.error_description ===
+        authConst.AuthErrorMessage.AccountHasNotBeenValidateOtp
+    ) {
+      setErrorMessage(getErrorMessage?.data?.error_description);
+      setCheckValidateOTP(true);
+    } else if (
+      isError &&
+      error &&
+      getErrorMessage?.data?.error_description ===
+        authConst.AuthErrorMessage.UsernameOrPasswordIncorrect
+    ) {
+      setErrorMessage(getErrorMessage?.data?.error_description);
     } else if (isSuccess) {
-      console.log("Login Success");
-      console.log("data", data);
       CookieService.saveToken(data as ITokenResponse);
-      router.push("/");
+      router.replace("/");
     }
-  }, [isSuccess, form, data, error, router, isError, loginFormValue.username, loginFormValue.password]);
+  }, [isSuccess, data, error, router, isError, loginFormValue, errorMessage]);
 
   const handleLogin = async (formValue: any) => {
     const loginBody = {
@@ -48,19 +70,36 @@ const Page = () => {
       username: formValue.username,
       password: formValue.password,
     };
+    setLoginFormValue(loginBody);
     try {
-      const res = await login(loginBody);
-      console.log(res);
+      await login(loginBody);
     } catch (error) {
       console.error("Login failed:", error);
     }
   };
-  const handleLoginFailed = ({ values }:any) => {
+  const handleLoginFailed = ({ values }: any) => {
     console.log("Form values when login fails:", values);
+    return values;
+  };
+  const refreshOtpBody = loginFormValue.username;
+  const handleRefreshOtp = async (body: string) => {
+    try {
+      const res = await refreshOtp(body);
+      let response = res as any;
+      if (response?.data?.code === 200) {
+        dispatch(saveLoginInfo(response.data));
+        router.push(authConst.RouteConst.otpRouter);
+      } else {
+        message.error("Có lỗi khi refresh OTP", 3);
+      }
+      console.log(res);
+    } catch {
+      console.log(refreshOtpParam.error);
+    }
   };
   return (
     <>
-      {isLoading ? (
+      {isLoading || refreshOtpParam.isLoading ? (
         <SpinComponent />
       ) : (
         <Form
@@ -68,9 +107,9 @@ const Page = () => {
           onFinish={(formValue) => {
             handleLogin(formValue);
           }}
+          initialValues={loginFormValue}
           onFinishFailed={handleLoginFailed}
           autoComplete="off"
-
           name="login"
         >
           <div
@@ -79,6 +118,32 @@ const Page = () => {
               width: "400px",
             }}
           >
+            <div style={{ height: "30px ", marginBottom: "20px" }}>
+              {isError && (
+                <Alert message={errorMessage} type="error" showIcon closable />
+              )}
+            </div>
+            <div style={{ height: "22px", marginBottom: "20px" }}>
+              {checkValidateOTP && (
+                <>
+                  Xác thực lại OTP{" "}
+                  <span
+                    //href={redirect("/auth/validate-otp")}
+                    onClick={() => {
+                      console.log(refreshOtpBody);
+                      handleRefreshOtp(refreshOtpBody);
+                    }}
+                    style={{
+                      color: "#ff4d4f",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    tại đây
+                  </span>
+                </>
+              )}
+            </div>
             <div
               style={{
                 justifyContent: "center",
@@ -123,7 +188,6 @@ const Page = () => {
               }
             />
           </Form.Item>
-          {/* {isError && <span>{{errorMessage}}</span>} */}
           <Form.Item style={{ width: "100%" }}>
             <Button
               style={{

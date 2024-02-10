@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.ApplicationService.AuthModule.Dtos;
-using RealEstate.ApplicationService.AuthModule.Implements;
-using RealEstate.Domain.Entities;
 using RealEstate.Utils;
 
 namespace RealEstate.API.Controllers
@@ -15,7 +12,8 @@ namespace RealEstate.API.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService) {
+        public UserController(IUserService userService)
+        {
             _userService = userService;
         }
         /// <summary>
@@ -24,7 +22,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("find-all")]
-        public ApiResponse<PagingResult<UserDto>> FindAll([FromQuery]FilterUserDto input)
+        public ApiResponse<PagingResult<UserDto>> FindAll([FromQuery] FilterUserDto input)
         {
             return new(_userService.FindAll(input));
         }
@@ -47,8 +45,7 @@ namespace RealEstate.API.Controllers
         [HttpPost("register")]
         public ApiResponse Register(CreateUserDto input)
         {
-            _userService.CreateUser(input);
-            return new();
+            return new(_userService.CreateUser(input));
         }
         /// <summary>
         /// Cập nhật thông tin tài khoản
@@ -105,11 +102,15 @@ namespace RealEstate.API.Controllers
             _userService.CheckUserOTP(otp, userId);
             return new();
         }
+        /// <summary>
+        /// Tạo lại yêu cầu xác thực otp
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         [HttpPut("refresh-otp")]
         public ApiResponse RefreshOTP(string username)
         {
-            _userService.RefreshOTP(username);
-            return new();
+            return new(_userService.RefreshOTP(username));
         }
     }
 }

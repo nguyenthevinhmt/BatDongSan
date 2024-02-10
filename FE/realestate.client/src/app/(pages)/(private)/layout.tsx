@@ -8,7 +8,6 @@ import HeaderComponent from "@/components/shareLayout/header";
 import BreadscrumbComp from "@/components/shareLayout/breadscrumb";
 import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
 import theme from "@/theme/themeConfig";
-import { relative } from "path";
 
 const { Content, Sider } = Layout;
 const PrivateLayout = ({ children }: { children: React.ReactElement }) => {
@@ -71,7 +70,6 @@ const PrivateLayout = ({ children }: { children: React.ReactElement }) => {
     UserOutlined,
     UserOutlined,
     UserOutlined,
-   
   ].map((icon, index) => {
     const key = String(index + 1);
 

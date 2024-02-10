@@ -40,7 +40,7 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        void CreateUser(CreateUserDto input);
+        UserDto CreateUser(CreateUserDto input);
 
         /// <summary>
         /// Cập nhật thông tin tài khoản
@@ -84,6 +84,6 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// Tạo lại OTP
         /// </summary>
         /// <param name="username"></param>
-        void RefreshOTP(string username);
+        UserDto RefreshOTP(string username);
     }
 }

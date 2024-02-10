@@ -19,7 +19,7 @@ namespace RealEstate.Domain.Entities
         public string Username { get; set; } = null!;
         [MaxLength(512)]
         public string Password { get; set; } = null!;
-        [MaxLength(12)]
+        [MaxLength(15)]
         public string PhoneNumber { get; set; } = null!;
         /// <summary>
         /// Đường dẫn link ảnh

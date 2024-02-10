@@ -49,9 +49,16 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             return user;
         }
 
-        public virtual void CreateUser(CreateUserDto input)
+        public virtual UserDto CreateUser(CreateUserDto input)
         {
             _logger.LogInformation($"{nameof(CreateUser)}: input = {JsonSerializer.Serialize(input)}");
+            if(_dbContext.Users.Any(c => c.Username == input.Username))
+            {
+                throw new UserFriendlyException(ErrorCode.UsernameIsExist);
+            }
+
+            //var checkEmailExist = _dbContext.Users.FirstOrDefault(c => c.Email == input.Email)
+            //                        ?? throw new UserFriendlyException(ErrorCode.EmailIsExist);
             input.Password = CryptographyUtils.CreateMD5(input.Password);
             var otp = GenerateCodes.GetRandomOTP();
             var user = new User()
@@ -63,7 +70,9 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
                 Fullname = input.FullName,
                 PhoneNumber = input.Phone,
                 Otp = CryptographyUtils.CreateMD5(otp),
-                OtpExpiredTime = DateTime.Now.AddMinutes(2)
+                OtpExpiredTime = DateTime.Now.AddMinutes(2),
+                Status = UserStatus.ACTIVE,
+
             };
             if (input?.Status == null)
             {
@@ -71,8 +80,19 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             }
 
             var result = _dbContext.Users.Add(user);
+            var response = result.Entity;
             _dbContext.SaveChanges();
             SendOtp(user.Email, user.Fullname, otp);
+            return new UserDto
+            {
+                Id = response.Id,
+                Email = response.Email,
+                FullName = response.Fullname,
+                Phone = response.PhoneNumber,
+                Username = response.Username,
+                UserType = response.UserType,
+                Status = response.Status
+            };
         }
 
         public User FindById(int id)
@@ -181,7 +201,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
         {
             _logger.LogInformation($"{nameof(CheckUserOTP)}: userId = {userId}, otp = {otp}");
             var user = _dbContext.Users.FirstOrDefault(c => c.Id == userId) ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
-            if (user.Otp == CryptographyUtils.CreateMD5(otp) && user.OtpExpiredTime <= DateTime.Now)
+            if (user.Otp == CryptographyUtils.CreateMD5(otp) && user.OtpExpiredTime >= DateTime.Now)
             {
                 user.isOtpConfirm = true;
                 _dbContext.SaveChanges();
@@ -227,10 +247,10 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             return _mapper.Map<UserDetailDto>(userInfo);
         }
 
-        public void RefreshOTP(string username)
+        public UserDto RefreshOTP(string username)
         {
             _logger.LogInformation($"{nameof(RefreshOTP)}: Username: {username}");
-            var user = _dbContext.Users.FirstOrDefault( u => u.Username == username && !u.isOtpConfirm && u.OtpExpiredTime > DateTime.Now)
+            var user = _dbContext.Users.FirstOrDefault( u => u.Username == username && !u.isOtpConfirm)
                         ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
 
             var otp = GenerateCodes.GetRandomOTP();
@@ -238,6 +258,16 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             user.OtpExpiredTime = DateTime.Now.AddMinutes(2);
             _dbContext.SaveChanges();
             SendOtp(user.Email, user.Fullname, otp);
+            return new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = user.Fullname,
+                Phone = user.PhoneNumber,
+                Username = user.Username,
+                UserType = user.UserType,
+                Status = user.Status
+            };
         }
         /// <summary>
         /// sinh OTP
