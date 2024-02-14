@@ -23,7 +23,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("find-all")]
-        public ApiResponse<PagingResult<PostDto>> FindAll(PostPagingRequestDto input)
+        public ApiResponse<PagingResult<PostDto>> FindAll([FromQuery]PostPagingRequestDto input)
         {
             return new(_postService.FindAllPost(input));
         }
@@ -45,7 +45,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("add")]
-        public ApiResponse CreatePost(CreatePostDto input)
+        public ApiResponse CreatePost([FromForm]CreatePostDto input)
         {
             _postService.CreatePost(input);
             return new();
@@ -69,7 +69,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public ApiResponse<PostDetailDto> Update(UpdatePostDto input)
+        public ApiResponse<PostDetailDto> Update([FromForm]UpdatePostDto input)
         {
             return new(_postService.Update(input));
         }

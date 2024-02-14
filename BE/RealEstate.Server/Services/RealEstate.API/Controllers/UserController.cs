@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.ApplicationService.AuthModule.Dtos;
@@ -21,6 +22,7 @@ namespace RealEstate.API.Controllers
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("find-all")]
         public ApiResponse<PagingResult<UserDto>> FindAll([FromQuery] FilterUserDto input)
         {

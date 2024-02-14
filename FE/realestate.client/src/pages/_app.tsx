@@ -7,11 +7,7 @@ import { store } from "@/redux/store";
 import { Provider } from "react-redux";
 
 const App = ({ Component, pageProps }: AppProps) => (
-  <Provider store={store}>
-    <ConfigProvider theme={theme}>
-      <Component {...pageProps} />
-    </ConfigProvider>
-  </Provider>
+  <Component {...pageProps} />
 );
 
 export default App;

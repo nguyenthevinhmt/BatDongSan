@@ -8,9 +8,11 @@ import HeaderComponent from "@/components/shareLayout/header";
 import BreadscrumbComp from "@/components/shareLayout/breadscrumb";
 import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
 import theme from "@/theme/themeConfig";
+import isAuth from "@/app/isAuth";
+import withTheme from "@/theme";
 
 const { Content, Sider } = Layout;
-const PrivateLayout = ({ children }: { children: React.ReactElement }) => {
+const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   const headerItems: MenuProps["items"] = [
     "Nhà đất bán",
     "Nhà đất cho thuê",
@@ -169,4 +171,6 @@ const PrivateLayout = ({ children }: { children: React.ReactElement }) => {
   );
 };
 
+// export default withTheme(isAuth(PrivateLayout));
 export default PrivateLayout;
+// export default isAuth(PrivateLayout);

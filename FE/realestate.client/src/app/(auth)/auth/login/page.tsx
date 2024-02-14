@@ -23,10 +23,8 @@ type LoginType = {
 const Page = () => {
   const router = useRouter();
   const url = usePathname();
-  // const nextRouter = useNextRouter();
   const [login, { data, error, isError, isLoading, isSuccess }] =
     useLoginMutation();
-  // const [form] = Form.useForm();
   const [loginFormValue, setLoginFormValue] = useState({
     username: "",
     password: "",
@@ -43,14 +41,9 @@ const Page = () => {
   useEffect(() => {
     formRef.current = loginFormValue;
     let getErrorMessage = error as any;
-    if (
-      isError &&
-      error &&
-      getErrorMessage?.data?.error_description ===
-        authConst.AuthErrorMessage.AccountHasNotBeenValidateOtp
-    ) {
+    if (isError && error) {
       setErrorMessage(getErrorMessage?.data?.error_description);
-      setCheckValidateOTP(true);
+      // setCheckValidateOTP(true);
     } else if (
       isError &&
       error &&
@@ -61,6 +54,12 @@ const Page = () => {
     } else if (isSuccess) {
       CookieService.saveToken(data as ITokenResponse);
       router.replace("/");
+    }
+    if (
+      getErrorMessage?.data?.error_description ===
+      authConst.AuthErrorMessage.AccountHasNotBeenValidateOtp
+    ) {
+      setCheckValidateOTP(true);
     }
   }, [isSuccess, data, error, router, isError, loginFormValue, errorMessage]);
 
