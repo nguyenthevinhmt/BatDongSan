@@ -2,7 +2,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Button, Flex, Form, Input, message } from "antd";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-// import { useRouter as useNextRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   useLoginMutation,
@@ -127,7 +126,6 @@ const Page = () => {
                 <>
                   Xác thực lại OTP{" "}
                   <span
-                    //href={redirect("/auth/validate-otp")}
                     onClick={() => {
                       console.log(refreshOtpBody);
                       handleRefreshOtp(refreshOtpBody);
