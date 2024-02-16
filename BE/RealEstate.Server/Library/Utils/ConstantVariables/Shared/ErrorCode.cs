@@ -33,5 +33,9 @@
         PostNotFound = 3000,
         PostTypeNotFound = 3001,
         RealEstateTypeNotFound = 3002,
+
+        //Wallet
+        WalletNotFound = 4000,
+        TransactionNotFound = 4001,
     }
 }

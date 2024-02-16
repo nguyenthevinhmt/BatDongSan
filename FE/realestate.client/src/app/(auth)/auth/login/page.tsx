@@ -3,6 +3,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Button, Flex, Form, Input, message } from "antd";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
+import { cookies } from "next/headers";
 import {
   useLoginMutation,
   useRefreshOtpMutation,
@@ -51,6 +52,9 @@ const Page = () => {
     ) {
       setErrorMessage(getErrorMessage?.data?.error_description);
     } else if (isSuccess) {
+      //console.log("data",data)
+      // cookies().set("data", data, { httpOnly: true });
+      // console.log("data from cookie",cookies().get("data")?.value)
       CookieService.saveToken(data as ITokenResponse);
       router.replace("/");
     }

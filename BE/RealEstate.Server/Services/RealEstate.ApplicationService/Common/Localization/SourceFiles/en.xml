@@ -14,6 +14,8 @@
 		<text name="error_PostNotFound">Not found post</text>
 		<text name="error_RealEstateTypeNotFound">Not found real estate type</text>
 		<text name="error_AccountIsNotVerifiedOtp">The Account is not verified OTP</text>
+		<text name="error_WalletNotFound">Wallet not found</text>
+		<text name="error_TransactionNotFound">Transaction not found</text>
 
 
 	</texts>
