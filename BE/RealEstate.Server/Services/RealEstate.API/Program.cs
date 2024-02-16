@@ -9,6 +9,7 @@ using RealEstate.ApplicationService.EmailModule.Abstracts;
 using RealEstate.ApplicationService.EmailModule.Implements;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Implements;
+using RealEstate.ApplicationService.WalletModule.Abstracts;
 using RealEstate.ApplicationService.WalletModule.Implements;
 using RealEstate.ApplicationService.WalletModule.VnpayLib;
 using RealEstate.IdentityServerBase.StartUp;
@@ -30,6 +31,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IVnpayService, VnpayService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 var app = builder.Build();
 
 app.Configure();
