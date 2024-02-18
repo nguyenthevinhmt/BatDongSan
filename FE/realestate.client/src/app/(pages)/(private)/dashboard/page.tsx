@@ -19,5 +19,5 @@ const DashboardPage = () => {
   return <div>Dashboard</div>;
 };
 
-// export default isAuth(DashboardPage);
-export default DashboardPage;
+export default isAuth(DashboardPage);
+// export default DashboardPage;

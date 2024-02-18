@@ -18,6 +18,6 @@ import { protectedRouteMiddleware } from "./middlewares/protectedRoute";
 // export const config = {
 //   matcher: ["/auth/login", "/auth/register"],
 // };
-const middleware = stackMiddlewares([protectedRouteMiddleware, withAuth]);
+const middleware = stackMiddlewares([]);
 
 export default middleware;
