@@ -8,7 +8,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
 {
     public class VnpayService : ServiceBase, IVnpayService
     {
-        public VnpayService(ILogger logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
+        public VnpayService(ILogger<VnpayService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
         }
 

@@ -40,6 +40,15 @@ namespace RealEstate.API.Controllers
             return new(_userService.FindUserDetail(id));
         }
         /// <summary>
+        /// Lấy thông tin cá nhân
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("my-info")]
+        public ApiResponse<UserDetailDto> FindMyInfo()
+        {
+            return new(_userService.FindCurrentUserInfo());
+        }
+        /// <summary>
         /// Đăng kí tài khoản 
         /// </summary>
         /// <param name="input"></param>

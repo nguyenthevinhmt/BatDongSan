@@ -1,6 +1,7 @@
 "use client";
 import LoadingComponent from "@/components/shareComponents/loadingComponent";
-import { Alert, Flex, Spin } from "antd";
+import { Alert, Button, Flex, Spin } from "antd";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const App = () => {
@@ -14,7 +15,8 @@ const App = () => {
     //   align="center"
     // >
     // </Flex>
-    <LoadingComponent />
+    // <LoadingComponent />
+    <Link href="/auth/login">Login</Link>
   );
 };
 

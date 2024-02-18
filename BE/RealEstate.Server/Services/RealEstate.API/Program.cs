@@ -24,6 +24,7 @@ builder.ConfigureServices(isIdentityServer: true);
 builder.Services.AddCommonIdentityServer<RealEstateDbContext>(builder.Configuration);
 builder.Services.AddOptions();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddOptions();
 builder.Services.Configure<VnpaySetting>(builder.Configuration.GetSection("Vnpay"));
 builder.Services.AddSingleton<LocalizationBase, RealEstateLocalization>();
 builder.Services.AddSingleton<MapErrorCodeBase>();

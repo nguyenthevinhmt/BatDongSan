@@ -187,7 +187,8 @@ namespace WebAPIBase
             services.AddHttpContextAccessor();
             services.AddDistributedMemoryCache();
             services.AddSession();
-            services.AddDataProtection();
+            services.AddDataProtection(); 
+            services.AddLogging();
 
             // Add Hangfire services.
             //services.AddHangfire(configuration =>
@@ -253,6 +254,7 @@ namespace WebAPIBase
             app.UseForwardedHeaders();
             app.UseRouting();
             app.UseCors(CorsPolicy);
+
 
             app.UseAuthentication();
             app.UseAuthorization();

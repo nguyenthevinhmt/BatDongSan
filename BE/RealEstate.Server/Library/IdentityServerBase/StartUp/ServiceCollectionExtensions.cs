@@ -33,7 +33,7 @@ namespace RealEstate.IdentityServerBase.StartUp
                 // Enable the client credentials flow.
                 options.AllowPasswordFlow().AllowRefreshTokenFlow();
 
-                options.SetAccessTokenLifetime(TimeSpan.FromSeconds(1));
+                options.SetAccessTokenLifetime(TimeSpan.FromHours(1));
                 options.SetRefreshTokenLifetime(TimeSpan.FromDays(3));
 
                 // Accept anonymous clients (i.e clients that don't send a client_id).

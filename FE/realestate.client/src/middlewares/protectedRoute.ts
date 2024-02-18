@@ -23,13 +23,23 @@ export const protectedRouteMiddleware: MiddlewareFactory = (
     //   }
     // }
     const pathname = request.nextUrl.pathname;
-    const privateRoute = ["/dashboard"]
-    console.log("chạy chưa", privateRoute.some((path) => {pathname.startsWith(path)}))
-    if(privateRoute.some((path) => {pathname.startsWith(path)})){
-        console.log("throw private route")
-    }
-    else{
-        return next(request, _next);
+    console.log(pathname);
+    const privateRoute = ["/dashboard"];
+    console.log(
+      "chạy chưa",
+      privateRoute.some((path) => {
+        pathname.startsWith(path);
+      })
+    );
+    if (
+      privateRoute.some((path) => {
+        pathname.startsWith(path);
+      })
+    ) {
+      console.log("throw private route");
+    } else {
+      console.log("lọt vào else rồi");
+      // return next(request, _next);
     }
   };
 };

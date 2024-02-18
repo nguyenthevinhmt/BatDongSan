@@ -17,7 +17,7 @@ namespace RealEstate.API.Controllers
         public ValuesController(IUserService service) {
             _service = service;
         }
-        [AuthorizeCustomerTypeFilter]
+        //[AuthorizeCustomerTypeFilter]
         [HttpGet("Ping")]
         public IActionResult Get() {
             return Ok("Pong");

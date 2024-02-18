@@ -14,13 +14,11 @@ const ValidateOtp = () => {
   let registerSelector = useSelector((state: RootState) => state.register);
   let loginSelector = useSelector((state: RootState) => state.auth);
   let getEmailFromStore =
-    (registerSelector as any).data?.email ?? (loginSelector as any).data?.email;
+    (registerSelector as any).data?.email ?? (loginSelector as any).email;
   let email = hideEmail(getEmailFromStore);
-  let userId =
-    (loginSelector as any).data?.id ?? (registerSelector as any).data?.id;
+  let userId = (loginSelector as any).id ?? (registerSelector as any).data.id;
   let username =
-    (loginSelector as any).data?.username ??
-    (registerSelector as any).data?.username;
+    (loginSelector as any).username ?? (registerSelector as any).data.username;
   const time = 2;
   const router = useRouter();
   const [ValidateOtp, { data, error, isError, isLoading, isSuccess }] =
@@ -57,7 +55,6 @@ const ValidateOtp = () => {
     console.error("Có lỗi xảy ra khi xác thực otp");
   }
   useEffect(() => {
-    console.log("Router", registerSelector, loginSelector);
     if (
       isSuccess &&
       (data as any).status !== authConst.ResponseStatus.SUCCESS

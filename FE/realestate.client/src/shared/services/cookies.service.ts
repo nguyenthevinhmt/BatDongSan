@@ -21,3 +21,19 @@ export class CookieService {
     return Cookies.get("refresh_token");
   }
 }
+
+export const saveToken = (params: any) => {
+  try {
+    console.log("params", params);
+    Cookies.set("access_token", params.access_token, {
+      expires: params.expires_in,
+      // httpOnly: true,
+    });
+    Cookies.set("refresh_token", params.refresh_token, {
+      expires: params.expires_in,
+      // httpOnly: true,
+    });
+  } catch (error) {
+    console.log("Có lỗi xảy ra khi lưu token vào cookies", error);
+  }
+};

@@ -3,24 +3,25 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Button, Flex, Form, Input, message } from "antd";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { cookies } from "next/headers";
 import {
   useLoginMutation,
   useRefreshOtpMutation,
 } from "../_services/auth.service";
 import SpinComponent from "@/components/shareComponents/spinComponent";
 import { LoginConfig } from "@/shared/configs/authConfig";
-import { CookieService } from "@/shared/services/cookies.service";
+import { saveToken } from "@/shared/services/cookies.service";
 import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
 import { authConst } from "../const/authConst";
 import { useDispatch } from "react-redux";
 import { saveLoginInfo } from "@/redux/slices/authSlice";
+import { signIn } from "next-auth/react";
+import { NextPage } from "next";
 
 type LoginType = {
   username: string;
   password: string;
 };
-const Page = () => {
+const Page: NextPage = () => {
   const router = useRouter();
   const url = usePathname();
   const [login, { data, error, isError, isLoading, isSuccess }] =
@@ -40,31 +41,32 @@ const Page = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     formRef.current = loginFormValue;
-    let getErrorMessage = error as any;
-    if (isError && error) {
-      setErrorMessage(getErrorMessage?.data?.error_description);
-      // setCheckValidateOTP(true);
-    } else if (
-      isError &&
-      error &&
-      getErrorMessage?.data?.error_description ===
-        authConst.AuthErrorMessage.UsernameOrPasswordIncorrect
-    ) {
-      setErrorMessage(getErrorMessage?.data?.error_description);
-    } else if (isSuccess) {
-      //console.log("data",data)
-      // cookies().set("data", data, { httpOnly: true });
-      // console.log("data from cookie",cookies().get("data")?.value)
-      CookieService.saveToken(data as ITokenResponse);
-      router.replace("/");
+    // let getErrorMessage = error as any;
+    // if (isError && error) {
+    //   setErrorMessage(getErrorMessage?.data?.error_description);
+    // } else if (
+    //   isError &&
+    //   error &&
+    //   getErrorMessage?.data?.error_description ===
+    //     authConst.AuthErrorMessage.UsernameOrPasswordIncorrect
+    // ) {
+    //   setErrorMessage(getErrorMessage?.data?.error_description);
+    // } else if (isSuccess) {
+    //   // dispatch(saveLoginInfo(loginFormValue));
+    //   router.replace("/");
+    // }
+    // if (
+    //   getErrorMessage?.data?.error_description ===
+    //   authConst.AuthErrorMessage.AccountHasNotBeenValidateOtp
+    // ) {
+    //   setCheckValidateOTP(true);
+    // }
+    console.log("isSuccess", isSuccess);
+    if (isSuccess) {
+      console.log(data);
+      saveToken(data);
     }
-    if (
-      getErrorMessage?.data?.error_description ===
-      authConst.AuthErrorMessage.AccountHasNotBeenValidateOtp
-    ) {
-      setCheckValidateOTP(true);
-    }
-  }, [isSuccess, data, error, router, isError, loginFormValue, errorMessage]);
+  }, [data, isSuccess, loginFormValue]);
 
   const handleLogin = async (formValue: any) => {
     const loginBody = {
@@ -74,7 +76,27 @@ const Page = () => {
     };
     setLoginFormValue(loginBody);
     try {
-      await login(loginBody);
+      const res = await login(loginBody);
+      console.log(res);
+      const response = res as any;
+      if (response.data) {
+        console.log("response", response.data);
+        saveToken(response.data as ITokenResponse);
+        dispatch(saveLoginInfo(response));
+        router.replace("/");
+      } else {
+        let getErrorMessage = res as any;
+        if (
+          getErrorMessage.error.data?.error_description ===
+          authConst.AuthErrorMessage.AccountHasNotBeenValidateOtp
+        ) {
+          setCheckValidateOTP(true);
+        }
+        if (getErrorMessage.error) {
+          setErrorMessage(getErrorMessage.error.data?.error_description);
+        }
+        dispatch(saveLoginInfo(loginBody));
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -89,7 +111,7 @@ const Page = () => {
       const res = await refreshOtp(body);
       let response = res as any;
       if (response?.data?.code === 200) {
-        dispatch(saveLoginInfo(response.data));
+        dispatch(saveLoginInfo(response.data.data));
         router.push(authConst.RouteConst.otpRouter);
       } else {
         message.error("Có lỗi khi refresh OTP", 3);
@@ -98,6 +120,20 @@ const Page = () => {
     } catch {
       console.log(refreshOtpParam.error);
     }
+  };
+  const LoginNextAuth = async (formValue: any) => {
+    console.log(formValue);
+    signIn("credentials", {
+      username: formValue.username,
+      password: formValue.password,
+      redirect: false,
+    }).then((res) => {
+      if (res?.error) {
+        alert(res?.error);
+      } else {
+        router.push("/");
+      }
+    });
   };
   return (
     <>

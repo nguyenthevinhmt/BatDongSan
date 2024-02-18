@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { stackMiddlewares } from "./middlewares/stackMiddlewares";
 import { withAuth } from "./middlewares/withAuth";
 import { protectedRouteMiddleware } from "./middlewares/protectedRoute";
@@ -18,7 +18,6 @@ import { protectedRouteMiddleware } from "./middlewares/protectedRoute";
 // export const config = {
 //   matcher: ["/auth/login", "/auth/register"],
 // };
-
-const middleware = stackMiddlewares([withAuth, protectedRouteMiddleware]);
+const middleware = stackMiddlewares([protectedRouteMiddleware, withAuth]);
 
 export default middleware;

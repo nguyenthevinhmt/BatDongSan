@@ -1,10 +1,10 @@
 // axiosInstance.js
 import axios from "axios";
-import { CookieService } from "../services/cookies.service";
 import { RefreshTokenConfig } from "./authConfig";
 import { environment } from "../environment/environment";
 import { authConst } from "@/app/(auth)/auth/const/authConst";
 import { redirect } from "next/navigation";
+import { CookieService, saveToken } from "../services/cookies.service";
 
 interface RefreshTokenType {
   grant_type: string;
@@ -54,7 +54,7 @@ axiosInstance.interceptors.response.use(
       const response = await axios.post(environment.authBaseUrl, body);
       if (response.status === 200) {
         const { res } = response?.data;
-        const saveToken = CookieService.saveToken({
+        saveToken({
           access_token: res.access_token,
           refresh_token: res.refresh_token,
         });

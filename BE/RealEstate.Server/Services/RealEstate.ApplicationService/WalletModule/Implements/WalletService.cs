@@ -11,7 +11,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
 {
     public class WalletService : ServiceBase, IWalletService
     {
-        public WalletService(ILogger logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
+        public WalletService(ILogger<WalletService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
         }
 
@@ -34,7 +34,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
         public WalletDto GetWalletInfo()
         {
             var userId = _httpContext.GetCurrentUserId();
-            _logger.LogInformation($"{nameof(GetWalletInfo)} userId = {userId}");
+            //_logger.LogInformation($"{nameof(GetWalletInfo)} userId = {userId}");
             var wallet = _dbContext.Wallets.FirstOrDefault(x => x.UserId == userId) 
                             ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
             var result = new WalletDto()
