@@ -1,5 +1,6 @@
 "use client";
 import LoadingComponent from "@/components/shareComponents/loadingComponent";
+import withTheme from "@/theme";
 import { Alert, Button, Flex, Spin } from "antd";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -15,9 +16,12 @@ const App = () => {
     //   align="center"
     // >
     // </Flex>
-    // <LoadingComponent />
-    <Link href="/auth/login">Login</Link>
+    <LoadingComponent />
+    // <Link href="/auth/login">Login</Link>
   );
 };
+const AppPage = () => {
+  return withTheme(<App />);
+};
 
-export default App;
+export default AppPage;

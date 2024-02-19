@@ -19,9 +19,7 @@ const RootLayout = ({ children }: React.PropsWithChildren) => (
   <StoreProvider>
     <html lang="en">
       <body>
-        <AntdRegistry>
-          <ConfigProvider theme={theme}>{children}</ConfigProvider>
-        </AntdRegistry>
+        <AntdRegistry>{children}</AntdRegistry>
       </body>
     </html>
   </StoreProvider>

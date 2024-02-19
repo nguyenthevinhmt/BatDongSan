@@ -1,8 +1,8 @@
-import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-import { createSlice } from "@reduxjs/toolkit";
+import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
+import { RootState } from '../store';
 
 const initialState = {};
-
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -14,9 +14,12 @@ const authSlice = createSlice({
       };
     },
   },
-  extraReducers: (builder) => {
-    //builder.addCase()
-  },
+  extraReducers(builder) {
+    builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
+        HYDRATE,
+        (state,action) => ({...state, ...action.payload})
+    );
+},
 });
 
 export const { saveLoginInfo } = authSlice.actions;
