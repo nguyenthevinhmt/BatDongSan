@@ -1,15 +1,17 @@
 import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
 import { RegisterType } from "@/shared/types/RegisterType";
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
+import { RootState } from "../store";
 
-const initialState: RegisterType = {
-  id: 0,
-  fullname: "",
-  email: "",
-  username: "",
-  password: "",
-  phone: "",
-  status: 0,
+const initialState = {
+  // id: 0,
+  // fullname: "",
+  // email: "",
+  // username: "",
+  // password: "",
+  // phone: "",
+  // status: 0,
 };
 
 const registerSlice = createSlice({
@@ -23,8 +25,11 @@ const registerSlice = createSlice({
       };
     },
   },
-  extraReducers: (builder) => {
-    //builder.addCase()
+  extraReducers(builder) {
+    builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
+        HYDRATE,
+        (state,action) => ({...state, ...action.payload})
+    );
   },
 });
 const registerReducer = registerSlice.reducer;

@@ -4,12 +4,12 @@ import { url } from "inspector";
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5083/",
+    baseUrl: "http://localhost:3000/",
   }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "connect/token",
+        url: "api/login",
         method: "POST",
         body: Object.keys(credentials)
           .map(

@@ -5,16 +5,18 @@ import registerSlice from "./slices/registerSlice";
 import { createWrapper } from "next-redux-wrapper";
 import { persistReducer} from "redux-persist";
 import storage from "redux-persist/lib/storage";
-const authPersistConfig = {
-  key: "auth",
-  storage,
-};
-const rootReducer = combineReducers({
-  auth: persistReducer(authPersistConfig, authReducer),
-  register: registerSlice,
-  [authApi.reducerPath]: authApi.reducer,
-});
-const persistedReducers = persistReducer(authPersistConfig, rootReducer)
+import registerReducer from "./slices/registerSlice";
+// const authPersistConfig = {
+//   key: "auth",
+//   storage,
+//   whiteList: ["auth"]
+// };
+// const rootReducer = combineReducers({
+//   auth: persistReducer(authPersistConfig, authReducer),
+//   register: registerReducer,
+//   [authApi.reducerPath]: authApi.reducer,
+// });
+// const persistedReducers = persistReducer(authPersistConfig, rootReducer)
 // export const makeStore = () => configureStore({
 //   reducer:  persistedReducers,
 //   middleware: (getDefaultMiddleware) =>
@@ -35,10 +37,15 @@ const persistedReducers = persistReducer(authPersistConfig, rootReducer)
 // export const storeWrapper = createWrapper<AppStore>(makeStore)
 // // export const storesWrapper = createWrapper(store)
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    auth: authReducer,
+    register: registerReducer,
+    [authApi.reducerPath]: authApi.reducer,
+  },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware),
+    getDefaultMiddleware({serializableCheck: false}).concat(authApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+// export const storesWrapper = createWrapper(store)

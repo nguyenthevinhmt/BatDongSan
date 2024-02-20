@@ -19,7 +19,7 @@ const authSlice = createSlice({
         HYDRATE,
         (state,action) => ({...state, ...action.payload})
     );
-},
+  },
 });
 
 export const { saveLoginInfo } = authSlice.actions;

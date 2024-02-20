@@ -16,13 +16,15 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = ({ children }: React.PropsWithChildren) => (
-  <StoreProvider>
     <html lang="en">
       <body>
-        <AntdRegistry>{children}</AntdRegistry>
+        <AntdRegistry>
+          <StoreProvider>
+            {children}
+          </StoreProvider>
+        </AntdRegistry>
       </body>
     </html>
-  </StoreProvider>
 );
 
 export default RootLayout;

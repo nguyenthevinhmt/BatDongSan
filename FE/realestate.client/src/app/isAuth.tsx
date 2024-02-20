@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 export default function isAuth(Component: any) {
   
   return function IsAuth(props: any) {
-    const authSelector = useSelector((state:RootState) => {
-      state.auth
-    });
-    const router = useRouter();
-    console.log("authSelector", (authSelector as any)?.data)
+    // const authSelector = useSelector((state:RootState) => {
+    //   state.auth
+    // });
+    // // const router = useRouter();
+    // console.log("authSelector", authSelector)
     // if(authSelector){
     // }
     // const repo = await getServerSideProps()

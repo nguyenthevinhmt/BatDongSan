@@ -4,10 +4,10 @@ import Cookies from "js-cookie";
 export class CookieService {
   static saveToken(params: any) {
     Cookies.set("access_token", params.access_token, {
-      expires: params.expires_in,
+      expires: Date.now() + params.expires_in,
     });
     Cookies.set("refresh_token", params.refresh_token, {
-      expires: params.expires_in,
+      expires: Date.now() + params.expires_in,
     });
   }
   static removeToken() {
@@ -26,12 +26,12 @@ export const saveToken = (params: any) => {
   try {
     console.log("params", params);
     Cookies.set("access_token", params.access_token, {
-      expires: params.expires_in,
-      // httpOnly: true,
+      expires: Date.now() + params.expires_in,
+      httpOnly: true,
     });
     Cookies.set("refresh_token", params.refresh_token, {
-      expires: params.expires_in,
-      // httpOnly: true,
+      expires: Date.now() + params.expires_in,
+      httpOnly: true,
     });
   } catch (error) {
     console.log("Có lỗi xảy ra khi lưu token vào cookies", error);
