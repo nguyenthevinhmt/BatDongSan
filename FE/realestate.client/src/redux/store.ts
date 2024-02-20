@@ -1,9 +1,9 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
-import { authApi } from "@/app/(auth)/auth/_services/auth.service";
+import { authApi, loginApi } from "@/app/(auth)/auth/_services/auth.service";
 import registerSlice from "./slices/registerSlice";
 import { createWrapper } from "next-redux-wrapper";
-import { persistReducer} from "redux-persist";
+import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import registerReducer from "./slices/registerSlice";
 // const authPersistConfig = {
@@ -41,9 +41,13 @@ export const store = configureStore({
     auth: authReducer,
     register: registerReducer,
     [authApi.reducerPath]: authApi.reducer,
+    [loginApi.reducerPath]: loginApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({serializableCheck: false}).concat(authApi.middleware),
+    getDefaultMiddleware({ serializableCheck: false }).concat([
+      authApi.middleware,
+      loginApi.middleware,
+    ]),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

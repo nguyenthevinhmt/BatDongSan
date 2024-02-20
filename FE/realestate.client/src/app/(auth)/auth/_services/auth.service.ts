@@ -4,12 +4,12 @@ import { url } from "inspector";
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/",
+    baseUrl: "http://localhost:5083/",
   }),
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({
-        url: "api/login",
+        url: "connect/token",
         method: "POST",
         body: Object.keys(credentials)
           .map(
@@ -79,3 +79,30 @@ export const {
   useRefreshOtpMutation,
   useRefreshMutation,
 } = authApi;
+
+export const loginApi = createApi({
+  reducerPath: "loginApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:3000/",
+  }),
+  endpoints: (builder) => ({
+    signIn: builder.mutation({
+      query: (credentials) => ({
+        url: "api/login",
+        method: "POST",
+        body: Object.keys(credentials)
+          .map(
+            (key) =>
+              encodeURIComponent(key) +
+              "=" +
+              encodeURIComponent(credentials[key])
+          )
+          .join("&"),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }),
+    }),
+  }),
+});
+export const { useSignInMutation } = loginApi;

@@ -26,10 +26,10 @@ const registerSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
-        HYDRATE,
-        (state,action) => ({...state, ...action.payload})
-    );
+    // builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
+    //     HYDRATE,
+    //     (state,action) => ({...state, ...action.payload})
+    // );
   },
 });
 const registerReducer = registerSlice.reducer;

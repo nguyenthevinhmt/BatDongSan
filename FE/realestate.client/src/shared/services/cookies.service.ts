@@ -27,13 +27,30 @@ export const saveToken = (params: any) => {
     console.log("params", params);
     Cookies.set("access_token", params.access_token, {
       expires: Date.now() + params.expires_in,
-      httpOnly: true,
+      secure: true,
     });
     Cookies.set("refresh_token", params.refresh_token, {
       expires: Date.now() + params.expires_in,
-      httpOnly: true,
+      secure: true,
     });
   } catch (error) {
     console.log("Có lỗi xảy ra khi lưu token vào cookies", error);
   }
+};
+export const SaveTokenToLocalStorage = (params: any) => {
+  try {
+    console.log("params", params);
+    localStorage.setItem("access_token", params.access_token);
+    localStorage.setItem("refresh_token", params.refresh_token);
+  } catch (error) {
+    console.log("Có lỗi xảy ra khi lưu token vào local storage", error);
+  }
+};
+export const GetTokenFromLocalStorage = () => {
+  const accessToken = localStorage.getItem("access_token");
+  const refreshToken = localStorage.getItem("refresh_token");
+  return {
+    accessToken,
+    refreshToken,
+  };
 };

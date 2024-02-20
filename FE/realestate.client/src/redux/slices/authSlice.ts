@@ -1,6 +1,6 @@
 import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import { RootState } from '../store';
+import { RootState } from "../store";
 
 const initialState = {};
 const authSlice = createSlice({
@@ -15,10 +15,10 @@ const authSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
-        HYDRATE,
-        (state,action) => ({...state, ...action.payload})
-    );
+    // builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
+    //     HYDRATE,
+    //     (state,action) => ({...state, ...action.payload})
+    // );
   },
 });
 

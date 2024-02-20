@@ -4,7 +4,11 @@ import { RefreshTokenConfig } from "./authConfig";
 import { environment } from "../environment/environment";
 import { authConst } from "@/app/(auth)/auth/const/authConst";
 import { redirect } from "next/navigation";
-import { CookieService, saveToken } from "../services/cookies.service";
+import {
+  // CookieService,
+  SaveTokenToLocalStorage,
+  saveToken,
+} from "../services/cookies.service";
 
 interface RefreshTokenType {
   grant_type: string;
@@ -23,7 +27,7 @@ const axiosInstance = axios.create({
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
-    let accessToken = CookieService.getAccessToken();
+    let accessToken = localStorage.getItem("access_token");
     config.headers.Authorization = `Bearer ${accessToken}`;
     return config;
   },
@@ -40,10 +44,9 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     if (error.response && error.response.status === 401) {
-      const refreshToken = CookieService.getRefreshToken();
+      const refreshToken = localStorage.getItem("refresh_token");
       if (!refreshToken) {
         redirect(authConst.RouteConst.loginRouter);
-        return;
       }
       const body: RefreshTokenType = {
         client_id: RefreshTokenConfig.client_id,
@@ -55,6 +58,10 @@ axiosInstance.interceptors.response.use(
       if (response.status === 200) {
         const { res } = response?.data;
         saveToken({
+          access_token: res.access_token,
+          refresh_token: res.refresh_token,
+        });
+        SaveTokenToLocalStorage({
           access_token: res.access_token,
           refresh_token: res.refresh_token,
         });
