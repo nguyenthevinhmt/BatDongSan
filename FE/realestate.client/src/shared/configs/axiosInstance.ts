@@ -72,7 +72,6 @@ axiosInstance.interceptors.response.use(
         return axios.request(error.config);
       } else {
         redirect(authConst.RouteConst.loginRouter);
-        return;
       }
     }
     return Promise.reject(error);

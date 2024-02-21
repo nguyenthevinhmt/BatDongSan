@@ -14,7 +14,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
 {
     public class PostTypeService : ServiceBase, IPostTypeService
     {
-        public PostTypeService(ILogger logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
+        public PostTypeService(ILogger<PostTypeService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
         }
 

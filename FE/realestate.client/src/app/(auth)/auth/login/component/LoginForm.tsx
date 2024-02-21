@@ -63,22 +63,10 @@ const LoginForm = () => {
         Cookies.set(
           "access_token",
           (response.data as ITokenResponse).access_token
-          // {
-          //   httpOnly: true,
-          //   expires: new Date(
-          //     Date.now() + (response.data as ITokenResponse).expires_in
-          //   ),
-          // }
         );
         Cookies.set(
           "refresh_token",
           (response.data as ITokenResponse).refresh_token
-          // {
-          //   httpOnly: true,
-          //   expires: new Date(
-          //     Date.now() + (response.data as ITokenResponse).expires_in
-          //   ),
-          // }
         );
         // SaveTokenToLocalStorage(response.data as ITokenResponse);
         dispatch(saveLoginInfo(response));
@@ -120,20 +108,20 @@ const LoginForm = () => {
       console.log(refreshOtpParam.error);
     }
   };
-  // const LoginNextAuth = async (formValue: any) => {
-  //   console.log(formValue);
-  //   signIn("credentials", {
-  //     username: formValue.username,
-  //     password: formValue.password,
-  //     redirect: false,
-  //   }).then((res) => {
-  //     if (res?.error) {
-  //       alert(res?.error);
-  //     } else {
-  //       router.push("/");
-  //     }
-  //   });
-  // };
+//   const LoginNextAuth = async (formValue: any) => {
+//     console.log(formValue);
+//     signIn("credentials", {
+//       username: formValue.username,
+//       password: formValue.password,
+//       redirect: false,
+//     }).then((res) => {
+//       if (res?.error) {
+//         alert(res?.error);
+//       } else {
+//         router.push("/");
+//       }
+//     });
+//   };
   return (
     <>
       {isLoading || refreshOtpParam.isLoading ? (

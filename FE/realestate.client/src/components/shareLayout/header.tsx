@@ -16,15 +16,29 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import axiosInstance from "@/shared/configs/axiosInstance";
+import useSWR from "swr";
+import Cookies from "js-cookie";
 
-const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
-  const isLogin = true;
-  const router = useRouter();
-  const userInfo = useSelector((state: RootState) => {
-    state.auth;
+
+const fetcher = async (url:string) => {
+  const res = await fetch(url,{
+    headers: {
+      'Authorization': `Bearer ${Cookies.get("access_token")}`,
+      'Content-Type': 'application/json'
+    }
   });
+  console.log("access_token",Cookies.get("access_token"))
+  const data = await (res as any).data
+  console.log(res)
+  return data
+}
+const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
+  const { data, error } = useSWR('http://localhost:5083/api/user/my-info', fetcher)
+  const isLogin = data;
+  console.log("data", data)
+  const router = useRouter();
+  
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -90,6 +104,10 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
         borderBottomColor: "#111",
         boxShadow: "0px 2px 10px #ccc",
         zIndex: 99,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0
       }}
     >
       <div
