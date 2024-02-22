@@ -1,14 +1,14 @@
-// axiosInstance.js
 import axios from "axios";
 import { RefreshTokenConfig } from "./authConfig";
 import { environment } from "../environment/environment";
 import { authConst } from "@/app/(auth)/auth/const/authConst";
-import { redirect } from "next/navigation";
+import {  useRouter } from "next/navigation";
 import {
-  // CookieService,
+  CookieService,
   SaveTokenToLocalStorage,
   saveToken,
 } from "../services/cookies.service";
+import { CommonStatus } from "../consts/CommonStatus";
 
 interface RefreshTokenType {
   grant_type: string;
@@ -27,7 +27,7 @@ const axiosInstance = axios.create({
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
-    let accessToken = localStorage.getItem("access_token");
+    let accessToken = CookieService.getAccessToken();
     config.headers.Authorization = `Bearer ${accessToken}`;
     return config;
   },
@@ -39,14 +39,18 @@ axiosInstance.interceptors.request.use(
 // Add a response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
-    // You can modify the response data here, e.g., handling pagination
+    if(response.status === CommonStatus.ERROR){
+      const router = useRouter();
+      router.replace("/auth/login");
+    }
     return response;
   },
   async (error) => {
     if (error.response && error.response.status === 401) {
-      const refreshToken = localStorage.getItem("refresh_token");
+      const refreshToken = CookieService.getRefreshToken();
       if (!refreshToken) {
-        redirect(authConst.RouteConst.loginRouter);
+        const router = useRouter();
+        return router.replace(authConst.RouteConst.loginRouter);
       }
       const body: RefreshTokenType = {
         client_id: RefreshTokenConfig.client_id,
@@ -54,7 +58,11 @@ axiosInstance.interceptors.response.use(
         grant_type: RefreshTokenConfig.grant_type,
         refresh_token: refreshToken,
       };
-      const response = await axios.post(environment.authBaseUrl, body);
+      const response = await axios.post(environment.authBaseUrl, body, {
+        headers: {
+          "Content-Type": "x-www-form-urlencoded",
+        },
+      });
       if (response.status === 200) {
         const { res } = response?.data;
         saveToken({
@@ -70,8 +78,10 @@ axiosInstance.interceptors.response.use(
         ] = `Bearer ${res.access_token}`;
         // Retry request ban đầu
         return axios.request(error.config);
-      } else {
-        redirect(authConst.RouteConst.loginRouter);
+      }
+      else {
+        const router = useRouter()
+        router.replace(authConst.RouteConst.loginRouter);
       }
     }
     return Promise.reject(error);

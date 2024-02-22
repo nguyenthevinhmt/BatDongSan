@@ -14,7 +14,7 @@ const LoadingComponent = () => {
         flexDirection: "column",
       }}
     >
-      <Spin spinning size="large" fullscreen tip= "Đợi một chút ..." indicator={<LoadingOutlined style={{ fontSize: '35px', color: '#FF4D4F' }}/>}/>
+      <Spin spinning size="large" fullscreen indicator={<LoadingOutlined style={{ fontSize: '35px', color: '#FF4D4F' }}/>}/>
     </div>
   );
 };

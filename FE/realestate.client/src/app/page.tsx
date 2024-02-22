@@ -3,7 +3,8 @@ import LoadingComponent from "@/components/shareComponents/loadingComponent";
 import withTheme from "@/theme";
 const App = () => {
   return (
-      <LoadingComponent />
+      // <LoadingComponent />
+      <></>
       // <div style={{height: '2000px'}}>
       // </div>
   );

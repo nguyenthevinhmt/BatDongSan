@@ -14,30 +14,45 @@ import {
   UnorderedListOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
 import axiosInstance from "@/shared/configs/axiosInstance";
 import useSWR from "swr";
 import Cookies from "js-cookie";
+import { CommonStatus } from "@/shared/consts/CommonStatus";
 
 
+// const fetcher = async (url:string) => {
+//   const res = await fetch(url,{
+//     headers: {
+//       'Authorization': `Bearer ${Cookies.get("access_token")}`,
+//       'Content-Type': 'application/json'
+//     }
+//   });
+//   console.log("access_token",Cookies.get("access_token"))
+//   const data = await (res as any).data
+//   console.log(res)
+//   return data
+// }
 const fetcher = async (url:string) => {
-  const res = await fetch(url,{
-    headers: {
-      'Authorization': `Bearer ${Cookies.get("access_token")}`,
-      'Content-Type': 'application/json'
-    }
-  });
-  console.log("access_token",Cookies.get("access_token"))
-  const data = await (res as any).data
-  console.log(res)
+  const res = await axiosInstance.get("/api/user/my-info");
+  console.log("res", res);
+  const data = await res.data;
   return data
 }
 const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
-  const { data, error } = useSWR('http://localhost:5083/api/user/my-info', fetcher)
-  const isLogin = data;
-  console.log("data", data)
   const router = useRouter();
+  const { data, error } = useSWR('http://localhost:5083/api/user/my-info', fetcher, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+  })
+  // const {status} = data
+  // console.log("data đây", status)
+  let isLogin = true
+  //data.status === CommonStatus.ERROR ? true : false;
+  // if(data.status === CommonStatus.ERROR || error){
+  //   router.replace("/auth/login");
+  // }
   
   const items: MenuProps["items"] = [
     {
