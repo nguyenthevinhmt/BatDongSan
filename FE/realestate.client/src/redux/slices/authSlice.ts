@@ -1,8 +1,16 @@
 import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { HYDRATE } from "next-redux-wrapper";
 import { RootState } from "../store";
 
-const initialState = {};
+const initialState = {
+  user:{
+    fullname: "",
+    avatarUrl: ""
+  },
+  data:{
+    access_token: "",
+    refresh_token: ""
+  }
+};
 const authSlice = createSlice({
   name: "auth",
   initialState,

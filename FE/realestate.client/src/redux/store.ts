@@ -2,21 +2,20 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import { authApi, loginApi } from "@/app/(auth)/auth/_services/auth.service";
 import registerSlice from "./slices/registerSlice";
-import { createWrapper } from "next-redux-wrapper";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import registerReducer from "./slices/registerSlice";
-// const authPersistConfig = {
-//   key: "auth",
-//   storage,
-//   whiteList: ["auth"]
-// };
-// const rootReducer = combineReducers({
-//   auth: persistReducer(authPersistConfig, authReducer),
-//   register: registerReducer,
-//   [authApi.reducerPath]: authApi.reducer,
-// });
-// const persistedReducers = persistReducer(authPersistConfig, rootReducer)
+const authPersistConfig = {
+  key: "auth",
+  storage,
+  // whiteList: ["auth"]
+};
+const rootReducer = combineReducers({
+  auth: persistReducer(authPersistConfig, authReducer),
+  register: registerReducer,
+  [authApi.reducerPath]: authApi.reducer,
+});
+const persistedReducers = persistReducer(authPersistConfig, rootReducer)
 // export const makeStore = () => configureStore({
 //   reducer:  persistedReducers,
 //   middleware: (getDefaultMiddleware) =>
@@ -25,7 +24,7 @@ import registerReducer from "./slices/registerSlice";
 // export const store = configureStore({
 //   reducer:  persistedReducers,
 //   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware().concat(authApi.middleware),
+//     getDefaultMiddleware().concat([authApi.middleware]),
 // });
 
 // // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -3,7 +3,10 @@ import theme from '@/theme/themeConfig'
 import { ConfigProvider, Layout, Menu, MenuProps } from 'antd'
 import React from 'react'
 import HeaderComponent from '../shareLayout/header';
-
+import { CookieService } from '@/shared/services/cookies.service';
+import axiosInstance from '@/shared/configs/axiosInstance';
+import useSWR from 'swr';
+import { environment } from '@/shared/environment/environment';
 const CommontLayout = ({ children }: {children: React.ReactElement}) => {
     const headerItems: MenuProps["items"] = [
         "Nhà đất bán",
@@ -26,7 +29,7 @@ const CommontLayout = ({ children }: {children: React.ReactElement}) => {
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
-          <HeaderComponent prop={headerItems} />
+          <HeaderComponent prop={headerItems}/>
           {children}
         </Layout>
       </div>

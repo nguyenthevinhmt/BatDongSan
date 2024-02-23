@@ -27,7 +27,6 @@ export default function StoreProvider({
 }: {
   children: React.ReactNode;
 }) {
-  //let persistor = persistStore(store);
   return <Provider store={store}>
     {children}
   </Provider>;

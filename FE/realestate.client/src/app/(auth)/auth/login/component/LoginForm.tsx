@@ -54,6 +54,7 @@ const LoginForm = () => {
       password: formValue.password,
     };
     setLoginFormValue(loginBody);
+    // dispatch(saveLoginInfo(loginBody))
     try {
       const res = await login(loginBody);
       console.log(res);
@@ -70,6 +71,7 @@ const LoginForm = () => {
         );
         // SaveTokenToLocalStorage(response.data as ITokenResponse);
         dispatch(saveLoginInfo(response));
+        localStorage.setItem('user', response.data);
         router.replace("/");
       } else {
         let getErrorMessage = res as any;

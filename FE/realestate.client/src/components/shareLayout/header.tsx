@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { use, useEffect, useId } from "react";
 import { Header } from "antd/es/layout/layout";
 import { Avatar, Button, Dropdown, Menu } from "antd";
 import Image from "next/image";
@@ -14,46 +14,32 @@ import {
   UnorderedListOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
+import { CookieService } from "@/shared/services/cookies.service";
+import axios from "axios";
 import axiosInstance from "@/shared/configs/axiosInstance";
-import useSWR from "swr";
-import Cookies from "js-cookie";
-import { CommonStatus } from "@/shared/consts/CommonStatus";
+import { environment } from "@/shared/environment/environment";
 
-
-// const fetcher = async (url:string) => {
-//   const res = await fetch(url,{
-//     headers: {
-//       'Authorization': `Bearer ${Cookies.get("access_token")}`,
-//       'Content-Type': 'application/json'
-//     }
-//   });
-//   console.log("access_token",Cookies.get("access_token"))
-//   const data = await (res as any).data
-//   console.log(res)
-//   return data
-// }
-const fetcher = async (url:string) => {
-  const res = await axiosInstance.get("/api/user/my-info");
-  console.log("res", res);
-  const data = await res.data;
-  return data
-}
-const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
+const HeaderComponent = ({ prop }: { prop: MenuProps["items"]}) => {
   const router = useRouter();
-  const { data, error } = useSWR('http://localhost:5083/api/user/my-info', fetcher, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false
-  })
-  // const {status} = data
-  // console.log("data đây", status)
-  let isLogin = true
-  //data.status === CommonStatus.ERROR ? true : false;
-  // if(data.status === CommonStatus.ERROR || error){
-  //   router.replace("/auth/login");
-  // }
-  
+  let userInfo
+  useEffect(() => {
+    async() => {
+      try{
+        const response = axiosInstance.get(`${environment.baseUrl}/api/user/my-info`);
+        userInfo = (await response).data
+        console.log(userInfo)
+      }
+      catch{
+      console.log("Lỗi")}
+    }
+  }, [])
+  // let token = CookieService.getAccessToken();
+  // let isLogin; // = !token;
+  // let userInfo = user;
+  // console.log("userInfo", {userInfo})
+  // isLogin = userInfo && userInfo.data ? true : false;
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -107,6 +93,9 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
       },
     },
   ];
+  useEffect(() => {
+    console.log("re-render")
+  }, []);
   return (
     <Header
       style={{
@@ -164,7 +153,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
             marginRight: "30px",
           }}
         >
-          {isLogin ? (
+          {!userInfo ? (
             <>
               <Button
                 size="large"
@@ -217,10 +206,20 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
                     }}
                     size={"large"}
                   >
+                    {/* {
+                      isLogin ? ( <Image
+                        src={userInfo.data.avatarUrl}
+                        alt="Avatar"
+                         /> ) :  (<Image
+                          src={AvatarDefault}
+                          width={40}
+                          alt="Avatar"
+                           />)
+                    } */}
                     V
                   </Avatar>
-                  <span style={{ fontSize: "16px", fontWeight: 500 }}>
-                    Nguyễn Thế Vinh
+                  <span style={{ fontSize: "16px", fontWeight: 500, cursor: "pointer" }}>
+                    {/* {userInfo.username ?? ""} */}
                   </span>
                   <DownOutlined style={{ marginLeft: "10px" }} />
                 </div>
@@ -244,3 +243,4 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
 };
 
 export default React.memo(HeaderComponent);
+// export default HeaderComponent;

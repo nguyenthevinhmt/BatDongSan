@@ -23,7 +23,7 @@ const AuthLayout = ({ children }: { children: React.ReactElement }) => {
   }));
   return (
     <div>
-      <HeaderComponent prop={headerItems} />
+      <HeaderComponent prop={headerItems}/>
       <Flex vertical align="center" justify="center" gap="middle">
         <div style={{ marginTop: "150px" }}>
           <Flex

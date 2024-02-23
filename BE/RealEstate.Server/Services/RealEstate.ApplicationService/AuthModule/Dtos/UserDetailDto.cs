@@ -32,5 +32,9 @@ namespace RealEstate.ApplicationService.AuthModule.Dtos
         /// Đã xác thực giấy tờ chưa
         /// </summary>
         public bool isConfirm {  get; set; }
+        /// <summary>
+        /// Link avatar
+        /// </summary>
+        public string? AvatarUrl {  get; set; }
     }
 }

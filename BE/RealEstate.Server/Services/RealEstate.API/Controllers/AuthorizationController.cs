@@ -180,7 +180,8 @@ namespace RealEstate.API.Controllers
                     .SetClaim(Claims.Email, user.Email)
                     .SetClaim(Claims.Name, user.Fullname)
                     .SetClaim(UserClaimTypes.UserType, user.UserType)
-                    .SetClaim(UserClaimTypes.UserId, user.Id);
+                    .SetClaim(UserClaimTypes.UserId, user.Id)
+                    .SetClaim(UserClaimTypes.Avatar, user.AvatarUrl);
 
             //if (user.BusinessCustomerId is not null)
             //{
