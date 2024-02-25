@@ -1,4 +1,6 @@
-import { Spin } from "antd";
+'use client'
+import { LoadingOutlined } from "@ant-design/icons";
+import { Modal, Spin, theme } from "antd";
 import React from "react";
 
 const LoadingComponent = () => {
@@ -12,12 +14,7 @@ const LoadingComponent = () => {
         flexDirection: "column",
       }}
     >
-      <Spin size="large" />
-      <span
-        style={{ marginTop: "20px", color: "#aaa", fontFamily: "sans-serif" }}
-      >
-        Đợi một chút ...
-      </span>
+      <Spin spinning size="large" fullscreen indicator={<LoadingOutlined style={{ fontSize: '35px', color: '#FF4D4F' }}/>}/>
     </div>
   );
 };

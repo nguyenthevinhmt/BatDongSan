@@ -7,19 +7,27 @@ namespace RealEstate.ApplicationBase.Common
 {
     public static class CommonUtils
     {
-        public static int GetCurrentUserType(this IHttpContextAccessor httpContextAccessor)
+        private static Claim FindClaim(
+            this IHttpContextAccessor httpContextAccessor,
+            string claimType
+        )
         {
             var claims = httpContextAccessor.HttpContext?.User?.Identity as ClaimsIdentity;
-            var claim = claims?.FindFirst(UserClaimTypes.UserType);
-            return claim == null ? throw new InvalidOperationException($"Claim {UserClaimTypes.UserType} not found.") : int.Parse(claim!.Value!);
+            var claim =
+                claims?.FindFirst(claimType)
+                ?? throw new InvalidOperationException($"Claim \"{claimType}\" not found.");
+            return claim;
+        }
+        public static int GetCurrentUserType(this IHttpContextAccessor httpContextAccessor)
+        {
+            var claim = httpContextAccessor.FindClaim(UserClaimTypes.UserType);
+            return int.Parse(claim.Value);
         }
 
         public static int GetCurrentUserId(this IHttpContextAccessor httpContextAccessor)
         {
-            var claims = httpContextAccessor.HttpContext?.User?.Identity as ClaimsIdentity;
-            var claim = (claims?.FindFirst(UserClaimTypes.UserId)) ?? throw new InvalidOperationException($"Claim {UserClaimTypes.UserId} not found.");
-            int userId = int.Parse(claim.Value);
-            return userId;
+            var claim = httpContextAccessor.FindClaim(UserClaimTypes.UserId);
+            return int.Parse(claim.Value);
         }
 
         public static string RandomNumber(int length = 6)

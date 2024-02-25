@@ -68,17 +68,17 @@ namespace RealEstate.Domain.Entities
         /// </summary>
         public int Status { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; } = new();
+        public User User { get; set; } = null!;
         /// <summary>
         /// Loại bài viết
         /// </summary>
         public int PostTypeId { get; set; }
-        public PostType PostType { get; set; } = new();
+        public PostType PostType { get; set; } = null!;
         /// <summary>
         /// Loại bất động sản
         /// </summary>
         public int RealEstateTypeId { get; set; }
-        public RealEstateType RealEstateType { get; set; } = new();
+        public RealEstateType RealEstateType { get; set; } = null!;
         public List<Favorite>? Favorites { get; set; }
         public List<Media>? Medias { get; set; }
         #region audit

@@ -5,7 +5,6 @@ import {
   NextResponse,
 } from "next/server";
 import { MiddlewareFactory } from "./type";
-import { CookieService } from "@/shared/services/cookies.service";
 
 export const protectedRouteMiddleware: MiddlewareFactory = (
   next: NextMiddleware
@@ -31,7 +30,7 @@ export const protectedRouteMiddleware: MiddlewareFactory = (
       console.log("throw private route");
     } else {
       console.log("lọt vào else rồi");
-      // return next(request, _next);
+      return next(request, _next);
     }
   };
 };

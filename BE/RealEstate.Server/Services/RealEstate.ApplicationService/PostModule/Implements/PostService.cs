@@ -41,6 +41,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
                 Status = PostStatuses.INIT,
+                UserId = currentUserId,
             };
 
             var post = _dbContext.Posts.Add(newPost).Entity;
@@ -75,11 +76,12 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         {
             _logger.LogInformation($"{nameof(FindAllPost)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
-                        join media in _dbContext.Medias on post.Id equals media.PostId
-                        where !post.Deleted && !media.Deleted
-                                && (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
-                                && (post.PostTypeId == input.PostType)
-                                && (post.RealEstateTypeId == input.RealEstateType)
+                        join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                        from postmedia in pm.DefaultIfEmpty()
+                        where !post.Deleted &&( !postmedia.Deleted
+                                || (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                || (post.PostTypeId == input.PostType)
+                                || (post.RealEstateTypeId == input.RealEstateType))
                         select new PostDto
                         {
                             Title = post.Title,

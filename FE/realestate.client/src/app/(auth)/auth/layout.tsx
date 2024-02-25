@@ -5,27 +5,10 @@ import loginBg from "@/assets/image/loginbackgroud.png";
 import Image from "next/image";
 
 const AuthLayout = ({ children }: { children: React.ReactElement }) => {
-  const headerItems: MenuProps["items"] = [
-    "Nhà đất bán",
-    "Nhà đất cho thuê",
-    "Dự án",
-    "Tin tức",
-    "Liên hệ",
-  ].map((key) => ({
-    key,
-    label: `${key}`,
-    title: `${key}`,
-    style: {
-      fontSize: "14px",
-      fontWeight: 500,
-      lineHeight: "20px",
-    },
-  }));
   return (
     <div>
-      <HeaderComponent prop={headerItems} />
       <Flex vertical align="center" justify="center" gap="middle">
-        <div style={{ marginTop: "20px" }}>
+        <div style={{ marginTop: "25px" }}>
           <Flex
             style={{
               backgroundColor: "#fafafa",

@@ -4,10 +4,10 @@ import Cookies from "js-cookie";
 export class CookieService {
   static saveToken(params: any) {
     Cookies.set("access_token", params.access_token, {
-      expires: params.expires_in,
+      expires: Date.now() + params.expires_in,
     });
     Cookies.set("refresh_token", params.refresh_token, {
-      expires: params.expires_in,
+      expires: Date.now() + params.expires_in,
     });
   }
   static removeToken() {
@@ -26,14 +26,31 @@ export const saveToken = (params: any) => {
   try {
     console.log("params", params);
     Cookies.set("access_token", params.access_token, {
-      expires: params.expires_in,
-      // httpOnly: true,
+      expires: Date.now() + params.expires_in,
+      secure: true,
     });
     Cookies.set("refresh_token", params.refresh_token, {
-      expires: params.expires_in,
-      // httpOnly: true,
+      expires: Date.now() + params.expires_in,
+      secure: true,
     });
   } catch (error) {
     console.log("Có lỗi xảy ra khi lưu token vào cookies", error);
   }
+};
+export const SaveTokenToLocalStorage = (params: any) => {
+  try {
+    console.log("params", params);
+    localStorage.setItem("access_token", params.access_token);
+    localStorage.setItem("refresh_token", params.refresh_token);
+  } catch (error) {
+    console.log("Có lỗi xảy ra khi lưu token vào local storage", error);
+  }
+};
+export const GetTokenFromLocalStorage = () => {
+  const accessToken = localStorage.getItem("access_token");
+  const refreshToken = localStorage.getItem("refresh_token");
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
