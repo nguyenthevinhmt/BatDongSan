@@ -53,6 +53,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
   const avatarUrl = (userSelector as any)?.avatarUrl;
   const router = useRouter();
   const handleLogout = async () => {
+    dispatch(clearUserInfo());
     const response = await axiosInstance.post(
       "http://localhost:5083/connect/logout",
       null,
@@ -64,7 +65,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
     );
     if (response.status === 200) {
       console.log("Đăng xuất thành công");
-      dispatch(clearUserInfo());
+      localStorage.clear();
       CookieService.removeToken();
     } else {
       console.log("Có lỗi xảy ra khi đăng xuất");
@@ -127,6 +128,8 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
     if (data) {
       // userInfo = data;
       dispatch(saveUserInfo(data.data));
+    } else {
+      dispatch(clearUserInfo());
     }
   }, [data, dispatch]);
   return (
