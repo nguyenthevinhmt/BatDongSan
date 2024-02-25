@@ -154,7 +154,7 @@ namespace RealEstate.API.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("~/connect/logout"), IgnoreAntiforgeryToken, Produces("application/json"), Consumes("application/x-www-form-urlencoded")]
+        [HttpPost("~/connect/logout"), IgnoreAntiforgeryToken, Produces("application/json")]
         public async Task<IActionResult> Logout()
         {
             var authorizationId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "oi_au_id")?.Value;

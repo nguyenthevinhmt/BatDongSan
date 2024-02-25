@@ -99,7 +99,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
-          <HeaderComponent prop={headerItems} />
+          {/* <HeaderComponent prop={headerItems} /> */}
           <Layout hasSider style={{ position: "relative" }}>
             <Sider
               trigger={null}
@@ -110,7 +110,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                 height: "100vh",
                 backgroundColor: "#fff",
                 transition: "0.01s",
-                position: "relative",
+                // position: "relative",
                 zIndex: 99,
               }}
             >

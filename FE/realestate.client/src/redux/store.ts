@@ -1,54 +1,69 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import { authApi, loginApi } from "@/app/(auth)/auth/_services/auth.service";
-import registerSlice from "./slices/registerSlice";
 import { persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
 import registerReducer from "./slices/registerSlice";
-const authPersistConfig = {
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  WebStorage,
+} from "redux-persist";
+import createWebStorage from "redux-persist/es/storage/createWebStorage";
+
+export function createPersistStore(): WebStorage {
+  const isServer = typeof window === "undefined";
+
+  // will returns our dummy server
+  if (isServer) {
+    return {
+      getItem() {
+        return Promise.resolve(null);
+      },
+      setItem() {
+        return Promise.resolve();
+      },
+      removeItem() {
+        return Promise.resolve();
+      },
+    };
+  }
+  return createWebStorage("local");
+}
+
+const storage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createPersistStore();
+
+const persistConfig = {
   key: "auth",
+  version: 1,
   storage,
-  // whiteList: ["auth"]
 };
+
 const rootReducer = combineReducers({
-  auth: persistReducer(authPersistConfig, authReducer),
+  auth: persistReducer(persistConfig, authReducer),
   register: registerReducer,
   [authApi.reducerPath]: authApi.reducer,
+  [loginApi.reducerPath]: loginApi.reducer,
 });
-const persistedReducers = persistReducer(authPersistConfig, rootReducer)
-// export const makeStore = () => configureStore({
-//   reducer:  persistedReducers,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware().concat(authApi.middleware),
-// });
-// export const store = configureStore({
-//   reducer:  persistedReducers,
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware().concat([authApi.middleware]),
-// });
 
-// // Infer the `RootState` and `AppDispatch` types from the store itself
-// export type RootState = ReturnType<AppStore['getState']>
-// export type AppStore = ReturnType<typeof makeStore>;
-// // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-// export type AppDispatch = AppStore['dispatch']
-// // setupListeners(store.dispatch);
-// export const storeWrapper = createWrapper<AppStore>(makeStore)
-// // export const storesWrapper = createWrapper(store)
 export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    register: registerReducer,
-    [authApi.reducerPath]: authApi.reducer,
-    [loginApi.reducerPath]: loginApi.reducer,
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }).concat([
-      authApi.middleware,
-      loginApi.middleware,
-    ]),
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat([authApi.middleware, loginApi.middleware]),
 });
+// const persistedReducers = persistReducer(persistConfig, rootReducer);
 
+export let persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
-// export const storesWrapper = createWrapper(store)

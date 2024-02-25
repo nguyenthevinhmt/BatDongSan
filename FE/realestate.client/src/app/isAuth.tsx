@@ -2,13 +2,15 @@
 import React from "react";
 import axios from "axios";
 import { redirect, useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import { CookieService } from "@/shared/services/cookies.service";
 
 export default function isAuth(Component: any) {
   return function IsAuth(props: any) {
-    const token = Cookies.get("access_token");
+    const router = useRouter();
+    const token = CookieService.getAccessToken();
+    console.log("token", token);
     if (!token) {
-      redirect("/auth/login");
+      router.replace("/auth/login");
     }
     return <Component {...props} />;
   };

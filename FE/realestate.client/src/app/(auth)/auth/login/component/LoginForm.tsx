@@ -4,18 +4,12 @@ import { LoginConfig } from "@/shared/configs/authConfig";
 import { Alert, Button, Flex, Form, Input, message } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { authConst } from "../../const/authConst";
-import { signIn } from "next-auth/react";
 import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-import {
-  SaveTokenToLocalStorage,
-  saveToken,
-} from "@/shared/services/cookies.service";
 import { LoginType } from "@/shared/types/LoginType";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import {
   useLoginMutation,
   useRefreshOtpMutation,
-  useSignInMutation,
 } from "../../_services/auth.service";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -43,9 +37,9 @@ const LoginForm = () => {
     console.log("isSuccess", isSuccess);
     if (isSuccess) {
       console.log(data);
-      // saveToken(data);
+      router.replace("/");
     }
-  }, [data, isSuccess, loginFormValue]);
+  }, [data, isSuccess, loginFormValue, router]);
 
   const handleLogin = async (formValue: any) => {
     const loginBody = {
@@ -54,7 +48,6 @@ const LoginForm = () => {
       password: formValue.password,
     };
     setLoginFormValue(loginBody);
-    // dispatch(saveLoginInfo(loginBody))
     try {
       const res = await login(loginBody);
       console.log(res);
@@ -69,9 +62,8 @@ const LoginForm = () => {
           "refresh_token",
           (response.data as ITokenResponse).refresh_token
         );
-        // SaveTokenToLocalStorage(response.data as ITokenResponse);
         dispatch(saveLoginInfo(response));
-        localStorage.setItem('user', response.data);
+        // localStorage.setItem("user", response.data.json());
         router.replace("/");
       } else {
         let getErrorMessage = res as any;
@@ -110,20 +102,6 @@ const LoginForm = () => {
       console.log(refreshOtpParam.error);
     }
   };
-//   const LoginNextAuth = async (formValue: any) => {
-//     console.log(formValue);
-//     signIn("credentials", {
-//       username: formValue.username,
-//       password: formValue.password,
-//       redirect: false,
-//     }).then((res) => {
-//       if (res?.error) {
-//         alert(res?.error);
-//       } else {
-//         router.push("/");
-//       }
-//     });
-//   };
   return (
     <>
       {isLoading || refreshOtpParam.isLoading ? (

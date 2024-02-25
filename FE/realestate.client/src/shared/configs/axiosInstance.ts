@@ -2,13 +2,9 @@ import axios from "axios";
 import { RefreshTokenConfig } from "./authConfig";
 import { environment } from "../environment/environment";
 import { authConst } from "@/app/(auth)/auth/const/authConst";
-import { useRouter } from "next/navigation";
-import {
-  CookieService,
-  SaveTokenToLocalStorage,
-  saveToken,
-} from "../services/cookies.service";
+import { CookieService, saveToken } from "../services/cookies.service";
 import { CommonStatus } from "../consts/CommonStatus";
+import { useDispatch } from "react-redux";
 
 interface RefreshTokenType {
   grant_type: string;
@@ -23,8 +19,7 @@ const axiosInstance = axios.create({
 });
 
 let isRefreshing = false;
-let refreshSubscribers: any[] = [];
-
+let refreshSubscribers: ((token: string) => void)[] = [];
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
@@ -41,20 +36,25 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     if (response.status === CommonStatus.ERROR) {
-      console.log("Lỗi trả về từ .net 500");
       window.location.href = authConst.RouteConst.loginRouter;
     }
     return response;
   },
   async (error) => {
+    const originalRequest = error.config;
     const refreshToken = CookieService.getRefreshToken();
+
     if (!refreshToken) {
       console.log("Không có refresh token trong cookies", refreshToken);
-      // window.location.href = authConst.RouteConst.loginRouter;
+      localStorage.clear();
       return Promise.reject(error);
-    }
+    } else if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
 
-    if (error.response && error.response.status === 401) {
       if (!isRefreshing) {
         isRefreshing = true;
 
@@ -66,55 +66,40 @@ axiosInstance.interceptors.response.use(
         };
 
         try {
-          const response = await axios.post(
-            environment.authBaseUrl,
-            body,
-            {
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-            }
-          );
+          const response = await axios.post(environment.authBaseUrl, body, {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          });
+          console.log("111", response.data);
 
           if (response.status === 200) {
             const { res } = response?.data;
-            console.log("Data from refresh token success", res);
-
+            console.log("Data from refresh token success", response?.data);
             saveToken({
-              access_token: res.access_token,
-              refresh_token: res.refresh_token,
+              access_token: response?.data.access_token,
+              refresh_token: response?.data.refresh_token,
             });
-            SaveTokenToLocalStorage({
-              access_token: res.access_token,
-              refresh_token: res.refresh_token,
-            });
-
-            axios.defaults.headers.common[
+            axiosInstance.defaults.headers.common[
               "Authorization"
             ] = `Bearer ${res.access_token}`;
 
-            // Resolve all the subscribers with the new token
-            refreshSubscribers.forEach((callback) =>
-              callback(res.access_token)
-            );
+            return axiosInstance(error.config);
           } else {
             console.log("Error refreshing token");
-            // window.location.href = authConst.RouteConst.loginRouter;
           }
         } catch (error) {
-          console.log("Error calling refresh token API", error);
-          // window.location.href = authConst.RouteConst.loginRouter;
+          // CookieService.removeToken();
         } finally {
           isRefreshing = false;
-          refreshSubscribers = [];
         }
       }
 
       // Return a promise that will resolve with the new token
       return new Promise((resolve) => {
-        refreshSubscribers.push((newToken: string) => {
-          error.config.headers.Authorization = `Bearer ${newToken}`;
-          resolve(axios(error.config));
+        refreshSubscribers.push((token) => {
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          resolve(axiosInstance(originalRequest));
         });
       });
     }
@@ -123,4 +108,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance
+export default axiosInstance;

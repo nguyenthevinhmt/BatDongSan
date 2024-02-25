@@ -69,6 +69,13 @@ export const authApi = createApi({
         },
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "connect/logout",
+        method: "POST",
+        params: {},
+      }),
+    }),
   }),
 });
 
@@ -78,6 +85,7 @@ export const {
   useValidateOtpMutation,
   useRefreshOtpMutation,
   useRefreshMutation,
+  useLogoutMutation,
 } = authApi;
 
 export const loginApi = createApi({

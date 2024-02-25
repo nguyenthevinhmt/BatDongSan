@@ -32,12 +32,12 @@ export default async function handler(
     cookies.set("access_token", data.access_token, {
       httpOnly: true,
       sameSite: "lax",
-      expires: new Date(data.expires_in),
+      expires: new Date(Date.now() + data.expires_in * 60),
     });
     cookies.set("refresh_token", data.refresh_token, {
       httpOnly: true,
       sameSite: "lax",
-      expires: new Date(Date.now() + data.expires_in),
+      expires: new Date(Date.now() + data.expires_in * 60),
     });
     const accessTokenCookie = `access_token=${data.access_token}; HttpOnly; SameSite=Lax; Expires=Session`;
     const refreshTokenCookie = `refresh_token=${data.refresh_token}; HttpOnly; SameSite=Lax; Expires=Session`;

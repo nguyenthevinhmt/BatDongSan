@@ -1,15 +1,15 @@
 import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
-const initialState = {
-  user:{
-    fullname: "",
-    avatarUrl: ""
+const initialState: any = {
+  user: {
+    // fullname: "",
+    // avatarUrl: "",
   },
-  data:{
+  data: {
     access_token: "",
-    refresh_token: ""
-  }
+    refresh_token: "",
+  },
 };
 const authSlice = createSlice({
   name: "auth",
@@ -21,6 +21,18 @@ const authSlice = createSlice({
         ...action.payload,
       };
     },
+    saveUserInfo: (state, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...action.payload,
+        },
+      };
+    },
+    clearUserInfo: (state) => {
+      state.user = null;
+    },
   },
   extraReducers(builder) {
     // builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
@@ -30,6 +42,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { saveLoginInfo } = authSlice.actions;
+export const { saveLoginInfo, saveUserInfo, clearUserInfo } = authSlice.actions;
 const authReducer = authSlice.reducer;
 export default authReducer;
