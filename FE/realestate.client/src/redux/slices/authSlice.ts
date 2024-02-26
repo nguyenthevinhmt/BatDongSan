@@ -31,7 +31,7 @@ const authSlice = createSlice({
       };
     },
     clearUserInfo: (state) => {
-      state.user = null;
+      state.user = {};
     },
   },
   extraReducers(builder) {
