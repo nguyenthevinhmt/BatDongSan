@@ -25,6 +25,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import SpinComponent from "../shareComponents/spinComponent";
+import useSWRInfinite from "swr/infinite";
+import useSWRMutation from "swr/mutation";
 const fetcher = async (url: string) => {
   const token = CookieService.getAccessToken();
   if (!token) {
@@ -38,21 +40,40 @@ const fetcher = async (url: string) => {
   const data = await res.data;
   return data;
 };
-const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
+const HeaderComponent = () => {
+  const pathname = usePathname()
+  const headerItems: MenuProps["items"] = [
+    "Nhà đất bán",
+    "Nhà đất cho thuê",
+    "Dự án",
+    "Tin tức",
+    "Liên hệ",
+  ].map((key) => ({
+    key,
+    label: `${key}`,
+    title: `${key}`,
+    style: {
+      fontSize: "14px",
+      fontWeight: 500,
+      lineHeight: "20px",
+    },
+  }));
+
   const [userData, setUserData] = useState();
   const dispatch = useDispatch();
-  const { data } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
+  const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
     shouldRetryOnError: false,
     refreshInterval: 0,
   });
   const userSelector = useSelector((state: RootState) => {
-    return state.auth.user;
+    return state.auth.user.data;
   });
   console.log(userSelector);
   const fullname = (userSelector as any)?.fullname;
   const avatarUrl = (userSelector as any)?.avatarUrl;
   const router = useRouter();
   const handleLogout = async () => {
+    dispatch(clearUserInfo());
     const response = await axiosInstance.post(
       "http://localhost:5083/connect/logout",
       null,
@@ -64,9 +85,13 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
     );
     if (response.status === 200) {
       console.log("Đăng xuất thành công");
-      dispatch(clearUserInfo());
+      localStorage.clear();
       CookieService.removeToken();
-    } else {
+    }
+    if(pathname?.includes('/dashboard')) {
+      router.replace("/auth/login");
+    }
+    else {
       console.log("Có lỗi xảy ra khi đăng xuất");
     }
   };
@@ -124,11 +149,13 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
     },
   ];
   useEffect(() => {
-    if (data) {
+    if (!error) {
       // userInfo = data;
-      dispatch(saveUserInfo(data.data));
+      dispatch(saveUserInfo(data));
+    } else {
+      dispatch(clearUserInfo());
     }
-  }, [data, dispatch]);
+  }, [data, dispatch, error]);
   return (
     <Header
       style={{
@@ -172,7 +199,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
           borderBottom: "none",
           margin: "0 40px",
         }}
-        items={prop}
+        items={headerItems}
       />
       <div style={{ display: "flex", alignItems: "center" }}>
         <div
