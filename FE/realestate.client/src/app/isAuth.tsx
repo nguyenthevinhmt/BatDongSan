@@ -1,46 +1,17 @@
 "use client";
 import React from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { CookieService } from "@/shared/services/cookies.service";
 
 export default function isAuth(Component: any) {
-  
   return function IsAuth(props: any) {
-    const authSelector = useSelector((state:RootState) => {
-      state.auth
-    });
     const router = useRouter();
-    console.log("authSelector", (authSelector as any)?.data)
-    // if(authSelector){
-    // }
-    // const repo = await getServerSideProps()
-    // console.log(repo)
-    // repo.then((data) => {
-    //   return data
-    // });
-    // const {props} = repo
-    // if (!data) {
-      // console.log("không có token", token);
-    //   return null;
-    // }
-    // useEffect(() => {
-    //   if (!auth) {
-    //     console.log("Hàm này chạy rồi");
-    //     redirect("/auth/login");
-    //   }
-    // }, [auth]);
-
-    // if (auth) {
-    //   return null;
-    // }
+    const token = CookieService.getAccessToken();
+    console.log("token", token);
+    if (!token) {
+      router.replace("/auth/login");
+    }
     return <Component {...props} />;
   };
-}
-async function getServerSideProps()
-{
-  const res = await axios.get('api/get-cookie');
-  console.log(res)
-  return res.data
 }

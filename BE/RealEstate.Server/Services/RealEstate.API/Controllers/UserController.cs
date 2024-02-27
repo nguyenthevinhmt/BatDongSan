@@ -43,6 +43,7 @@ namespace RealEstate.API.Controllers
         /// Lấy thông tin cá nhân
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [HttpGet("my-info")]
         public ApiResponse<UserDetailDto> FindMyInfo()
         {

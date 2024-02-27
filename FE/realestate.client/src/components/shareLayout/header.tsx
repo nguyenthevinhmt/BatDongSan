@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "antd/es/layout/layout";
 import { Avatar, Button, Dropdown, Menu } from "antd";
 import Image from "next/image";
@@ -12,19 +12,89 @@ import {
   LogoutOutlined,
   SolutionOutlined,
   UnorderedListOutlined,
+  UserOutlined,
   WalletOutlined,
 } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
-import { useSelector } from "react-redux";
+import { CookieService } from "@/shared/services/cookies.service";
+import axiosInstance from "@/shared/configs/axiosInstance";
+import { environment } from "@/shared/environment/environment";
+import useSWR from "swr";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-
-const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
-  const isLogin = true;
-  const router = useRouter();
-  const userInfo = useSelector((state: RootState) => {
-    state.auth;
+import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
+import SpinComponent from "../shareComponents/spinComponent";
+import useSWRInfinite from "swr/infinite";
+import useSWRMutation from "swr/mutation";
+const fetcher = async (url: string) => {
+  const token = CookieService.getAccessToken();
+  if (!token) {
+    console.log("Hết hạn đăng nhập! Vui lòng đăng nhập lại");
+  }
+  const res = await axiosInstance.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
+  const data = await res.data;
+  return data;
+};
+const HeaderComponent = () => {
+  const pathname = usePathname()
+  const headerItems: MenuProps["items"] = [
+    "Nhà đất bán",
+    "Nhà đất cho thuê",
+    "Dự án",
+    "Tin tức",
+    "Liên hệ",
+  ].map((key) => ({
+    key,
+    label: `${key}`,
+    title: `${key}`,
+    style: {
+      fontSize: "14px",
+      fontWeight: 500,
+      lineHeight: "20px",
+    },
+  }));
+
+  const [userData, setUserData] = useState();
+  const dispatch = useDispatch();
+  const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
+    shouldRetryOnError: false,
+    refreshInterval: 0,
+  });
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
+  console.log(userSelector);
+  const fullname = (userSelector as any)?.fullname;
+  const avatarUrl = (userSelector as any)?.avatarUrl;
+  const router = useRouter();
+  const handleLogout = async () => {
+    dispatch(clearUserInfo());
+    const response = await axiosInstance.post(
+      "http://localhost:5083/connect/logout",
+      null,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    if (response.status === 200) {
+      console.log("Đăng xuất thành công");
+      localStorage.clear();
+      CookieService.removeToken();
+    }
+    if(pathname?.includes('/dashboard')) {
+      router.replace("/auth/login");
+    }
+    else {
+      console.log("Có lỗi xảy ra khi đăng xuất");
+    }
+  };
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -74,10 +144,18 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
         <LogoutOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
       ),
       onClick: () => {
-        router.replace("/auth/login");
+        handleLogout();
       },
     },
   ];
+  useEffect(() => {
+    if (!error) {
+      // userInfo = data;
+      dispatch(saveUserInfo(data));
+    } else {
+      dispatch(clearUserInfo());
+    }
+  }, [data, dispatch, error]);
   return (
     <Header
       style={{
@@ -101,7 +179,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
           justifyContent: "center",
         }}
       >
-        <Link href={"/home"}>
+        <Link href={"/"}>
           <Image
             src={logo}
             alt="batdongsan"
@@ -121,7 +199,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
           borderBottom: "none",
           margin: "0 40px",
         }}
-        items={prop}
+        items={headerItems}
       />
       <div style={{ display: "flex", alignItems: "center" }}>
         <div
@@ -131,7 +209,7 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
             marginRight: "30px",
           }}
         >
-          {isLogin ? (
+          {!fullname ? (
             <>
               <Button
                 size="large"
@@ -139,6 +217,9 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
                 style={{
                   height: "46px",
                   fontWeight: 500,
+                }}
+                onClick={() => {
+                  router.push("/auth/login");
                 }}
               >
                 Đăng nhập
@@ -158,6 +239,9 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
                   padding: "0px 20px",
                   fontWeight: 500,
                 }}
+                onClick={() => {
+                  router.push("/auth/register");
+                }}
               >
                 Đăng ký
               </Button>
@@ -176,18 +260,42 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
               </Link>
               <Dropdown menu={{ items }} trigger={["click"]}>
                 <div>
-                  <Avatar
+                  {!avatarUrl ? (
+                    <Avatar
+                      style={{
+                        backgroundColor: "#fde3cf",
+                        color: "#f56a00",
+                        marginRight: "10px",
+                      }}
+                      size={44}
+                      icon={<UserOutlined />}
+                    ></Avatar>
+                  ) : (
+                    <Avatar
+                      style={{
+                        backgroundColor: "#fff",
+                        color: "#fff",
+                        marginRight: "10px",
+                      }}
+                      size={"large"}
+                      src={
+                        <img
+                          src={avatarUrl}
+                          alt="avatar"
+                          height={"100%"}
+                          width={"100%"}
+                        />
+                      }
+                    ></Avatar>
+                  )}
+                  <span
                     style={{
-                      backgroundColor: "#fde3cf",
-                      color: "#f56a00",
-                      marginRight: "10px",
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      cursor: "pointer",
                     }}
-                    size={"large"}
                   >
-                    V
-                  </Avatar>
-                  <span style={{ fontSize: "16px", fontWeight: 500 }}>
-                    Nguyễn Thế Vinh
+                    {fullname ?? ""}
                   </span>
                   <DownOutlined style={{ marginLeft: "10px" }} />
                 </div>
@@ -202,6 +310,9 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
           danger
           ghost
           style={{ fontWeight: 500 }}
+          onClick={() => {
+            router.push("/dashboard");
+          }}
         >
           Đăng tin
         </Button>
@@ -210,4 +321,5 @@ const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
   );
 };
 
-export default React.memo(HeaderComponent);
+// export default React.memo(HeaderComponent);
+export default HeaderComponent;

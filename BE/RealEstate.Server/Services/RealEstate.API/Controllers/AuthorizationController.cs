@@ -154,7 +154,7 @@ namespace RealEstate.API.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        [HttpPost("~/connect/logout"), IgnoreAntiforgeryToken, Produces("application/json"), Consumes("application/x-www-form-urlencoded")]
+        [HttpPost("~/connect/logout"), IgnoreAntiforgeryToken, Produces("application/json")]
         public async Task<IActionResult> Logout()
         {
             var authorizationId = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "oi_au_id")?.Value;
@@ -180,7 +180,8 @@ namespace RealEstate.API.Controllers
                     .SetClaim(Claims.Email, user.Email)
                     .SetClaim(Claims.Name, user.Fullname)
                     .SetClaim(UserClaimTypes.UserType, user.UserType)
-                    .SetClaim(UserClaimTypes.UserId, user.Id);
+                    .SetClaim(UserClaimTypes.UserId, user.Id)
+                    .SetClaim(UserClaimTypes.Avatar, user.AvatarUrl);
 
             //if (user.BusinessCustomerId is not null)
             //{

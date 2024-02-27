@@ -1,23 +1,31 @@
 "use client";
-import LoadingComponent from "@/components/shareComponents/loadingComponent";
+import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
-import { Alert, Button, Flex, Spin } from "antd";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-
+import { MenuProps } from "antd";
 const App = () => {
+  const headerItems: MenuProps["items"] = [
+    "Nhà đất bán",
+    "Nhà đất cho thuê",
+    "Dự án",
+    "Tin tức",
+    "Liên hệ",
+  ].map((key) => ({
+    key,
+    label: `${key}`,
+    title: `${key}`,
+    style: {
+      fontSize: "14px",
+      fontWeight: 500,
+      lineHeight: "20px",
+    },
+  }));
   return (
-    // <Flex
-    //   style={{
-    //     width: "100%",
-    //     height: "100%",
-    //   }}
-    //   justify="center"
-    //   align="center"
-    // >
-    // </Flex>
-    <LoadingComponent />
-    // <Link href="/auth/login">Login</Link>
+    // <LoadingComponent />
+    <>
+    <HeaderComponent/>
+    </>
+    // <div style={{height: '2000px'}}>
+    // </div>
   );
 };
 const AppPage = () => {
