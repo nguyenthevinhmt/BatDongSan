@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { authConst } from "../const/authConst";
-import hideEmail from "@/shared/utils/hideEmail";
+import hideEmail from "@/lib/utils/hideEmail";
 const ValidateOtp = () => {
   let registerSelector = useSelector((state: RootState) => state.register);
   let loginSelector = useSelector((state: RootState) => state.auth);

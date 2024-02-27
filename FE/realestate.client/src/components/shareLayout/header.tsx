@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Header } from "antd/es/layout/layout";
 import { Avatar, Button, Dropdown, Menu } from "antd";
 import Image from "next/image";
@@ -17,16 +17,14 @@ import {
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
-import { CookieService } from "@/shared/services/cookies.service";
-import axiosInstance from "@/shared/configs/axiosInstance";
-import { environment } from "@/shared/environment/environment";
+import { CookieService } from "@/lib/services/cookies.service";
+import axiosInstance from "@/lib/configs/axiosInstance";
+import { environment } from "@/lib/environment/environment";
 import useSWR from "swr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
-import SpinComponent from "../shareComponents/spinComponent";
-import useSWRInfinite from "swr/infinite";
-import useSWRMutation from "swr/mutation";
+
 const fetcher = async (url: string) => {
   const token = CookieService.getAccessToken();
   if (!token) {
@@ -40,6 +38,7 @@ const fetcher = async (url: string) => {
   const data = await res.data;
   return data;
 };
+
 const HeaderComponent = () => {
   const pathname = usePathname()
   const headerItems: MenuProps["items"] = [
@@ -59,7 +58,6 @@ const HeaderComponent = () => {
     },
   }));
 
-  const [userData, setUserData] = useState();
   const dispatch = useDispatch();
   const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
     shouldRetryOnError: false,
