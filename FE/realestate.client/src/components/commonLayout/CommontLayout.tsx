@@ -1,13 +1,14 @@
 "use client";
 import theme from "@/theme/themeConfig";
-import { ConfigProvider, Layout, Menu, MenuProps, message } from "antd";
-import React from "react";
+import { ConfigProvider, Layout, Menu, MenuProps, message, Affix } from "antd";
+import React,{useState} from "react";
 import HeaderComponent from "../shareLayout/header";
 import { CookieService } from "@/shared/services/cookies.service";
 import axiosInstance from "@/shared/configs/axiosInstance";
 import useSWR from "swr";
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
+
 // const fetcher = async (url: string) => {
 //   const token = CookieService.getAccessToken();
 //   if (!token) {
@@ -47,12 +48,14 @@ const CommontLayout = ({ children }: { children: React.ReactElement }) => {
       lineHeight: "20px",
     },
   }));
-
+  const [top, setTop] = useState<number>(0);
   return (
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
-          <HeaderComponent prop={headerItems} />
+          <Affix offsetTop={top}>
+            <HeaderComponent prop={headerItems} />
+          </Affix>
           {children}
         </Layout>
       </div>
