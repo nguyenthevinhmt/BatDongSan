@@ -25,6 +25,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import SpinComponent from "../shareComponents/spinComponent";
+import useSWRInfinite from "swr/infinite";
+import useSWRMutation from "swr/mutation";
 const fetcher = async (url: string) => {
     const token = CookieService.getAccessToken();
     if (!token) {
@@ -38,244 +40,269 @@ const fetcher = async (url: string) => {
     const data = await res.data;
     return data;
 };
-const HeaderComponent = ({ prop }: { prop: MenuProps["items"] }) => {
-    const [userData, setUserData] = useState();
-    const dispatch = useDispatch();
-    const { data } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
-        shouldRetryOnError: false,
-        refreshInterval: 0,
-    });
-    const userSelector = useSelector((state: RootState) => {
-        return state.auth.user;
-    });
-    console.log(userSelector);
-    const fullname = (userSelector as any)?.fullname;
-    const avatarUrl = (userSelector as any)?.avatarUrl;
-    const router = useRouter();
-    const handleLogout = async () => {
-        const response = await axiosInstance.post(
-            "http://localhost:5083/connect/logout",
-            null,
-            {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-            }
-        );
-        if (response.status === 200) {
-            console.log("Đăng xuất thành công");
-            dispatch(clearUserInfo());
-            CookieService.removeToken();
-        } else {
-            console.log("Có lỗi xảy ra khi đăng xuất");
-        }
-    };
-    const items: MenuProps["items"] = [
-        {
-            key: "1",
-            label: <>Thông tin cá nhân</>,
-            icon: (
-                <SolutionOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
-            ),
+const HeaderComponent = () => {
+  const pathname = usePathname()
+  const headerItems: MenuProps["items"] = [
+    "Nhà đất bán",
+    "Nhà đất cho thuê",
+    "Dự án",
+    "Tin tức",
+    "Liên hệ",
+  ].map((key) => ({
+    key,
+    label: `${key}`,
+    title: `${key}`,
+    style: {
+      fontSize: "14px",
+      fontWeight: 500,
+      lineHeight: "20px",
+    },
+  }));
+
+  const [userData, setUserData] = useState();
+  const dispatch = useDispatch();
+  const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
+    shouldRetryOnError: false,
+    refreshInterval: 0,
+  });
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
+  console.log(userSelector);
+  const fullname = (userSelector as any)?.fullname;
+  const avatarUrl = (userSelector as any)?.avatarUrl;
+  const router = useRouter();
+  const handleLogout = async () => {
+    dispatch(clearUserInfo());
+    const response = await axiosInstance.post(
+      "http://localhost:5083/connect/logout",
+      null,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        {
-            key: "2",
-            label: <>Quản lý đăng tin</>,
-            icon: (
-                <UnorderedListOutlined
-                    style={{ fontSize: " 16px", marginRight: "15px" }}
-                />
-            ),
-        },
-        {
-            key: "3",
-            label: <>Quản lý ví tiền</>,
-            icon: (
-                <WalletOutlined
-                    style={{
-                        fontSize: " 16px",
-                        marginRight: "15px",
-                    }}
-                />
-            ),
-        },
-        {
-            key: "4",
-            label: <>Đổi mật khẩu</>,
-            icon: (
-                <LockOutlined
-                    style={{
-                        fontSize: " 16px",
-                        marginRight: "15px",
-                    }}
-                />
-            ),
-        },
-        {
-            key: "5",
-            danger: true,
-            label: <>Đăng xuất</>,
-            icon: (
-                <LogoutOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
-            ),
-            onClick: () => {
-                handleLogout();
-            },
-        },
-    ];
-    useEffect(() => {
-        if (data) {
-            // userInfo = data;
-            dispatch(saveUserInfo(data.data));
-        }
-    }, [data, dispatch]);
-    return (
-        <Header
-            style={{
-                display: "flex",
-                justifyContent: "center",
-                backgroundColor: "#fff",
-                alignItems: "center",
-                padding: "46px 30px",
-                borderBottom: "none",
-                borderBottomColor: "#111",
-                boxShadow: "0px 2px 10px #ccc",
-                zIndex: 99,
-            }}
+      }
+    );
+    if (response.status === 200) {
+      console.log("Đăng xuất thành công");
+      localStorage.clear();
+      CookieService.removeToken();
+    }
+    if(pathname?.includes('/dashboard')) {
+      router.replace("/auth/login");
+    }
+    else {
+      console.log("Có lỗi xảy ra khi đăng xuất");
+    }
+  };
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <>Thông tin cá nhân</>,
+      icon: (
+        <SolutionOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
+      ),
+    },
+    {
+      key: "2",
+      label: <>Quản lý đăng tin</>,
+      icon: (
+        <UnorderedListOutlined
+          style={{ fontSize: " 16px", marginRight: "15px" }}
+        />
+      ),
+    },
+    {
+      key: "3",
+      label: <>Quản lý ví tiền</>,
+      icon: (
+        <WalletOutlined
+          style={{
+            fontSize: " 16px",
+            marginRight: "15px",
+          }}
+        />
+      ),
+    },
+    {
+      key: "4",
+      label: <>Đổi mật khẩu</>,
+      icon: (
+        <LockOutlined
+          style={{
+            fontSize: " 16px",
+            marginRight: "15px",
+          }}
+        />
+      ),
+    },
+    {
+      key: "5",
+      danger: true,
+      label: <>Đăng xuất</>,
+      icon: (
+        <LogoutOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
+      ),
+      onClick: () => {
+        handleLogout();
+      },
+    },
+  ];
+  useEffect(() => {
+    if (!error) {
+      // userInfo = data;
+      dispatch(saveUserInfo(data));
+    } else {
+      dispatch(clearUserInfo());
+    }
+  }, [data, dispatch, error]);
+  return (
+    <Header
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        backgroundColor: "#fff",
+        alignItems: "center",
+        padding: "46px 30px",
+        borderBottom: "none",
+        borderBottomColor: "#111",
+        boxShadow: "0px 2px 10px #ccc",
+        zIndex: 99,
+      }}
+    >
+      <div
+        style={{
+          width: "164px",
+          height: "48px",
+          backgroundColor: "#fff",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Link href={"/"}>
+          <Image
+            src={logo}
+            alt="batdongsan"
+            width={164}
+            height={48}
+            priority={true}
+          />
+        </Link>
+      </div>
+      <Menu
+        theme="light"
+        mode="horizontal"
+        selectable={false}
+        style={{
+          flex: 1,
+          minWidth: 0,
+          borderBottom: "none",
+          margin: "0 40px",
+        }}
+        items={headerItems}
+      />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginRight: "30px",
+          }}
         >
-            <div
+          {!fullname ? (
+            <>
+              <Button
+                size="large"
+                type="text"
                 style={{
-                    width: "164px",
-                    height: "48px",
-                    backgroundColor: "#fff",
-                    display: "flex",
-                    justifyContent: "center",
+                  height: "46px",
+                  fontWeight: 500,
                 }}
-            >
-                <Link href={"/"}>
-                    <Image
-                        src={logo}
-                        alt="batdongsan"
-                        width={164}
-                        height={48}
-                        priority={true}
-                    />
-                </Link>
-            </div>
-            <Menu
-                theme="light"
-                mode="horizontal"
-                selectable={false}
+                onClick={() => {
+                  router.push("/auth/login");
+                }}
+              >
+                Đăng nhập
+              </Button>
+              <span
                 style={{
-                    flex: 1,
-                    minWidth: 0,
-                    borderBottom: "none",
-                    margin: "0 40px",
+                  width: "1px",
+                  height: "14px",
+                  backgroundColor: "#f1f1f1",
                 }}
-                items={prop}
-            />
-            <div style={{ display: "flex", alignItems: "center" }}>
-                <div
+              ></span>
+              <Button
+                size="large"
+                type="text"
+                style={{
+                  height: "46px",
+                  padding: "0px 20px",
+                  fontWeight: 500,
+                }}
+                onClick={() => {
+                  router.push("/auth/register");
+                }}
+              >
+                Đăng ký
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link
+                href={"/"}
+                style={{
+                  marginRight: "20px",
+                  fontSize: "24px",
+                  color: "#111",
+                }}
+              >
+                <HeartOutlined />
+              </Link>
+              <Dropdown menu={{ items }} trigger={["click"]}>
+                <div>
+                  {!avatarUrl ? (
+                    <Avatar
+                      style={{
+                        backgroundColor: "#fde3cf",
+                        color: "#f56a00",
+                        marginRight: "10px",
+                      }}
+                      size={44}
+                      icon={<UserOutlined />}
+                    ></Avatar>
+                  ) : (
+                    <Avatar
+                      style={{
+                        backgroundColor: "#fff",
+                        color: "#fff",
+                        marginRight: "10px",
+                      }}
+                      size={"large"}
+                      src={
+                        <img
+                          src={avatarUrl}
+                          alt="avatar"
+                          height={"100%"}
+                          width={"100%"}
+                        />
+                      }
+                    ></Avatar>
+                  )}
+                  <span
                     style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginRight: "30px",
+                      fontSize: "16px",
+                      fontWeight: 500,
+                      cursor: "pointer",
                     }}
-                >
-                    {!fullname ? (
-                        <>
-                            <Button
-                                size="large"
-                                type="text"
-                                style={{
-                                    height: "46px",
-                                    fontWeight: 500,
-                                }}
-                                onClick={() => {
-                                    router.push("/auth/login");
-                                }}
-                            >
-                                Đăng nhập
-                            </Button>
-                            <span
-                                style={{
-                                    width: "1px",
-                                    height: "14px",
-                                    backgroundColor: "#f1f1f1",
-                                }}
-                            ></span>
-                            <Button
-                                size="large"
-                                type="text"
-                                style={{
-                                    height: "46px",
-                                    padding: "0px 20px",
-                                    fontWeight: 500,
-                                }}
-                                onClick={() => {
-                                    router.push("/auth/register");
-                                }}
-                            >
-                                Đăng ký
-                            </Button>
-                        </>
-                    ) : (
-                        <>
-                            <Link
-                                href={"/"}
-                                style={{
-                                    marginRight: "20px",
-                                    fontSize: "24px",
-                                    color: "#111",
-                                }}
-                            >
-                                <HeartOutlined />
-                            </Link>
-                            <Dropdown menu={{ items }} trigger={["click"]}>
-                                <div>
-                                    {!avatarUrl ? (
-                                        <Avatar
-                                            style={{
-                                                backgroundColor: "#fde3cf",
-                                                color: "#f56a00",
-                                                marginRight: "10px",
-                                            }}
-                                            size={44}
-                                            icon={<UserOutlined />}
-                                        ></Avatar>
-                                    ) : (
-                                        <Avatar
-                                            style={{
-                                                backgroundColor: "#fff",
-                                                color: "#fff",
-                                                marginRight: "10px",
-                                            }}
-                                            size={"large"}
-                                            src={
-                                                <img
-                                                    src={avatarUrl}
-                                                    alt="avatar"
-                                                    height={"100%"}
-                                                    width={"100%"}
-                                                />
-                                            }
-                                        ></Avatar>
-                                    )}
-                                    <span
-                                        style={{
-                                            fontSize: "16px",
-                                            fontWeight: 500,
-                                            cursor: "pointer",
-                                        }}
-                                    >
-                                        {fullname ?? ""}
-                                    </span>
-                                    <DownOutlined style={{ marginLeft: "10px" }} />
-                                </div>
-                            </Dropdown>
-                        </>
-                    )}
+                  >
+                    {fullname ?? ""}
+                  </span>
+                  <DownOutlined style={{ marginLeft: "10px" }} />
                 </div>
+              </Dropdown>
+            </>
+          )}
+        </div>
 
                 <Button
                     size="large"

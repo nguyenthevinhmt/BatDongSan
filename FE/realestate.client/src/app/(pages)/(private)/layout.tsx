@@ -13,22 +13,6 @@ import withTheme from "@/theme";
 
 const { Content, Sider } = Layout;
 const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
-  const headerItems: MenuProps["items"] = [
-    "Nhà đất bán",
-    "Nhà đất cho thuê",
-    "Dự án",
-    "Tin tức",
-    "Liên hệ",
-  ].map((key) => ({
-    key,
-    label: `${key}`,
-    title: `${key}`,
-    style: {
-      fontSize: "14px",
-      fontWeight: 500,
-      lineHeight: "20px",
-    },
-  }));
 
   const siderItem: MenuProps["items"] = [
     UserOutlined,
@@ -99,7 +83,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
-          {/* <HeaderComponent prop={headerItems} /> */}
+          <HeaderComponent/>
           <Layout hasSider style={{ position: "relative" }}>
             <Sider
               trigger={null}
@@ -172,5 +156,5 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
 };
 
 // export default withTheme(isAuth(PrivateLayout));
-export default PrivateLayout;
-// export default isAuth(PrivateLayout);
+// export default PrivateLayout;
+export default isAuth(PrivateLayout);

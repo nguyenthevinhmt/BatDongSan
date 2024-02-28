@@ -1,4 +1,4 @@
-export const options: Option[] = [
+export const options = [
     {
         value: 'zhejiang',
         label: 'Zhejiang',
@@ -10,7 +10,7 @@ export const options: Option[] = [
 ];
 
 export const listTabs = ["Nhà bán đất", "Nhà đất cho thuê", "Dự án"];
-export const listText:string = {
+export const listText = {
   1: {
     text1: "Loại nhà đất",
     text2: "Mức giá",
