@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "../_services/auth.service";
 import SpinComponent from "@/components/shareComponents/spinComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { updateFormData } from "@/redux/slices/registerSlice";
 
 type RegisterType = {

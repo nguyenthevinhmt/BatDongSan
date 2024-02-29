@@ -2,6 +2,7 @@
 using EntitiesBase.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Org.BouncyCastle.Asn1.Crmf;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.ApplicationService.AuthModule.Dtos;
@@ -242,9 +243,10 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var currentUserId = _httpContext.GetCurrentUserId();
             _logger.LogInformation($"{nameof(FindCurrentUserInfo)}: currentUserId: {currentUserId}");
 
-            var userInfo = _dbContext.Users.FirstOrDefault(u => u.Id == currentUserId) 
-                            ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
-            return _mapper.Map<UserDetailDto>(userInfo);
+            var userInfo = _dbContext.Users.FirstOrDefault(u => u.Id == currentUserId)
+                                    ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+
+                return _mapper.Map<UserDetailDto>(userInfo);
         }
 
         public UserDto RefreshOTP(string username)

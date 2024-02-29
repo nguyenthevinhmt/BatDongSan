@@ -3,7 +3,6 @@ import { persistor, store } from "@/redux/store";
 import { useRef } from "react";
 import { Provider } from "react-redux";
 // import { AppStore, makeStore, store } from "@/redux/store";
-import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 
 // export default function StoreProvider({

@@ -27,6 +27,17 @@ namespace RealEstate.API.Controllers
         {
             return new(_postService.FindAllPost(input));
         }
+        /// <summary>
+        /// Danh sách bài viết cá nhân
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+
+        [HttpGet("personal/find-all")]
+        public ApiResponse<PagingResult<PostDto>> FindAllByUserId([FromQuery] PostPagingRequestDto input)
+        {
+            return new(_postService.FindAllPostByUserId(input));
+        }
 
         /// <summary>
         /// Chi tiết bài viết
