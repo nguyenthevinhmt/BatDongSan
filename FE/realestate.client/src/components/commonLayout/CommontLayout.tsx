@@ -23,15 +23,6 @@ import axios from "axios";
 //   return data;
 // };
 const CommontLayout = ({ children }: { children: React.ReactElement }) => {
-  // const { data, error } = useSWR(
-  //   `${environment.baseUrl}/api/user/my-info`,
-  //   fetcher,
-  //   { shouldRetryOnError: false, refreshInterval: 0 }
-  // );
-  // let userInfo;
-  // if (data) {
-  //   userInfo = data;
-  // }
   const headerItems: MenuProps["items"] = [
     "Nhà đất bán",
     "Nhà đất cho thuê",
@@ -54,7 +45,7 @@ const CommontLayout = ({ children }: { children: React.ReactElement }) => {
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
           <Affix offsetTop={top}>
-            <HeaderComponent prop={headerItems} />
+            <HeaderComponent />
           </Affix>
           {children}
         </Layout>

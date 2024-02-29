@@ -1,4 +1,5 @@
 "use client";
+import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
 import React, { useState } from 'react';
 import { Flex, Tabs, Input, Cascader, Layout, Card } from 'antd';

@@ -7,6 +7,7 @@ import Image from "next/image";
 const AuthLayout = ({ children }: { children: React.ReactElement }) => {
   return (
     <div>
+      <HeaderComponent/>
       <Flex vertical align="center" justify="center" gap="middle">
         <div style={{ marginTop: "25px" }}>
           <Flex
