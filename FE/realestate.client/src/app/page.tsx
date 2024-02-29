@@ -44,7 +44,7 @@ const App = () => {
 
     return (
         <>
-            <div style={{ width: "100%", height: "auto", backgroundColor: "#F4F4F4" }}>
+            <div style={{ width: "100%", height: "100vh", backgroundColor: "#F4F4F4" }}>
                 <Affix offsetTop={0}>
                   <HeaderComponent />
                 </Affix>
