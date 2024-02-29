@@ -1,10 +1,10 @@
-import { LoginConfig } from "@/shared/configs/authConfig";
-import { environment } from "@/shared/environment/environment";
-import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-import { LoginType } from "@/shared/types/LoginType";
-import { RegisterType } from "@/shared/types/RegisterType";
+import { LoginConfig } from "@/lib/configs/authConfig";
+import { environment } from "@/lib/environment/environment";
+import { ITokenResponse } from "@/lib/interfaces/ITokenResponse";
+import { LoginType } from "@/lib/types/LoginType";
+import { RegisterType } from "@/lib/types/RegisterType";
 import axios, { AxiosInstance } from "axios";
-import {ECommonStatus} from "@/shared/enums/CommonStatusEnum"
+import {ECommonStatus} from "@/lib/enums/CommonStatusEnum"
 
 export class AuthService{
     private api : AxiosInstance;

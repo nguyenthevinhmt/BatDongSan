@@ -120,6 +120,55 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             return result;
         }
 
+        public PagingResult<PostDto> FindAllPostByUserId(PostPagingRequestDto input)
+        {
+            var currentUserId = _httpContext.GetCurrentUserId();
+            _logger.LogInformation($"{nameof(FindAllPostByUserId)}: input: {JsonSerializer.Serialize(input)}, currentUserId = {currentUserId}");
+            var query = from post in _dbContext.Posts
+                        join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                        from postmedia in pm.DefaultIfEmpty()
+                        where !post.Deleted && post.CreatedBy == currentUserId && (!postmedia.Deleted
+                                || (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                || (post.PostTypeId == input.PostType)
+                                || (post.RealEstateTypeId == input.RealEstateType))
+                        select new PostDto
+                        {
+                            Title = post.Title,
+                            ApproveAt = DateTime.Now,
+                            ApproveBy = post.ApproveBy,
+                            Area = post.Area,
+                            Description = post.Description,
+                            DetailAddress = post.DetailAddress,
+                            Distinct = post.Distinct,
+                            Id = post.Id,
+                            PostTypeId = post.PostTypeId,
+                            Price = post.Price,
+                            Province = post.Province,
+                            RealEstateTypeId = post.RealEstateTypeId,
+                            RentalObject = post.RentalObject,
+                            Status = post.Status,
+                            Street = post.Street,
+                            UserId = post.UserId,
+                            Ward = post.Ward,
+                            YoutubeLink = post.YoutubeLink,
+                            CreatedBy = post.CreatedBy,
+                            CreatedDate = post.CreatedDate,
+                            ModifiedBy = post.ModifiedBy,
+                            ModifiedDate = post.ModifiedDate,
+                        };
+            var result = new PagingResult<PostDto>()
+            {
+                TotalItems = query.Count(),
+            };
+            query = query.OrderDynamic(input.Sort);
+            if (input.PageSize != -1)
+            {
+                query = query.Skip(input.PageSize).Take(input.PageSize);
+            }
+            result.Items = query;
+            return result;
+        }
+
         public PostDetailDto FindById(int id)
         {
             _logger.LogInformation($"{nameof(FindById)}: id : {id}");

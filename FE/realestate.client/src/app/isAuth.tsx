@@ -2,7 +2,7 @@
 import React from "react";
 import axios from "axios";
 import { redirect, useRouter } from "next/navigation";
-import { CookieService } from "@/shared/services/cookies.service";
+import { CookieService } from "@/lib/services/cookies.service";
 
 export default function isAuth(Component: any) {
   return function IsAuth(props: any) {

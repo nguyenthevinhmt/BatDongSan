@@ -1,4 +1,5 @@
-﻿using RealEstate.ApplicationService.WalletModule.Dtos;
+﻿using RealEstate.ApplicationBase.Common;
+using RealEstate.ApplicationService.WalletModule.Dtos;
 
 namespace RealEstate.ApplicationService.WalletModule.Abstracts
 {
@@ -12,8 +13,13 @@ namespace RealEstate.ApplicationService.WalletModule.Abstracts
         /// <summary>
         /// Lịch sử giao dịch
         /// </summary>
-        /// <param name="walletID"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        TransactionDto GetHistoryTransaction(int walletID);
+        PagingResult<TransactionDto> GetHistoryTransaction(WalletPagingRequestDto input);
+        /// <summary>
+        /// Tạo mới ví cá nhân
+        /// </summary>
+        /// <param name="userId"></param>
+        void CreateNewWallet(int userId);
     }
 }

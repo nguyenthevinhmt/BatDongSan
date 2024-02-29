@@ -1,11 +1,11 @@
 "use client";
 import { saveLoginInfo } from "@/redux/slices/authSlice";
-import { LoginConfig } from "@/shared/configs/authConfig";
+import { LoginConfig } from "@/lib/configs/authConfig";
 import { Alert, Button, Flex, Form, Input, message } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { authConst } from "../../const/authConst";
-import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-import { LoginType } from "@/shared/types/LoginType";
+import { ITokenResponse } from "@/lib/interfaces/ITokenResponse";
+import { LoginType } from "@/lib/types/LoginType";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import {
   useLoginMutation,

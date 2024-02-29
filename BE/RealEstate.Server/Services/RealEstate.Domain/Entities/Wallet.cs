@@ -21,7 +21,7 @@ namespace RealEstate.Domain.Entities
         [Range(0, double.MaxValue)]
         public double Balance { get; set; }
         public int UserId { get; set; }
-        public User User { get; set; } = new();
-        public List<Transaction> Transactions { get; set; } = new();
+        public User? User { get; set; }
+        public List<Transaction>? Transactions { get; set; }
     }
 }
