@@ -1,30 +1,29 @@
-export const options: Option[] = [
-    {
-        value: 'zhejiang',
-        label: 'Zhejiang',
-    },
-    {
-        value: 'jiangsu',
-        label: 'Jiangsu',
-    },
+export const options = [
+  {
+    value: "zhejiang",
+    label: "Zhejiang",
+  },
+  {
+    value: "jiangsu",
+    label: "Jiangsu",
+  },
 ];
 
 export const listTabs = ["Nhà bán đất", "Nhà đất cho thuê", "Dự án"];
-export const listText:string = {
-  1: {
+export const listText: any = {
+  "1": {
     text1: "Loại nhà đất",
     text2: "Mức giá",
     text3: "Diện tích",
   },
-  2: {
+  "2": {
     text1: "Loại nhà đất",
     text2: "Mức giá",
     text3: "Diện tích",
   },
-  3: {
+  "3": {
     text1: "Loại hình dự án",
     text2: "Mức giá",
     text3: "Trạng thái",
   },
 };
-

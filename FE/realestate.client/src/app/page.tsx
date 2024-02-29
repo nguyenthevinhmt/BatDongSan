@@ -25,26 +25,26 @@ const App = () => {
         transition: "0.3s",
         ...hoverStyles
     }
-    const onChange = (key: string) => {
+    const onChange = (key: any) => {
         setSelectText(listText[key])
     };
     const onSearch = (key: string) => {
         console.log(key);
     };
-    const onChangeCateHome = (value: string[]) => {
+    const onChangeCateHome = (value: string[]): void => {
         console.log(value);
     };
-    const onChangePrice = (value: string[]) => {
+    const onChangePrice = (value: string[]): void => {
         console.log(value);
     };
-    const onChangeAcreage = (value: string[]) => {
+    const onChangeAcreage = (value: string[]): void => {
         console.log(value);
     };
 
     return (
         <>
-            <div style={{ width: "100%",height:"auto", backgroundColor: "#F4F4F4" }}>
-                <Layout style={{ margin: "0 auto", maxWidth: "1340px",minWidth:"1340px", backgroundColor: "#F4F4F4", padding: "0 167px" }}>
+            <div style={{ width: "100%", height: "auto", backgroundColor: "#F4F4F4" }}>
+                <Layout style={{ margin: "0 auto", maxWidth: "1340px", minWidth: "1340px", backgroundColor: "#F4F4F4", padding: "0 167px" }}>
                     <Flex vertical
                         style={{
                             margin: "20px auto",
@@ -53,7 +53,7 @@ const App = () => {
                             borderRadius: "10px",
 
                         }}>
-                        <Tabs tabBarGutter={20} cardBg style={{ marginBottom: "-20px" }}
+                        <Tabs tabBarGutter={20} style={{ marginBottom: "-20px" }}
                             onChange={onChange}
                             type="card"
                             tabBarStyle={{ border: "none", }}
@@ -85,9 +85,9 @@ const App = () => {
                                 />
                             </div>
                             <Flex justify="space-between" style={{ margin: "0 21px" }}>
-                                <Cascader className="custom-cascader" placeholder={selectText.text1} options={options} onChange={onChangeCateHome} />
-                                <Cascader placeholder={selectText.text2} options={options} onChange={onChangePrice} />
-                                <Cascader placeholder={selectText.text3} options={options} onChange={onChangeAcreage} />
+                                <Cascader className="custom-cascader" placeholder={selectText?.text1} options={options} />
+                                <Cascader placeholder={selectText?.text2} options={options} />
+                                <Cascader placeholder={selectText?.text3} options={options} />
                             </Flex>
                         </div>
                     </Flex>
@@ -123,7 +123,7 @@ const App = () => {
                             </Card>
                         </Flex>
                     </div>
-                    <FisrtSplitComponent />                        
+                    <FisrtSplitComponent />
                     <ListGoods />
                 </Layout>
             </div>

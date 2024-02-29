@@ -1,5 +1,4 @@
-import { Flex, List, Card, Image,Tag,Text } from "antd";
-import { utilityItem } from "../utils";
+import { Flex, List, Card, Image,Tag } from "antd";
 import bieudo from "../../assets/image/bieudo.webp";
 import home from "../../assets/image/home.webp";
 import book from "../../assets/image/book.webp";
@@ -14,7 +13,7 @@ const FisrtSplitComponent = () => {
             <Flex justify="space-between">
                 <div style={{ background: "#fff", padding: "7px 15px 25px 15px", margin: "20px 0", borderRadius: "2px" }}>
                     <h2 style={{ marginBottom: "12px", fontSize: "18px" }}>Công cụ tiện ích</h2>
-                    <Flex gap="middle" style={{posititon:"relative"}}>                        
+                    <Flex gap="middle" style={{position:"relative"}}>                        
                         <Image style={{borderRadius:"5px"}} src={bieudo.src} width={140} height={80} alt="Your Image" preview={false} />
                         <p style={{position:"absolute",margin:"15px 0 0 7px", fontSize:"15px", fontWeight:"600"}}>Biểu đồ giá</p>
                         <p style={{position:"absolute",margin:"-5px 0 0 110px",textAlign:"center",fontSize:"12px",borderRadius:"4px",border:"1px solid #fff", background:"#D0021B",height:"20px",width:"30px", color:"#fff"}} >Mới</p>
