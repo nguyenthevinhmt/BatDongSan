@@ -143,7 +143,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                   padding: 14,
                   margin: 0,
                   minHeight: 280,
-                  background: "#fff",
+                  /*background: "#fff",*/
                   borderRadius: "8px",
                 }}
               >
