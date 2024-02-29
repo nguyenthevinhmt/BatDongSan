@@ -6,38 +6,38 @@ import Image from "next/image";
 import type { MenuProps } from "antd";
 import Link from "next/link";
 import {
-  DownOutlined,
-  HeartOutlined,
-  LockOutlined,
-  LogoutOutlined,
-  SolutionOutlined,
-  UnorderedListOutlined,
-  UserOutlined,
-  WalletOutlined,
+    DownOutlined,
+    HeartOutlined,
+    LockOutlined,
+    LogoutOutlined,
+    SolutionOutlined,
+    UnorderedListOutlined,
+    UserOutlined,
+    WalletOutlined,
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
-import { CookieService } from "@/lib/services/cookies.service";
-import axiosInstance from "@/lib/configs/axiosInstance";
-import { environment } from "@/lib/environment/environment";
+import { CookieService } from "@/shared/services/cookies.service";
+import axiosInstance from "@/shared/configs/axiosInstance";
+import { environment } from "@/shared/environment/environment";
 import useSWR from "swr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
-import { HTTP_STATUS_CODE } from "@/lib/consts/http";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
 const fetcher = async (url: string) => {
-  const token = CookieService.getAccessToken();
-  if (!token) {
-    console.log("Hết hạn đăng nhập! Vui lòng đăng nhập lại");
-  }
-  const res = await axiosInstance.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await res.data;
-  return data;
+    const token = CookieService.getAccessToken();
+    if (!token) {
+        console.log("Hết hạn đăng nhập! Vui lòng đăng nhập lại");
+    }
+    const res = await axiosInstance.get(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    const data = await res.data;
+    return data;
 };
 
 const HeaderComponent = () => {
@@ -320,21 +320,21 @@ const HeaderComponent = () => {
           )}
         </div>
 
-        <Button
-          size="large"
-          type="primary"
-          danger
-          ghost
-          style={{ fontWeight: 500 }}
-          onClick={() => {
-            router.push("/dashboard");
-          }}
-        >
-          Đăng tin
-        </Button>
-      </div>
-    </Header>
-  );
+                <Button
+                    size="large"
+                    type="primary"
+                    danger
+                    ghost
+                    style={{ fontWeight: 500 }}
+                    onClick={() => {
+                        router.push("/dashboard");
+                    }}
+                >
+                    Đăng tin
+                </Button>
+            </div>
+        </Header>
+    );
 };
 
 // export default React.memo(HeaderComponent);

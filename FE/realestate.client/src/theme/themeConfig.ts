@@ -14,6 +14,9 @@ const theme: ThemeConfig = {
       itemSelectedColor: "#FF4D4F",
       groupTitleFontSize: 20,
     },
+    cardBg:{
+      background: "black"
+    }
   },
 };
 

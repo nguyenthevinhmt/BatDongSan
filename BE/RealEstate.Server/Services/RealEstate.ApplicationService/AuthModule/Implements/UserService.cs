@@ -189,7 +189,7 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var user = _dbContext.Users.FirstOrDefault(e => e.Id == userId && !e.Deleted)
                 ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
 
-            if (CryptographyUtils.CreateMD5(user.Password) != CryptographyUtils.CreateMD5(input.OldPassword))
+            if (user.Password != CryptographyUtils.CreateMD5(input.OldPassword))
             {
                 throw new UserFriendlyException(ErrorCode.UserOldPasswordIncorrect);
             }
