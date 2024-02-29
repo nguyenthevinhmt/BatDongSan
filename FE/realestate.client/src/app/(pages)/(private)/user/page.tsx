@@ -1,11 +1,12 @@
 "use client";
 
 import { RootState, AppDispatch } from "@/redux/store";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "@/app/(pages)/(private)/styles/style.layout.css";
 import { Button, Collapse, CollapseProps, Flex, Form, Input, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
+import { getUserInfo } from "../_services/user.service";
 
 const UserPage = () => {
   //const dispatch = useDispatch<AppDispatch>();
@@ -19,6 +20,24 @@ const UserPage = () => {
   };
 
   const [isExpandedLeft, setIsExpandedLeft] = useState(true);
+  const [avatar, setAvatar] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const getData = async () => {
+      const info = await getUserInfo();
+      const response = info?.data.data;
+
+      setAvatar(response.avatarUrl);
+      setFullName(response.fullname);
+      setPhone(response.phoneNumber);
+      setEmail(response.email);
+    }
+
+    getData();
+  }, [])
 
   return (
     <div
@@ -79,7 +98,7 @@ const UserPage = () => {
 
 
                   <Form.Item label="Họ và tên">
-                    <Input />
+                    <Input value={fullName} placeholder={fullName} onChange={e => setFullName(e.target.value)}/>
                   </Form.Item>
                 </div>
             }]}
@@ -93,10 +112,10 @@ const UserPage = () => {
               children:
                 <div>
                   <Form.Item name="phone" label="Số điện thoại">
-                    <Input placeholder="0123456789" />
+                    <Input value={phone} placeholder={phone} onChange={e => setPhone(e.target.value)} />
                   </Form.Item>
                   <Form.Item name="name" label="Email">
-                    <Input placeholder="NguyenVanA@gmail.com" />
+                    <Input value={email} placeholder={email} onChange={e => setEmail(e.target.value)} />
                   </Form.Item>
                 </div>
             }]}
