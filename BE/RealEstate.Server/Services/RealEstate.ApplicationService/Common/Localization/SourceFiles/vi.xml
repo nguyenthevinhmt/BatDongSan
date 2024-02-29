@@ -14,10 +14,11 @@
 		<text name="error_PostNotFound">Không tìm thấy bài viết</text>
 		<text name="error_RealEstateTypeNotFound">Không tìm thấy loại bất động sản</text>
 		<text name="error_AccountIsNotVerifiedOtp">Tài khoản chưa xác minh OTP</text>
-		<text name="error_UsernameIsExist">Tên người dùng đã tồn tại!</text>
+		<text name="error_UsernameIsExist">Tên người dùng đã tồn tại</text>
 		<text name="error_EmailIsExist">Email đã tồn tại trong hệ thống!</text>
 		<text name="error_WalletNotFound">Không tìm thấy thông tin ví cá nhân</text>
 		<text name="error_TransactionNotFound">Không tìm thấy thông tin lịch sử giao dịch</text>
+		<text name="error_UserHasBeenCreatedWallet">Người dùng đã tạo ví cá nhân</text>
 		
 	</texts>
 </localizationDictionary>

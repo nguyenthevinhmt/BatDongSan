@@ -37,5 +37,11 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         void UpdateStatus(UpdatePostStatusDto input);
+        /// <summary>
+        /// Danh sách bài viết cá nhân 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllPostByUserId(PostPagingRequestDto input);
     }
 }

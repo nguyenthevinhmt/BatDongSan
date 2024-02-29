@@ -37,5 +37,6 @@
         //Wallet
         WalletNotFound = 4000,
         TransactionNotFound = 4001,
+        UserHasBeenCreatedWallet = 4002,
     }
 }
