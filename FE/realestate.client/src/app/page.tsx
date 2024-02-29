@@ -2,7 +2,7 @@
 import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
 import React, { useState } from 'react';
-import { Flex, Tabs, Input, Cascader, Layout, Card } from 'antd';
+import { Flex, Tabs, Input, Cascader, Layout, Card, Affix } from 'antd';
 import { options, listTabs, listText } from './utils';
 import Image from 'next/image';
 import danang from "../assets/image/danang.jpg";
@@ -45,6 +45,9 @@ const App = () => {
     return (
         <>
             <div style={{ width: "100%", height: "auto", backgroundColor: "#F4F4F4" }}>
+                <Affix offsetTop={0}>
+                  <HeaderComponent />
+                </Affix>
                 <Layout style={{ margin: "0 auto", maxWidth: "1340px", minWidth: "1340px", backgroundColor: "#F4F4F4", padding: "0 167px" }}>
                     <Flex vertical
                         style={{

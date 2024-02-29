@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { LeftOutlined, RightOutlined, UserOutlined } from "@ant-design/icons";
 import "@/app/(pages)/(private)/styles/style.layout.css";
 import type { MenuProps } from "antd";
-import { Button, ConfigProvider, Layout, Menu } from "antd";
+import { Affix, Button, ConfigProvider, Layout, Menu } from "antd";
 import HeaderComponent from "@/components/shareLayout/header";
 import BreadscrumbComp from "@/components/shareLayout/breadscrumb";
 import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
@@ -83,7 +83,9 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
-          <HeaderComponent/>
+          <Affix offsetTop={0}>
+            <HeaderComponent />
+          </Affix>
           <Layout hasSider style={{ position: "relative" }}>
             <Sider
               trigger={null}

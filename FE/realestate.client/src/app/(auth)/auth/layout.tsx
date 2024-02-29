@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderComponent from "@/components/shareLayout/header";
-import { Flex, MenuProps } from "antd";
+import { Affix, Flex, MenuProps } from "antd";
 import loginBg from "@/assets/image/loginbackgroud.png";
 import Image from "next/image";
 
 const AuthLayout = ({ children }: { children: React.ReactElement }) => {
   return (
     <div>
-      <HeaderComponent/>
+      <Affix offsetTop={0}>
+          <HeaderComponent />
+      </Affix>
       <Flex vertical align="center" justify="center" gap="middle">
         <div style={{ marginTop: "25px" }}>
           <Flex
