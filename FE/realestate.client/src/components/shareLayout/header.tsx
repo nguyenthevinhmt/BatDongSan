@@ -17,14 +17,14 @@ import {
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
-import { CookieService } from "@/lib/services/cookies.service";
-import axiosInstance from "@/lib/configs/axiosInstance";
-import { environment } from "@/lib/environment/environment";
+import { CookieService } from "@/shared/services/cookies.service";
+import axiosInstance from "@/shared/configs/axiosInstance";
+import { environment } from "@/shared/environment/environment";
 import useSWR from "swr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
-import { HTTP_STATUS_CODE } from "@/lib/consts/http";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
 const fetcher = async (url: string) => {
     const token = CookieService.getAccessToken();
