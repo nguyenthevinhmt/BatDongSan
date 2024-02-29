@@ -45,5 +45,18 @@ namespace RealEstate.Utils.Securiry
             return new string(otpArray);
 
         }
+        public static string GetRandomWalletNumber()
+        {
+            const string chars = "0123456789";
+            Random random = new Random();
+            char[] otpArray = new char[15];
+
+            for (int i = 0; i < 9; i++)
+            {
+                otpArray[i] = chars[random.Next(chars.Length)];
+            }
+
+            return new string("BDS" + otpArray);
+        }
     }
 }

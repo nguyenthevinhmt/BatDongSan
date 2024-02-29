@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "antd/es/layout/layout";
 import { Avatar, Button, Dropdown, Menu } from "antd";
 import Image from "next/image";
@@ -24,6 +24,7 @@ import useSWR from "swr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
+import { HTTP_STATUS_CODE } from "@/lib/consts/http";
 
 const fetcher = async (url: string) => {
   const token = CookieService.getAccessToken();
@@ -40,6 +41,7 @@ const fetcher = async (url: string) => {
 };
 
 const HeaderComponent = () => {
+  const [userInfo, setUserInfo] = useState();
   const pathname = usePathname()
   const headerItems: MenuProps["items"] = [
     "Nhà đất bán",
@@ -57,40 +59,56 @@ const HeaderComponent = () => {
       lineHeight: "20px",
     },
   }));
+  useEffect(() => {
+    const repo = async() => {
+      try{
+        const res = await axiosInstance.get('http://localhost:5083/api/user/my-info', {
+      });
+      const data = await res.data;
+      return data;
+      }
+      catch(error){
+        console.log(error)
+      }
+    }
+    repo().then(res => setUserInfo(res))
+  }, [])
 
   const dispatch = useDispatch();
-  const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
-    shouldRetryOnError: false,
-    refreshInterval: 0,
-  });
+  // const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
+  //   shouldRetryOnError: false,
+  //   refreshInterval: 0,
+  // });
   const userSelector = useSelector((state: RootState) => {
     return state.auth.user.data;
   });
-  console.log(userSelector);
+  // console.log(userSelector);
   const fullname = (userSelector as any)?.fullname;
   const avatarUrl = (userSelector as any)?.avatarUrl;
   const router = useRouter();
   const handleLogout = async () => {
     dispatch(clearUserInfo());
-    const response = await axiosInstance.post(
-      "http://localhost:5083/connect/logout",
-      null,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+    try {
+      const response = await axiosInstance.post(
+        "http://localhost:5083/connect/logout",
+        null,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      if (response.status === HTTP_STATUS_CODE.OK) {
+        console.log("Đăng xuất thành công");
+        // localStorage.clear();
+        CookieService.removeToken();
       }
-    );
-    if (response.status === 200) {
-      console.log("Đăng xuất thành công");
-      localStorage.clear();
-      CookieService.removeToken();
-    }
-    if(pathname?.includes('/dashboard')) {
-      router.replace("/auth/login");
-    }
-    else {
-      console.log("Có lỗi xảy ra khi đăng xuất");
+      if(pathname?.includes('/dashboard')) {
+        router.replace("/auth/login");
+      }
+    } catch (error) {
+      console.log("Có lỗi xảy ra khi đăng xuất", error);
+      
     }
   };
   const items: MenuProps["items"] = [
@@ -147,13 +165,13 @@ const HeaderComponent = () => {
     },
   ];
   useEffect(() => {
-    if (!error) {
+    if (userInfo) {
       // userInfo = data;
-      dispatch(saveUserInfo(data));
+      dispatch(saveUserInfo(userInfo));
     } else {
       dispatch(clearUserInfo());
     }
-  }, [data, dispatch, error]);
+  }, [userInfo, dispatch]);
   return (
     <Header
       style={{

@@ -20,11 +20,14 @@ const axiosInstance = axios.create({
 
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
+
 // Add a request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
     let accessToken = CookieService.getAccessToken();
-    config.headers.Authorization = `Bearer ${accessToken}`;
+    if(accessToken){
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
     return config;
   },
   (error) => {
@@ -71,7 +74,6 @@ axiosInstance.interceptors.response.use(
               "Content-Type": "application/x-www-form-urlencoded",
             },
           });
-          console.log("111", response.data);
 
           if (response.status === 200) {
             const { res } = response?.data;
@@ -89,7 +91,7 @@ axiosInstance.interceptors.response.use(
             console.log("Error refreshing token");
           }
         } catch (error) {
-          // CookieService.removeToken();
+          CookieService.removeToken();
         } finally {
           isRefreshing = false;
         }
