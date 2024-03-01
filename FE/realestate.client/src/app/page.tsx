@@ -2,15 +2,16 @@
 import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
 import React, { useState } from 'react';
-import { Flex, Tabs, Input, Cascader, Layout, Card, Affix } from 'antd';
+import { Flex, Tabs, Input, Cascader, Layout, Card, FloatButton, Affix } from 'antd';
 import { options, listTabs, listText } from './utils';
 import Image from 'next/image';
 import danang from "../assets/image/danang.jpg";
 import hanoi from "../assets/image/hanoi.png";
-import hue from "../assets/image/hue.jpg";
 import HCM from "../assets/image/HCM.jpg";
-import FisrtSplitComponent from './homeComponent/FisrtSplitComponent';
-import ListGoods from './homeComponent/ListGoods';
+import FisrtSplitComponent from './components/FisrtSplitComponent';
+import ListGoods from './components/ListGoods';
+import { ArrowUpOutlined } from '@ant-design/icons'
+
 const App = () => {
     const { Search } = Input;
     const { Meta } = Card;
@@ -45,10 +46,8 @@ const App = () => {
     return (
         <>
             <div style={{ width: "100%", height: "100%", backgroundColor: "#F4F4F4" }}>
-                <Affix offsetTop={0}>
                   <HeaderComponent />
-                </Affix>
-                <Layout style={{ margin: "0 auto", maxWidth: "1340px", minWidth: "1340px", backgroundColor: "#F4F4F4", padding: "0 167px" }}>
+                <Layout style={{ margin: "0 auto", maxWidth: "1349px ", minWidth: "1349px ", backgroundColor: "#F4F4F4", padding: "0 167px" }}>
                     <Flex vertical
                         style={{
                             margin: "20px auto",
@@ -107,12 +106,7 @@ const App = () => {
                                 cover={<Image alt="example" width={350} height={200} src={hanoi} />}>
                                 <p style={{ textAlign: "center", color: "#1266DD", fontSize: "15px", fontWeight: "700" }}>Thủ đô Hà Nội</p>
                             </Card>
-                            <Card
-                                hoverable
-                                style={{ width: 240 }}
-                                cover={<Image alt="example" width={350} height={200} src={hue} />}>
-                                <p style={{ textAlign: "center", color: "#1266DD", fontSize: "15px", fontWeight: "700" }}>Thành phố Huế</p>
-                            </Card>
+                            
                             <Card
                                 hoverable
                                 style={{ width: 240 }}
@@ -128,8 +122,15 @@ const App = () => {
                         </Flex>
                     </div>
                     <FisrtSplitComponent />
-                    <ListGoods />
+                    
                 </Layout>
+                <div  style={{ width: "100%", height: "auto", backgroundColor: "#fff" }}>
+                    <div style={{ background: "#fff", margin: "0 auto", maxWidth: "1349px", minWidth: "1349px", padding: "0 167px" }}>
+                        <ListGoods />
+                    </div>
+                </div>
+                
+                <FloatButton.BackTop duration={1000} shape="square" style={{background:"#FAFAFA"}} icon={<ArrowUpOutlined />}/>
             </div>
         </>
     );

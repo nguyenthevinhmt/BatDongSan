@@ -83,9 +83,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     <ConfigProvider theme={theme}>
       <div style={{ height: "100%", width: "100%" }}>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
-          <Affix offsetTop={0}>
             <HeaderComponent />
-          </Affix>
           <Layout hasSider style={{ position: "relative" }}>
             <Sider
               trigger={null}
