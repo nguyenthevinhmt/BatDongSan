@@ -21,5 +21,6 @@ namespace RealEstate.ApplicationService.WalletModule.Abstracts
         /// </summary>
         /// <param name="userId"></param>
         void CreateNewWallet(int userId);
+
     }
 }

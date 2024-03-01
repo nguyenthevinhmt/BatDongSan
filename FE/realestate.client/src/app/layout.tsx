@@ -17,9 +17,7 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => (
     <body>
       <AntdRegistry>
         <StoreProvider>
-          <Suspense fallback={<>Loading</>}>
             <CommontLayout>{children}</CommontLayout>
-          </Suspense>
         </StoreProvider>
       </AntdRegistry>
     </body>

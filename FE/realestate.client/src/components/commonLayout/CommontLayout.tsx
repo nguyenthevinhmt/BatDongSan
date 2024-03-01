@@ -1,8 +1,7 @@
 "use client";
 import theme from "@/theme/themeConfig";
-import { Affix, ConfigProvider, Layout } from "antd";
-import React, { useState } from "react";
-import HeaderComponent from "../shareLayout/header";
+import {ConfigProvider, Layout } from "antd";
+import React from "react";
 
 const CommontLayout = ({ children }: { children: React.ReactElement }) => {
   return (
