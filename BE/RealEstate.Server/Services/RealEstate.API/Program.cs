@@ -35,6 +35,7 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPostTypeService, PostTypeService>();
 builder.Services.AddScoped<IVnpayService, VnpayService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IVnpayService, VnpayService>();
 var app = builder.Build();
 
 app.Configure();

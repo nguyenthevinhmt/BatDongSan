@@ -28,7 +28,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
             var walletInfo = new Wallet
             {
                 Balance = 0,
-                WalletNumber = "BDS" + user.PhoneNumber,
+                WalletNumber = "BDS" + user.Id + user.PhoneNumber,
                 UserId = userId,
             };
             _dbContext.Wallets.Add(walletInfo);
