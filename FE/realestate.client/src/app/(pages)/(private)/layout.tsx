@@ -12,13 +12,10 @@ import {
 } from "@ant-design/icons";
 import "@/app/(pages)/(private)/styles/style.layout.css";
 import type { MenuProps } from "antd";
-import { Affix, Button, ConfigProvider, Layout, Menu } from "antd";
+import { Button, ConfigProvider, Layout, Menu } from "antd";
 import HeaderComponent from "@/components/shareLayout/header";
-import BreadscrumbComp from "@/components/shareLayout/breadscrumb";
-import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
 import theme from "@/theme/themeConfig";
 import isAuth from "@/app/isAuth";
-import withTheme from "@/theme";
 import MenuItem from "antd/es/menu/MenuItem";
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -73,7 +70,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   };
   return (
     <ConfigProvider theme={theme}>
-      <div style={{ height: "100%", width: "100%" }}>
+      <div style={{ height: "100vh", width: "100%" }}>
         <HeaderComponent />
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
           <Layout hasSider style={{ position: "relative" }}>
@@ -83,10 +80,8 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
               collapsed={collapsed}
               width={248}
               style={{
-                height: "100vh",
+                height: "100%",
                 backgroundColor: "#fff",
-                // transition: "0.01s",
-                // position: "fixed",
                 zIndex: 99,
               }}
             >
@@ -123,17 +118,15 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
             <Layout
               style={{
                 padding: "0px 0px 24px 24px",
-                overflow: "initial",
-                height: "100vh",
+                overflow: "scroll",
+                height: "100%",
               }}
             >
-              {/* <BreadscrumbComp items={breadscrumbItems} /> */}
               <Content
                 style={{
                   padding: 14,
                   margin: 0,
                   minHeight: 280,
-                  /*background: "#fff",*/
                   borderRadius: "8px",
                 }}
               >
@@ -146,7 +139,5 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     </ConfigProvider>
   );
 };
-
-// export default withTheme(isAuth(PrivateLayout));
-// export default PrivateLayout;
-export default isAuth(PrivateLayout);
+export default PrivateLayout;
+// export default isAuth(PrivateLayout);

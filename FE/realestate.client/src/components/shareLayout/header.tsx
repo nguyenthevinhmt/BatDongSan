@@ -185,6 +185,7 @@ const HeaderComponent = () => {
         boxShadow: "0px 2px 10px #ccc",
         zIndex: 99,
         marginBottom: "10px",
+        position: "sticky",
       }}
     >
       <div
