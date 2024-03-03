@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.Common;
@@ -12,6 +13,7 @@ using RealEstate.Utils.CustomException;
 using RealEstate.Utils.Linq;
 using SixLabors.ImageSharp;
 using System.Text.Json;
+using Media = RealEstate.Domain.Entities.Media;
 
 namespace RealEstate.ApplicationService.PostModule.Implements
 {
@@ -43,9 +45,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
                 Status = PostStatuses.POSTED,
-                UserId = currentUserId,
+                UserId = currentUserId
             };
-            var post = _dbContext.Posts.Add(newPost).Entity;
+            var post = _dbContext.Posts.Add(newPost);
             _dbContext.SaveChanges();
             var listMedia = input.ListMedia;
             if (listMedia != null)
@@ -57,7 +59,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                         Name = media.Name,
                         Description = media.Description,
                         MediaUrl = media.MediaUrl,
-                        PostId = post.Id
+                        PostId = post.Entity.Id
                     };
                     _dbContext.Medias.Add(imageMedia);
                 }
