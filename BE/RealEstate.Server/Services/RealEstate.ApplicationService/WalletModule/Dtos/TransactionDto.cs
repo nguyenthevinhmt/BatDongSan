@@ -12,6 +12,10 @@
         /// </summary>
         public double Amount { get; set; }
         /// <summary>
+        /// Mã giao dịch
+        /// </summary>
+        public string TransactionNumber { get; set; } = null!;
+        /// <summary>
         /// Loại giao dịch
         /// </summary>
         public int TransactionType { get; set; }

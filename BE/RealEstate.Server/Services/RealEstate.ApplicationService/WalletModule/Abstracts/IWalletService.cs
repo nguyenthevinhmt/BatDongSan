@@ -21,6 +21,22 @@ namespace RealEstate.ApplicationService.WalletModule.Abstracts
         /// </summary>
         /// <param name="userId"></param>
         void CreateNewWallet(int userId);
+        /// <summary>
+        /// Nạp tiền
+        /// </summary>
+        /// <param name="input"></param>
+        void Recharge(RechargeDto input);
+
+        /// <summary>
+        /// Rút tiền về tài khoản ngân hàng
+        /// </summary>
+        /// <param name="input"></param>
+        void Withdraw(WithdrawDto input);
+        /// <summary>
+        /// Thanh toán đăng bài
+        /// </summary>
+        /// <param name="input"></param>
+        void Payment(PaymentDto input);
 
     }
 }

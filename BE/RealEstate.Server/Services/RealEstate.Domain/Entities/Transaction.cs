@@ -18,13 +18,14 @@ namespace RealEstate.Domain.Entities
         /// Mã số ví
         /// </summary>
         public int WalletID { get; set; }
-        public Wallet Wallet { get; set; } = new();
+        public Wallet? Wallet { get; set; }
         /// <summary>
         /// Số tiền giao dịch
         /// </summary>
         public double Amount { get; set; }
         /// <summary>
         /// Loại giao dịch
+        /// <see cref="RealEstate.Utils.ConstantVariables.Wallet.TransactionType"/>
         /// </summary>
         public int TransactionType { get; set; }
         /// <summary>

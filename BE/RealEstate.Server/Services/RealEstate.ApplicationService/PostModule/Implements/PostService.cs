@@ -7,6 +7,7 @@ using RealEstate.ApplicationService.PostModule.Dtos;
 using RealEstate.Domain.Entities;
 using RealEstate.Utils.ConstantVariables.Post;
 using RealEstate.Utils.ConstantVariables.Shared;
+using RealEstate.Utils.ConstantVariables.Wallet;
 using RealEstate.Utils.CustomException;
 using RealEstate.Utils.Linq;
 using SixLabors.ImageSharp;
@@ -19,6 +20,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         public PostService(ILogger<PostService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
         }
+
 
         public void CreatePost(CreatePostDto input)
         {
@@ -40,10 +42,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 YoutubeLink = input.YoutubeLink,
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
-                Status = PostStatuses.INIT,
+                Status = PostStatuses.POSTED,
                 UserId = currentUserId,
             };
-
             var post = _dbContext.Posts.Add(newPost).Entity;
             _dbContext.SaveChanges();
             var listMedia = input.ListMedia;
@@ -61,6 +62,29 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                     _dbContext.Medias.Add(imageMedia);
                 }
             }
+            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
+                        ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
+            if (wallet.Balance < input.TransactionAmount)
+            {
+                throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
+            }
+            else
+            {
+                wallet.Balance -= input.TransactionAmount;
+            }
+
+            var payloadToTransaction = new Transaction()
+            {
+                Amount = input.TransactionAmount,
+                Description = $"Thanh toan dang bai. So tien giao dich {input.TransactionAmount}",
+                TransactionFrom = input.WalletNumber,
+                TransactionType = TransactionType.OUTPUT,
+                TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                TransactionTo = "Tai khoan he thong",
+                WalletID = wallet.Id,
+                CreateDate = DateTime.Now,
+            };
+            _dbContext.Transactions.Add(payloadToTransaction);
             _dbContext.SaveChanges();
             transaction.Commit();
         }
@@ -131,6 +155,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 || (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
                                 || (post.PostTypeId == input.PostType)
                                 || (post.RealEstateTypeId == input.RealEstateType))
+                                || (post.Status == input.PostStatus)
                         select new PostDto
                         {
                             Title = post.Title,

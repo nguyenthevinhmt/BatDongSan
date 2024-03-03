@@ -33,6 +33,17 @@ const authSlice = createSlice({
     clearUserInfo: (state) => {
       state.user = {};
     },
+    clearUserToken: (state) => {
+      state.data = {};
+    },
+    saveUserToken: (state, action) => {
+      return {
+        ...state,
+        data: {
+          ...action.payload,
+        },
+      };
+    },
   },
   extraReducers(builder) {
     // builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
@@ -42,6 +53,12 @@ const authSlice = createSlice({
   },
 });
 
-export const { saveLoginInfo, saveUserInfo, clearUserInfo } = authSlice.actions;
+export const {
+  saveLoginInfo,
+  saveUserInfo,
+  clearUserInfo,
+  saveUserToken,
+  clearUserToken,
+} = authSlice.actions;
 const authReducer = authSlice.reducer;
 export default authReducer;

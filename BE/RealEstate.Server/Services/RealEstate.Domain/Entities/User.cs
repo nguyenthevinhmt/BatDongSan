@@ -50,6 +50,7 @@ namespace RealEstate.Domain.Entities
         public List<Favorite> Favorites { get; } = new();
         public List<Post> Posts { get; } = new();
         public List<UserIdentification> UserIdentifications { get; } = new();
+        public List<BankAccount> BankAccounts { get; } = new();
         public DateTime? CreatedDate { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
