@@ -2,6 +2,8 @@ using IdentityServerBase.Middlewares;
 using RealEstate.API.Middlewares;
 using RealEstate.ApplicationService.AuthModule.Abstracts;
 using RealEstate.ApplicationService.AuthModule.Implements;
+using RealEstate.ApplicationService.BankAccountModule.Abstract;
+using RealEstate.ApplicationService.BankAccountModule.Implements;
 using RealEstate.ApplicationService.Common.Localization;
 using RealEstate.ApplicationService.ConfigurationModule.Abstracts;
 using RealEstate.ApplicationService.ConfigurationModule.Implements;
@@ -36,6 +38,7 @@ builder.Services.AddScoped<IPostTypeService, PostTypeService>();
 builder.Services.AddScoped<IVnpayService, VnpayService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IVnpayService, VnpayService>();
+builder.Services.AddScoped<IBankAccountService, BankAccountService>();
 var app = builder.Build();
 
 app.Configure();

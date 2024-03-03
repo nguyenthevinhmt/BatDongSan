@@ -25,7 +25,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
             var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnpayLibrary();
             var userId = _httpContext.GetCurrentUserId();
-            var orderDesc = $"Nap tien vao vi dien tu ca nhan batdongsan.com. Ma vi {input.WalletId}"; 
+            var orderDesc = $"Nap tien vao vi dien tu ca nhan batdongsan.com. Ma vi {input.WalletNumber}"; 
 
             pay.AddRequestData("vnp_Version", _appSettings.Value.Version);
             pay.AddRequestData("vnp_Command", _appSettings.Value.Command);
@@ -35,7 +35,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
             pay.AddRequestData("vnp_CurrCode", _appSettings.Value.CurrCode);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _appSettings.Value.Locale);
-            pay.AddRequestData("vnp_OrderInfo", input.WalletId.ToString());
+            pay.AddRequestData("vnp_OrderInfo", input.WalletNumber.ToString());
             pay.AddRequestData("vnp_OrderType", orderDesc);
             pay.AddRequestData("vnp_ReturnUrl", "http://localhost:3000/VnpayCallback/PaymentCallback");
             pay.AddRequestData("vnp_TxnRef", tick);

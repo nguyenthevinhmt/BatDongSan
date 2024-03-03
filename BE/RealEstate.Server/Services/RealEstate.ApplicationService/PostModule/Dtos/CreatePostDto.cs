@@ -99,6 +99,19 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// </summary>
         public int RealEstateTypeId { get; set; }
 
+        /// <summary>
+        /// Mã ví
+        /// </summary>
+        public string WalletNumber { get; set; } = null!;
+        /// <summary>
+        /// Số tiền thanh toán 
+        /// </summary>
+        public double TransactionAmount { get; set; }
+        /// <summary>
+        /// Số giao dịch
+        /// </summary>
+        public string TransactionNumber { get; set; } = null!;
+
         public List<CreateMediaDto>? ListMedia { get; set; }
     }
 }

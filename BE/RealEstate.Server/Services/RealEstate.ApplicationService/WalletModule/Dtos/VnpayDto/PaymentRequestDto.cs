@@ -5,7 +5,7 @@
         /// <summary>
         /// Mã ví điện tử cá nhân
         /// </summary>
-        public int WalletId {  get; set; }
+        public string WalletNumber {  get; set; } = string.Empty;
         /// <summary>
         /// Số tiền giao dịch
         /// </summary>

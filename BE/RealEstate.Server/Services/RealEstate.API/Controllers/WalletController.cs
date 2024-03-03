@@ -50,5 +50,41 @@ namespace RealEstate.API.Controllers
             _walletService.CreateNewWallet(userId);
             return new();
         }
+
+        /// <summary>
+        /// Nạp tiền
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("recharge")]
+        public ApiResponse Recharge([FromBody]RechargeDto input)
+        {
+            _walletService.Recharge(input);
+            return new();
+        }
+
+        /// <summary>
+        /// Rút tiền về tài khoản ngân hàng
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("withdraw")]
+        public ApiResponse Withdraw([FromBody] WithdrawDto input)
+        {
+            _walletService.Withdraw(input);
+            return new();
+        }
+
+        /// <summary>
+        /// Thanh toán đăng bài
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("payment")]
+        public ApiResponse Payment([FromBody] PaymentDto input)
+        {
+            _walletService.Payment(input);
+            return new();
+        }
     }
 }
