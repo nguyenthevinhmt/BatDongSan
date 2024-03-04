@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "@/app/(pages)/(private)/styles/style.layout.css";
 import { Button, Collapse, CollapseProps, Flex, Form, Input, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { getUserInfo } from "../_services/user.service";
+import { getUserInfo } from "../../../../services/user/user.service";
 
 const UserPage = () => {
   //const dispatch = useDispatch<AppDispatch>();
