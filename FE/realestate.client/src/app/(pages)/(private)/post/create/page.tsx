@@ -24,31 +24,37 @@ import {
   apiRemoveImage,
   apiUploadImage,
   getPublicIdFromUrl,
-  addPost
+  addPost,
 } from "@/services/post/post.service";
+import { UserType } from "@/shared/consts/userType";
+import isAuth from "@/app/isAuth";
 import { getUserInfo } from "@/services/user/user.service";
-import { getProvinces, getDistricts, getWards } from "@/services/post/vnAddress.service";
+import {
+  getProvinces,
+  getDistricts,
+  getWards,
+} from "@/services/post/vnAddress.service";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 interface post {
-  title: string,
-  description: string,
-  province: string,
-  distinct: string,
-  ward: string,
-  street: string,
-  detailAddress: string,
-  area: number,
-  price: number,
-  rentalObject: number,
-  youtubeLink: string,
-  postTypeId: number,
-  realEstateTypeId: number,
-  walletNumber: string,
-  transactionAmount: number,
-  transactionNumber: string,
-  listMedia: MediaType[]
+  title: string;
+  description: string;
+  province: string;
+  distinct: string;
+  ward: string;
+  street: string;
+  detailAddress: string;
+  area: number;
+  price: number;
+  rentalObject: number;
+  youtubeLink: string;
+  postTypeId: number;
+  realEstateTypeId: number;
+  walletNumber: string;
+  transactionAmount: number;
+  transactionNumber: string;
+  listMedia: MediaType[];
 }
 
 interface MediaType {
@@ -82,7 +88,6 @@ const CreatePost = () => {
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
 
-
   useEffect(() => {
     const getData = async () => {
       const info = await getUserInfo();
@@ -95,7 +100,7 @@ const CreatePost = () => {
       setProvinces(provincesResponse?.data);
       setDistricts([]);
       setWards([]);
-    }
+    };
 
     getData();
   }, []);
@@ -103,14 +108,14 @@ const CreatePost = () => {
   const initialValues = {
     name: fullName,
     phonNumber: phone,
-    email: email
-  }
+    email: email,
+  };
 
   // Xử lý sự kiện khi chọn tỉnh/thành phố
   const handleProvinceChange = async (value: any, option: any) => {
     const provinceId = option.key;
     const districtsResponse = await getDistricts(); // Gọi API lấy danh sách quận/huyện
-    
+
     const filteredDistricts = districtsResponse?.data.filter(
       (district: any) => district.cityId === provinceId
     );
@@ -124,7 +129,7 @@ const CreatePost = () => {
   const handleDistrictChange = async (value: any, option: any) => {
     const districtId = option.key;
     const wardsResponse = await getWards(); // Gọi API lấy danh sách quận/huyện
-    
+
     const filteredWards = wardsResponse?.data.filter(
       (ward: any) => ward.districtId === districtId
     );
@@ -201,7 +206,7 @@ const CreatePost = () => {
   };
 
   const handleSubmit = async () => {
-    const value = await form.validateFields() as post;
+    const value = (await form.validateFields()) as post;
 
     const postInfo: post = {
       title: value.title,
@@ -217,15 +222,15 @@ const CreatePost = () => {
       youtubeLink: value.youtubeLink,
       postTypeId: postType,
       realEstateTypeId: value.realEstateTypeId,
-      walletNumber: "3", //tự tạo trong db
-      transactionAmount: 3, //tự tạo trong db
+      walletNumber: "1", //tự tạo trong db
+      transactionAmount: 1, //tự tạo trong db
       transactionNumber: "string", //tự tạo trong db
-      listMedia: listMedia
+      listMedia: listMedia,
     };
 
     const response = await addPost(postInfo);
     console.log("đã đăng tin!", response?.data);
-  }
+  };
 
   return (
     <Flex justify="center" gap="small" vertical>
@@ -239,7 +244,13 @@ const CreatePost = () => {
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
         }}
       >
-        <Form form={form} layout="vertical" autoComplete="off" onFinish={handleSubmit} initialValues={initialValues}>
+        <Form
+          form={form}
+          layout="vertical"
+          autoComplete="off"
+          onFinish={handleSubmit}
+          initialValues={initialValues}
+        >
           <p
             style={{
               fontSize: 24,
@@ -277,8 +288,7 @@ const CreatePost = () => {
                   width: "100%",
                   backgroundColor:
                     postType === 2 ? "rgba(0, 0, 0, 0.6)" : "#fff",
-                  color:
-                    postType === 2 ? "white" : "rgb(153, 153, 153)",
+                  color: postType === 2 ? "white" : "rgb(153, 153, 153)",
                   fontWeight: postType === 2 ? "bold" : "normal",
                   border: "1px solid rgb(204, 204, 204)",
                   borderTopRightRadius: 5,
@@ -365,11 +375,13 @@ const CreatePost = () => {
             >
               <Select
                 placeholder="Chọn tỉnh/thành phố"
-                onChange={(value, option) => handleProvinceChange(value, option)}
+                onChange={(value, option) =>
+                  handleProvinceChange(value, option)
+                }
               >
                 {provinces.map((province) => (
-                  <Option key={province['cityId']} value={province['name']}>
-                    {province['name']}
+                  <Option key={province["cityId"]} value={province["name"]}>
+                    {province["name"]}
                   </Option>
                 ))}
               </Select>
@@ -384,11 +396,13 @@ const CreatePost = () => {
             >
               <Select
                 placeholder="Chọn quận/huyện"
-                onChange={(value, option) => handleDistrictChange(value, option)}
+                onChange={(value, option) =>
+                  handleDistrictChange(value, option)
+                }
               >
                 {districts.map((district) => (
-                  <Option key={district['districtId']} value={district['name']}>
-                    {district['name']}
+                  <Option key={district["districtId"]} value={district["name"]}>
+                    {district["name"]}
                   </Option>
                 ))}
               </Select>
@@ -404,12 +418,10 @@ const CreatePost = () => {
                 { required: true, message: "Phường, xã không được bỏ trống" },
               ]}
             >
-              <Select
-                placeholder="Chọn phường/xã"
-              >
+              <Select placeholder="Chọn phường/xã">
                 {wards.map((ward) => (
-                  <Option key={ward['wardId']} value={ward['name']}>
-                    {ward['name']}
+                  <Option key={ward["wardId"]} value={ward["name"]}>
+                    {ward["name"]}
                   </Option>
                 ))}
               </Select>
@@ -483,9 +495,7 @@ const CreatePost = () => {
                 }
                 rules={[{ required: true, message: "* Tiêu đề bắt buộc nhập" }]}
               >
-
                 <Input style={{ height: 50 }} />
-
               </Form.Item>
             </Tooltip>
             <Form.Item
@@ -667,17 +677,25 @@ const CreatePost = () => {
                 name="name"
                 label={<strong>Tên liên hệ</strong>}
                 style={{ width: "50%" }}
-              //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
+                //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
               >
-                <Input value={fullName} placeholder={fullName} onChange={e => setFullName(e.target.value)} />
+                <Input
+                  value={fullName}
+                  placeholder={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
               </Form.Item>
               <Form.Item
                 name="phoneNumber"
                 label={<strong>Số điện thoại</strong>}
                 style={{ width: "50%" }}
-              //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
+                //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
               >
-                <Input value={phone} placeholder={phone} onChange={e => setPhone(e.target.value)} />
+                <Input
+                  value={phone}
+                  placeholder={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
               </Form.Item>
             </Flex>
 
@@ -685,9 +703,13 @@ const CreatePost = () => {
               name="email"
               label={<strong>Email</strong>}
               style={{ width: "50%", marginTop: "-5px" }}
-            //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
+              //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
             >
-              <Input value={email} placeholder={email} onChange={e => setEmail(e.target.value)} />
+              <Input
+                value={email}
+                placeholder={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </Form.Item>
           </div>
 
@@ -745,4 +767,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default isAuth(CreatePost, [UserType.ADMIN, UserType.CUSTOMER]);
