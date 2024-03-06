@@ -7,6 +7,7 @@ import "@/app/(pages)/(private)/styles/style.layout.css";
 import { Button, Collapse, CollapseProps, Flex, Form, Input, Modal, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { getUserInfo, updateUserInfo, changePassword, removeAccount } from "../../../../services/user/user.service";
+import { useLoginMutation, useLogoutMutation } from "@/app/(auth)/auth/_services/auth.service";
 
 const UserPage = () => {
   //const dispatch = useDispatch<AppDispatch>();
@@ -60,7 +61,6 @@ const UserPage = () => {
   // Handler for saving personal information
   const handleSavePersonalInfo = async () => {
     const request = await updateUserInfo(email, phone, fullName, id, status);
-    console.log(request);
   };
 
   // Handler for changing password
@@ -77,10 +77,13 @@ const UserPage = () => {
 
   };
 
+  const [logout, {data}] = useLogoutMutation();
+
   // Handler for requesting account deletion
   const handleRequestAccountDeletion = async () => {
-    //const request = await removeAccount(id);
-    //console.log(request);
+    const request = await removeAccount(id);
+    
+    const temp = await logout;
   };
 
   return (

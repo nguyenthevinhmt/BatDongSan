@@ -62,7 +62,7 @@ export const changePassword = async (oldPass: string, newPass: string) => {
 //xóa tài khoản (yêu cầu quyền)
 export const removeAccount = async (id: number) => {
   try {
-    const response = await axiosInstance.delete(`${environment.baseUrl}/api/user/remove/id=${id}`);
+    const response = await axiosInstance.delete(`${environment.baseUrl}/api/user/remove?id=${id}`);
     if (response.status === 200) {
       return response;
     }
