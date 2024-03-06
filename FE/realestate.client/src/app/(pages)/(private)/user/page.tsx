@@ -4,13 +4,13 @@ import { RootState, AppDispatch } from "@/redux/store";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "@/app/(pages)/(private)/styles/style.layout.css";
-import { Button, Collapse, CollapseProps, Flex, Form, Input, Upload } from "antd";
+import { Button, Collapse, CollapseProps, Flex, Form, Input, Modal, Upload } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { getUserInfo } from "../../../../services/user/user.service";
+import { getUserInfo, updateUserInfo, changePassword, removeAccount } from "../../../../services/user/user.service";
 
 const UserPage = () => {
   //const dispatch = useDispatch<AppDispatch>();
-  const [form] = Form.useForm<{ email: string; phone: string }>();
+  const [form] = Form.useForm();
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -20,16 +20,21 @@ const UserPage = () => {
   };
 
   const [isExpandedLeft, setIsExpandedLeft] = useState(true);
+  const [id, setId] = useState<number>(0);
+  const [status, setStatus] = useState<number>(0);
   const [avatar, setAvatar] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const getData = async () => {
       const info = await getUserInfo();
       const response = info?.data.data;
 
+      setId(response.id);
+      setStatus(response.status);
       setAvatar(response.avatarUrl);
       setFullName(response.fullname);
       setPhone(response.phoneNumber);
@@ -38,6 +43,45 @@ const UserPage = () => {
 
     getData();
   }, [])
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    handleRequestAccountDeletion();
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  // Handler for saving personal information
+  const handleSavePersonalInfo = async () => {
+    const request = await updateUserInfo(email, phone, fullName, id, status);
+    console.log(request);
+  };
+
+  // Handler for changing password
+  const handleChangePassword = async () => {
+    const value = await form.validateFields();
+    const { oldPass, newPass, confirmNewPass } = value;
+    if (newPass !== confirmNewPass) {
+      console.log("mật khẩu mới khác nhau");
+    }
+    else {
+      const request = await changePassword(oldPass, newPass);
+      console.log(request);
+    }
+
+  };
+
+  // Handler for requesting account deletion
+  const handleRequestAccountDeletion = async () => {
+    //const request = await removeAccount(id);
+    //console.log(request);
+  };
 
   return (
     <div
@@ -49,9 +93,10 @@ const UserPage = () => {
         borderRadius: 8,
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)'
       }}>
+
       <p
         style={{
-          fontSize: 30,
+          fontSize: 25,
           marginBottom: 5
         }}>Quản lý tài khoản</p>
       <div
@@ -97,8 +142,8 @@ const UserPage = () => {
                   </Form.Item>
 
 
-                  <Form.Item label="Họ và tên">
-                    <Input value={fullName} placeholder={fullName} onChange={e => setFullName(e.target.value)}/>
+                  <Form.Item label="fullname">
+                    <Input value={fullName} placeholder={fullName} onChange={e => setFullName(e.target.value)} />
                   </Form.Item>
                 </div>
             }]}
@@ -114,7 +159,7 @@ const UserPage = () => {
                   <Form.Item name="phone" label="Số điện thoại">
                     <Input value={phone} placeholder={phone} onChange={e => setPhone(e.target.value)} />
                   </Form.Item>
-                  <Form.Item name="name" label="Email">
+                  <Form.Item name="email" label="Email">
                     <Input value={email} placeholder={email} onChange={e => setEmail(e.target.value)} />
                   </Form.Item>
                 </div>
@@ -131,7 +176,9 @@ const UserPage = () => {
                     color: 'white',
                     backgroundColor: '#ff4d4f',
                     border: 'none'
-                  }}>Lưu thay đổi</Button>
+                  }}
+                  onClick={() => handleSavePersonalInfo()}
+                >Lưu thay đổi</Button>
               </Form.Item>
             </div>
           </Form>
@@ -146,15 +193,27 @@ const UserPage = () => {
               children:
                 <div>
                   <div>
-                    <Form.Item label="Nhập mật khẩu cũ">
-                      <Input />
+                    <Form.Item name="oldPass" label="Nhập mật khẩu cũ">
+                      <Input type="password" />
                     </Form.Item>
 
-                    <Form.Item label="Nhập mật khẩu mới">
-                      <Input />
+                    <Form.Item name="newPass" label="Nhập mật khẩu mới">
+                      <Input type="password" />
                     </Form.Item>
 
-                    <Form.Item label="Nhập lại mật khẩu mới">
+                    <Form.Item name="confirmNewPass" label="Nhập lại mật khẩu mới"
+                      rules={[
+                        // Rule để kiểm tra xem mật khẩu xác nhận mới có khớp với mật khẩu mới không
+                        ({ getFieldValue }) => ({
+                          validator(_, value) {
+                            const newPassValue = getFieldValue("newPass");
+                            if (!value || !newPassValue || value === newPassValue) {
+                              return Promise.resolve();
+                            }
+                            return Promise.reject(new Error('Mật khẩu mới không khớp!'));
+                          },
+                        }),
+                      ]}>
                       <Input />
                     </Form.Item>
                   </div>
@@ -169,11 +228,14 @@ const UserPage = () => {
                       style={{
                         backgroundColor: 'red',
                         color: 'white'
-                      }}>Đổi mật khẩu</Button>
+                      }}
+                      onClick={() => handleChangePassword()}
+                    >Đổi mật khẩu</Button>
                   </Form.Item>
                 </div>
             }]}
               style={{ marginBottom: 2 }}
+              defaultActiveKey={['3']}
             />
 
             <Collapse items={[{
@@ -193,11 +255,19 @@ const UserPage = () => {
                       style={{
                         backgroundColor: 'red',
                         color: 'white'
-                      }}>Yêu cầu xóa tài khoản</Button>
+                      }}
+                      onClick={() => showModal()}
+                    >Yêu cầu xóa tài khoản</Button>
                   </Form.Item>
+                  <Modal title="Xác nhận xóa tài khoản" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                    <p>Bạn sẽ vĩnh viễn không thể truy cập vào tài khoản sau khi xác nhận xóa tài khoản.</p>
+                    <p>Mọi dữ liệu của bạn tại trang web sẽ không còn nữa.</p>
+                    <p>Bạn chắc chắn muốn xóa tài khoản chứ?</p>
+                  </Modal>
                 </div>
             }]}
               style={{ marginBottom: 2 }}
+              defaultActiveKey={['4']}
             />
           </Form>
         </div>

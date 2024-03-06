@@ -90,7 +90,6 @@ interface MediaType {
 }
 
 export const addPost = async (info: post) => {
-
   const {
     title,
     description,
@@ -142,6 +141,19 @@ export const addPost = async (info: post) => {
   }
   catch (error) {
     console.log("Error: Gọi api đăng bài bị lỗi!!!");
+    return null;
+  }
+}
+
+export const getById = async (id: number) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/find-by-id?id=${id}`);
+    if (response.status === 200) {
+      return response;
+    }
+  }
+  catch (error) {
+    console.log("Error: Gọi api getbyid của post bị lỗi!!!");
     return null;
   }
 }
