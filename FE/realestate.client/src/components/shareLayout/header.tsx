@@ -94,6 +94,9 @@ const HeaderComponent = () => {
       icon: (
         <SolutionOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
       ),
+      onClick: () => {
+        router.push("/user");
+      },
     },
     {
       key: "2",
@@ -103,6 +106,9 @@ const HeaderComponent = () => {
           style={{ fontSize: " 16px", marginRight: "15px" }}
         />
       ),
+      onClick: () => {
+        router.push("/post");
+      },
     },
     {
       key: "3",
@@ -115,6 +121,9 @@ const HeaderComponent = () => {
           }}
         />
       ),
+      onClick: () => {
+        router.push("/wallet");
+      },
     },
     {
       key: "4",
@@ -127,6 +136,9 @@ const HeaderComponent = () => {
           }}
         />
       ),
+      onClick: () => {
+        router.push("/user");
+      },
     },
     {
       key: "5",
@@ -142,10 +154,7 @@ const HeaderComponent = () => {
   ];
   useEffect(() => {
     if (userInfo) {
-      // userInfo = data;
       dispatch(saveUserInfo(userInfo));
-    } else {
-      dispatch(clearUserInfo());
     }
   }, [userInfo, dispatch]);
   return (
@@ -273,11 +282,11 @@ const HeaderComponent = () => {
                       }}
                       size={"large"}
                       src={
-                        <img
+                        <Image
                           src={avatarUrl}
                           alt="avatar"
-                          height={"100%"}
-                          width={"100%"}
+                          height={44}
+                          width={44}
                         />
                       }
                     ></Avatar>
@@ -305,7 +314,7 @@ const HeaderComponent = () => {
           ghost
           style={{ fontWeight: 500 }}
           onClick={() => {
-            router.push("/dashboard");
+            router.push("/post/create");
           }}
         >
           Đăng tin

@@ -15,8 +15,8 @@ import type { MenuProps } from "antd";
 import { Button, ConfigProvider, Layout, Menu } from "antd";
 import HeaderComponent from "@/components/shareLayout/header";
 import theme from "@/theme/themeConfig";
-import isAuth from "@/app/isAuth";
 import MenuItem from "antd/es/menu/MenuItem";
+import Link from "next/link";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -25,6 +25,7 @@ function getItem(
   icon?: React.ReactNode,
   children?: MenuItem[],
   type?: "group"
+  // onClick?: MenuClickEventHandler
 ): MenuItem {
   return {
     key,
@@ -32,14 +33,19 @@ function getItem(
     children,
     label,
     type,
+    // onClick,
   } as MenuItem;
 }
 const { Content, Sider } = Layout;
 const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   const items: MenuItem[] = [
-    getItem("Tổng quan", "1", <PieChartOutlined />),
+    getItem(
+      <Link href={"/dashboard"}>Tổng quan</Link>,
+      "1",
+      <PieChartOutlined />
+    ),
     getItem("Quản lý tin đăng", "2", <DesktopOutlined />, [
-      getItem("Đăng mới", "a"),
+      getItem(<Link href={"/post/create"}>Đăng mới</Link>, "a"),
       getItem("Danh sách tin", "b"),
       getItem("Danh sách tin nháp", "c"),
     ]),
