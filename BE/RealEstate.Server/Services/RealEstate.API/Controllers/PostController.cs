@@ -51,6 +51,17 @@ namespace RealEstate.API.Controllers
         }
 
         /// <summary>
+        /// Chi tiết bài đăng trang chủ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("home/find-by-id")]
+        public ApiResponse<PostDetailInHome> FindByIdInHome(int id)
+        {
+            return new(_postService.FindByIdInHome(id));
+        }
+
+        /// <summary>
         /// Tạo mới bài viết
         /// </summary>
         /// <param name="input"></param>

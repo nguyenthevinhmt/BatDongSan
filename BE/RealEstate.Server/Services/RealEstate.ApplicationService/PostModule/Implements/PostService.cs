@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using RealEstate.ApplicationBase.Common;
+using RealEstate.ApplicationService.AuthModule.Dtos;
 using RealEstate.ApplicationService.Common;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Dtos;
@@ -221,7 +222,35 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 YoutubeLink = post.YoutubeLink,
                                 Medias = post.Medias ?? new List<Media>(),
                             }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
-            return _mapper.Map<PostDetailDto>(findPost);
+            return findPost;
+        }
+
+        public PostDetailInHome FindByIdInHome(int id)
+        {
+            var result = (from post in _dbContext.Posts
+                         join user in _dbContext.Users on post.UserId equals user.Id
+                         where post.Id == id
+                         select new PostDetailInHome
+                         {
+                             Id = post.Id,
+                             Area = post.Area,
+                             Description= post.Description,
+                             DetailAddress= post.DetailAddress,
+                             Distinct = post.Distinct,
+                             PostTypeId = post.PostTypeId,
+                             Medias = post.Medias ?? new List<Media>(),
+                             Price = post.Price,
+                             Province = post.Province,
+                             RealEstateTypeId=post.RealEstateTypeId,
+                             RentalObject=post.RentalObject,
+                             Status=post.Status,
+                             Street=post.Street,
+                             Ward=post.Ward,
+                             YoutubeLink=post.YoutubeLink,
+                             Title=post.Title,
+                             User = _mapper.Map<UserDto>(post.User),
+                         }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            return result;
         }
 
         public PostDetailDto Update(UpdatePostDto input)

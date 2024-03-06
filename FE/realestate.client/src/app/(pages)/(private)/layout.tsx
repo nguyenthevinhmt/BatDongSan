@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppstoreOutlined,
   ContainerOutlined,
@@ -15,8 +15,9 @@ import type { MenuProps } from "antd";
 import { Button, ConfigProvider, Layout, Menu } from "antd";
 import HeaderComponent from "@/components/shareLayout/header";
 import theme from "@/theme/themeConfig";
-import isAuth from "@/app/isAuth";
 import MenuItem from "antd/es/menu/MenuItem";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -36,26 +37,36 @@ function getItem(
 }
 const { Content, Sider } = Layout;
 const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
+  const parentKey = ["post/manager", "user/info", "wallet/manager", "guide"];
   const items: MenuItem[] = [
-    getItem("Tổng quan", "1", <PieChartOutlined />),
-    getItem("Quản lý tin đăng", "2", <DesktopOutlined />, [
-      getItem("Đăng mới", "a"),
-      getItem("Danh sách tin", "b"),
-      getItem("Danh sách tin nháp", "c"),
+    getItem(
+      <Link href={"/dashboard"}>Tổng quan</Link>,
+      "/dashboard",
+      <PieChartOutlined />
+    ),
+    getItem("Quản lý tin đăng", "post/manager", <DesktopOutlined />, [
+      getItem(<Link href={"/post/create"}>Đăng mới</Link>, "/post/create"),
+      getItem(<Link href={"/post"}>Danh sách tin</Link>, "/post"),
+      getItem(
+        <Link href={"post/draft"}>Danh sách tin nháp</Link>,
+        "post/draft"
+      ),
     ]),
-    getItem("Thông tin cá nhân", "3", <ContainerOutlined />, [
-      getItem("Thông tin tài khoản", "d"),
-      getItem("Đổi mật khẩu", "e"),
-      getItem("Đổi mật khẩu", "f"),
+    getItem("Thông tin cá nhân", "user/info", <ContainerOutlined />, [
+      getItem(<Link href={"/user"}>Thông tin tài khoản</Link>, "/user"),
+      getItem(
+        <Link href={"/user"}>Đổi mật khẩu</Link>,
+        "/user/change-password"
+      ),
     ]),
 
-    getItem("Quản lý tài chính", "sub1", <MailOutlined />, [
+    getItem("Quản lý tài chính", "wallet/manager", <MailOutlined />, [
       getItem("Thông tin số dư", "5"),
       getItem("Lịch sử giao dịch", "6"),
       getItem("Nạp tiền", "7"),
     ]),
 
-    getItem("Báo giá & hướng dẫn", "sub2", <AppstoreOutlined />, [
+    getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [
       getItem("Báo giá", "9"),
       getItem("Hướng dẫn thanh toán", "10"),
       getItem("Hướng dẫn sử dụng", "11"),
@@ -63,11 +74,20 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     getItem("Yêu cầu xóa tài khoản", "12", <UserOutlined />),
   ];
 
+  const pathname = usePathname();
+  console.log(pathname);
   const [collapsed, setCollapsed] = useState<boolean>(false);
-
+  const [activeKey, setActiveKey] = useState<string[] | undefined>();
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
+
+  const [openKeys, setOpenKeys] = useState([]);
+
+  useEffect(() => {
+    setActiveKey((prev) => [pathname]);
+  }, [pathname]);
+
   return (
     <ConfigProvider theme={theme}>
       <div style={{ height: "100vh", width: "100%" }}>
@@ -104,8 +124,10 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                 {collapsed ? <RightOutlined /> : <LeftOutlined />}
               </Button>
               <Menu
+                forceSubMenuRender={true}
                 mode="inline"
-                defaultSelectedKeys={["1"]}
+                selectedKeys={activeKey}
+                openKeys={parentKey}
                 style={{
                   height: "100%",
                   borderRight: 0,

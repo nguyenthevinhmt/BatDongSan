@@ -22,6 +22,12 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <returns></returns>
         PostDetailDto FindById(int id);
         /// <summary>
+        /// Chi tiết bài viết trang chủ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        PostDetailInHome FindByIdInHome(int id);
+        /// <summary>
         /// Cập nhật bài viết
         /// </summary>
         /// <param name="input"></param>
