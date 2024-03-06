@@ -1,6 +1,7 @@
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
 import crypto from "crypto";
+import axiosInstance from "@/shared/configs/axiosInstance";
 
 const generateSHA1 = (data: any) => {
   const hash = crypto.createHash("sha1");
@@ -61,3 +62,98 @@ export const apiRemoveImage = async (publicId: string) => {
     console.error(error);
   }
 };
+
+interface post {
+  title: string,
+  description: string,
+  province: string,
+  distinct: string,
+  ward: string,
+  street: string,
+  detailAddress: string,
+  area: number,
+  price: number,
+  rentalObject: number,
+  youtubeLink: string,
+  postTypeId: number,
+  realEstateTypeId: number,
+  walletNumber: string,
+  transactionAmount: number,
+  transactionNumber: string,
+  listMedia: MediaType[]
+}
+
+interface MediaType {
+  name: string;
+  description: string;
+  mediaUrl: string;
+}
+
+export const addPost = async (info: post) => {
+  const {
+    title,
+    description,
+    province,
+    distinct,
+    ward,
+    street,
+    detailAddress,
+    area,
+    price,
+    rentalObject,
+    youtubeLink,
+    postTypeId,
+    realEstateTypeId,
+    walletNumber,
+    transactionAmount,
+    transactionNumber,
+    listMedia
+  } = info;
+
+  try {
+    const response = await axiosInstance.post(`${environment.baseUrl}/api/post/add`,
+      {
+        title,
+        description,
+        province,
+        distinct,
+        ward,
+        street,
+        detailAddress,
+        area,
+        price,
+        rentalObject,
+        youtubeLink,
+        postTypeId,
+        realEstateTypeId,
+        walletNumber,
+        transactionAmount,
+        transactionNumber,
+        listMedia
+      }, {
+      headers: {
+        accept: "text/plain"
+      }
+    });
+    if (response.status === 200) {
+      return response;
+    }
+  }
+  catch (error) {
+    console.log("Error: Gọi api đăng bài bị lỗi!!!");
+    return null;
+  }
+}
+
+export const getById = async (id: number) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/find-by-id?id=${id}`);
+    if (response.status === 200) {
+      return response;
+    }
+  }
+  catch (error) {
+    console.log("Error: Gọi api getbyid của post bị lỗi!!!");
+    return null;
+  }
+}

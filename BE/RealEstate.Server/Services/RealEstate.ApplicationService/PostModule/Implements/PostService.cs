@@ -201,7 +201,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _logger.LogInformation($"{nameof(FindById)}: id : {id}");
             var findPost = (from post in _dbContext.Posts
                             join image in _dbContext.Medias on post.Id equals image.PostId
-                            where post.Id == id && !post.Deleted && image.Deleted
+                            where post.Id == id && !post.Deleted && !image.Deleted
                             select new PostDetailDto
                             {
                                 Id = post.Id,
