@@ -37,7 +37,7 @@ function getItem(
 }
 const { Content, Sider } = Layout;
 const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
-  const parentKey = ["post/manager", "user/info", "wallet/manager", "guide"];
+  const parentKey = ["post/manager", "user/info", "wallet/manager"];
   const items: MenuItem[] = [
     getItem(
       <Link href={"/dashboard"}>Tổng quan</Link>,
@@ -52,13 +52,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
         "post/draft"
       ),
     ]),
-    getItem("Thông tin cá nhân", "user/info", <ContainerOutlined />, [
-      getItem(<Link href={"/user"}>Thông tin tài khoản</Link>, "/user"),
-      getItem(
-        <Link href={"/user"}>Đổi mật khẩu</Link>,
-        "/user/change-password"
-      ),
-    ]),
+    getItem(<Link href={"/user"}>Thông tin cá nhân</Link>, "/user", <ContainerOutlined />),
 
     getItem("Quản lý tài chính", "wallet/manager", <MailOutlined />, [
       getItem("Thông tin số dư", "5"),
@@ -75,16 +69,14 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   ];
 
   const pathname = usePathname();
-  console.log(pathname);
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [activeKey, setActiveKey] = useState<string[] | undefined>();
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-  const [openKeys, setOpenKeys] = useState([]);
-
   useEffect(() => {
+    console.log(pathname)
     setActiveKey((prev) => [pathname]);
   }, [pathname]);
 
@@ -101,7 +93,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
               width={248}
               style={{
                 height: "100%",
-                backgroundColor: "#fff",
+                // backgroundColor: "#fff",
                 zIndex: 99,
               }}
             >
@@ -127,7 +119,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                 forceSubMenuRender={true}
                 mode="inline"
                 selectedKeys={activeKey}
-                openKeys={parentKey}
+                defaultOpenKeys={parentKey}
                 style={{
                   height: "100%",
                   borderRight: 0,

@@ -20,6 +20,8 @@
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+	  <PackageReference Include="Hangfire" Version="1.8.11" />
+	  <PackageReference Include="Hangfire.SqlServer" Version="1.8.11" />
   </ItemGroup>
 
   <ItemGroup>
