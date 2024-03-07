@@ -49,5 +49,14 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="input"></param>
         /// <returns></returns>
         PagingResult<PostDto> FindAllPostByUserId(PostPagingRequestDto input);
+        /// <summary>
+        /// Đăng bài
+        /// </summary>
+        void PublishPost(PublishPostDto input);
+        /// <summary>
+        /// Gỡ bài
+        /// </summary>
+        /// <param name="id"></param>
+        void ShowOffPost(int id);
     }
 }

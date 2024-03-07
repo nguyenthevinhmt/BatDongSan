@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Library\ApplicationBase\RealEstate.ApplicationBase.csproj" />
     <ProjectReference Include="..\..\Library\EntitiesBase\EntitiesBase.csproj" />
     <ProjectReference Include="..\..\Library\Utils\RealEstate.Utils.csproj" />
   </ItemGroup>

@@ -46,7 +46,10 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
                 Status = PostStatuses.POSTED,
-                UserId = currentUserId
+                UserId = currentUserId,
+                PostEndDate = input.PostEndDate,
+                PostStartDate = input.PostStartDate,
+                Options = input.Options,
             };
             var post = _dbContext.Posts.Add(newPost);
             _dbContext.SaveChanges();
@@ -251,6 +254,29 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                              User = _mapper.Map<UserDto>(post.User),
                          }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             return result;
+        }
+
+        public void PublishPost(PublishPostDto input)
+        {
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == input.Id 
+                                                            && (p.Status == PostStatuses.REMOVED || p.Status == PostStatuses.DRAFT)
+                                                            && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Status = PostStatuses.POSTED;
+            post.PostEndDate = input.PostEndDate;
+            //if (input.Options == PostOptions.)
+            //{
+
+            //}
+            _dbContext.SaveChanges();
+        }
+
+        public void ShowOffPost(int id)
+        {
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == id
+                                                            && (p.Status == PostStatuses.POSTED)
+                                                            && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Status = PostStatuses.REMOVED;
+            _dbContext.SaveChanges();
         }
 
         public PostDetailDto Update(UpdatePostDto input)

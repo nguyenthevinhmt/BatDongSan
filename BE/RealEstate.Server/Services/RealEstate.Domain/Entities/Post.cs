@@ -4,6 +4,7 @@ using RealEstate.Utils.ConstantVariables.Database;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using RealEstate.Utils.ConstantVariables.Post;
+using RealEstate.ApplicationBase.Common.Validations;
 
 namespace RealEstate.Domain.Entities
 {
@@ -66,7 +67,22 @@ namespace RealEstate.Domain.Entities
         /// Trạng thái
         /// <see cref="PostStatuses"/>
         /// </summary>
+        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.DRAFT})]
         public int Status { get; set; }
+        /// <summary>
+        /// Option cho bài viết (thường, bạc, vàng, kim cương)
+        /// <see cref="PostOptions"/>
+        /// </summary>
+        [IntegerRange(AllowableValues = new int[] { PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
+        public int Options {  get; set; }
+        /// <summary>
+        /// Ngày bắt đầu đăng bài
+        /// </summary>
+        public DateTime PostStartDate { get; set; }
+        /// <summary>
+        /// Ngày kết thúc đăng bài
+        /// </summary>
+        public DateTime PostEndDate { get; set; }
         public int UserId { get; set; }
         public User User { get; set; } = null!;
         /// <summary>
@@ -79,6 +95,7 @@ namespace RealEstate.Domain.Entities
         /// </summary>
         public int RealEstateTypeId { get; set; }
         public RealEstateType RealEstateType { get; set; } = null!;
+
         public List<Favorite>? Favorites { get; set; }
         public List<Media>? Medias { get; set; }
         #region audit

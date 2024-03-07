@@ -89,6 +89,16 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
             get => _youtubeLink;
             set => _youtubeLink = value?.Trim();
         }
+        [IntegerRange(AllowableValues = new int[] {PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
+        public int Options {  get; set; }
+        /// <summary>
+        /// Ngày bắt đầu
+        /// </summary>
+        public DateTime PostStartDate { get; set; }
+        /// <summary>
+        /// Ngày kết thúc
+        /// </summary>
+        public DateTime PostEndDate { get; set; }
         /// <summary>
         /// Loại bài viết
         /// </summary>
