@@ -67,7 +67,7 @@ namespace RealEstate.Domain.Entities
         /// Trạng thái
         /// <see cref="PostStatuses"/>
         /// </summary>
-        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.DRAFT})]
+        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.INIT, PostStatuses.CANCEL, PostStatuses.PENDING})]
         public int Status { get; set; }
         /// <summary>
         /// Option cho bài viết (thường, bạc, vàng, kim cương)
@@ -76,9 +76,10 @@ namespace RealEstate.Domain.Entities
         [IntegerRange(AllowableValues = new int[] { PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
         public int Options {  get; set; }
         /// <summary>
-        /// Ngày bắt đầu đăng bài
+        /// Id off show post backgroud job
         /// </summary>
-        public DateTime PostStartDate { get; set; }
+        [MaxLength(256)]
+        public string? BackgroundJobOffShowPostId {  get; set; }
         /// <summary>
         /// Ngày kết thúc đăng bài
         /// </summary>

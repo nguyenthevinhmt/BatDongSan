@@ -95,5 +95,27 @@ namespace RealEstate.API.Controllers
         {
             return new(_postService.Update(input));
         }
+        /// <summary>
+        /// Đăng lại bài viết đã hết hạn/bị gỡ
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPut("republish-post")]
+        public ApiResponse ReShowPost(PublishPostDto input)
+        {
+            _postService.PublishPost(input);
+            return new();
+        }
+        /// <summary>
+        /// Phê duyệt bài viết
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("approve")]
+        public ApiResponse Approve(int id)
+        {
+            _postService.ApprovePost(id);
+            return new();
+        }
     }
 }

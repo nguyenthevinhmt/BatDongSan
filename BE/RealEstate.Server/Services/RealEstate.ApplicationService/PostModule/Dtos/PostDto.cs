@@ -39,6 +39,10 @@
         /// </summary>
         public string? YoutubeLink { get; set; }
         /// <summary>
+        /// Ngày hết hạn
+        /// </summary>
+        public DateTime PostEndDate {  get; set; }
+        /// <summary>
         /// Thời gian duyệt
         /// </summary>
         public DateTime? ApproveAt { get; set; }

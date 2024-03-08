@@ -92,13 +92,9 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         [IntegerRange(AllowableValues = new int[] {PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
         public int Options {  get; set; }
         /// <summary>
-        /// Ngày bắt đầu
+        /// Số ngày đăng bài 
         /// </summary>
-        public DateTime PostStartDate { get; set; }
-        /// <summary>
-        /// Ngày kết thúc
-        /// </summary>
-        public DateTime PostEndDate { get; set; }
+        public int LifeTime { get; set; }
         /// <summary>
         /// Loại bài viết
         /// </summary>
@@ -113,10 +109,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// Mã ví
         /// </summary>
         public string WalletNumber { get; set; } = null!;
-        /// <summary>
-        /// Số tiền thanh toán 
-        /// </summary>
-        public double TransactionAmount { get; set; }
         /// <summary>
         /// Số giao dịch
         /// </summary>

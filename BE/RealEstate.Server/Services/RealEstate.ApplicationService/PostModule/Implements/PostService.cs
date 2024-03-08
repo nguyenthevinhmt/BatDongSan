@@ -1,5 +1,11 @@
-﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2013.Drawing.ChartStyle;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.VariantTypes;
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Dtos;
@@ -7,11 +13,13 @@ using RealEstate.ApplicationService.Common;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Dtos;
 using RealEstate.Domain.Entities;
+using RealEstate.Infrastructure.Persistence;
 using RealEstate.Utils.ConstantVariables.Post;
 using RealEstate.Utils.ConstantVariables.Shared;
 using RealEstate.Utils.ConstantVariables.Wallet;
 using RealEstate.Utils.CustomException;
 using RealEstate.Utils.Linq;
+using RealEstate.Utils.Localization;
 using SixLabors.ImageSharp;
 using System.Text.Json;
 using Media = RealEstate.Domain.Entities.Media;
@@ -20,7 +28,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
 {
     public class PostService : ServiceBase, IPostService
     {
-        public PostService(ILogger<PostService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
+        public PostService(ILogger<PostService> logger, IHttpContextAccessor httpContext, RealEstateDbContext dbContext, LocalizationBase localize, IMapper mapper) : base(logger, httpContext, dbContext, localize, mapper)
         {
         }
 
@@ -45,13 +53,12 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 YoutubeLink = input.YoutubeLink,
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
-                Status = PostStatuses.POSTED,
+                Status = PostStatuses.INIT,
                 UserId = currentUserId,
-                PostEndDate = input.PostEndDate,
-                PostStartDate = input.PostStartDate,
+                PostEndDate = DateTime.Now.AddDays(input.LifeTime),
                 Options = input.Options,
             };
-            var post = _dbContext.Posts.Add(newPost);
+            var post = _dbContext.Posts.Add(newPost).Entity;
             _dbContext.SaveChanges();
             var listMedia = input.ListMedia;
             if (listMedia != null)
@@ -63,26 +70,36 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                         Name = media.Name,
                         Description = media.Description,
                         MediaUrl = media.MediaUrl,
-                        PostId = post.Entity.Id
+                        PostId = post.Id
                     };
                     _dbContext.Medias.Add(imageMedia);
                 }
             }
             var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
                         ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
-            if (wallet.Balance < input.TransactionAmount)
+            var price = CalculatePrice(input.Options);
+            var TotalAmount = input.LifeTime * price;
+            if (wallet.Balance < TotalAmount)
             {
                 throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
             }
             else
             {
-                wallet.Balance -= input.TransactionAmount;
+                wallet.Balance -= TotalAmount;
+            }
+            if (post.PostEndDate.Date >= DateTime.Now.Date)
+            {
+                var jobId = BackgroundJob.Schedule<IPostService>(
+                   x => x.ShowOffPost(post.Id),
+                   post.PostEndDate
+               );
+                post.BackgroundJobOffShowPostId = jobId;
             }
 
             var payloadToTransaction = new Transaction()
             {
-                Amount = input.TransactionAmount,
-                Description = $"Thanh toan dang bai. So tien giao dich {input.TransactionAmount}",
+                Amount = TotalAmount,
+                Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
                 TransactionFrom = input.WalletNumber,
                 TransactionType = TransactionType.OUTPUT,
                 TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
@@ -132,6 +149,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             UserId = post.UserId,
                             Ward = post.Ward,
                             YoutubeLink = post.YoutubeLink,
+                            PostEndDate = post.PostEndDate,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
@@ -177,6 +195,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
                             RentalObject = post.RentalObject,
+                            PostEndDate = post.PostEndDate,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
@@ -258,18 +277,35 @@ namespace RealEstate.ApplicationService.PostModule.Implements
 
         public void PublishPost(PublishPostDto input)
         {
+            var currentUserId = _httpContext.GetCurrentUserId();
             var post = _dbContext.Posts.FirstOrDefault(p => p.Id == input.Id 
-                                                            && (p.Status == PostStatuses.REMOVED || p.Status == PostStatuses.DRAFT)
+                                                            && (p.Status == PostStatuses.REMOVED)
                                                             && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
+                       ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
             post.Status = PostStatuses.POSTED;
-            post.PostEndDate = input.PostEndDate;
-            //if (input.Options == PostOptions.)
-            //{
+            var TotalAmount = CalculatePrice(input.Options);
+            if (wallet.Balance < TotalAmount)
+            {
+                throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
+            }
+            else
+            {
+                wallet.Balance -= TotalAmount;
+            }
+            if (post.PostEndDate.Date >= DateTime.Now.Date)
+            {
+                var jobId = BackgroundJob.Schedule<IPostService>(
+                   x => x.ShowOffPost(post.Id),
+                   post.PostEndDate
+               );
+                post.BackgroundJobOffShowPostId = jobId;
+            }
 
-            //}
             _dbContext.SaveChanges();
         }
 
+        [AutomaticRetry(Attempts = 6, DelaysInSeconds = new int[] { 10, 20, 20, 60, 120, 60 })]
         public void ShowOffPost(int id)
         {
             var post = _dbContext.Posts.FirstOrDefault(p => p.Id == id
@@ -333,6 +369,48 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 findPost.ApproveBy = currentUserId;
             }
             _dbContext.SaveChanges();
+        }
+        public void ApprovePost(int id)
+        {
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Status == PostStatuses.PENDING && p.Id == id && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Status = PostStatuses.POSTED;
+            if (post.PostEndDate.Date >= DateTime.Now.Date)
+            {
+                var jobId = BackgroundJob.Schedule<IPostService>(
+                x => x.ShowOffPost(post.Id),
+                    post.PostEndDate
+                );
+                post.BackgroundJobOffShowPostId = jobId;
+            }
+            _dbContext.SaveChanges();
+        }
+        public void RequestApprovePost(int id)
+        {
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Status == PostStatuses.INIT && p.Id == id && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Status = PostStatuses.PENDING;
+            _dbContext.SaveChanges();
+        }
+        private double CalculatePrice(int options)
+        {
+            var price = 0.0;
+            if (options == PostOptions.NORMAL)
+            {
+                price = PostOptionPrices.NORMAL;
+            }
+            else if (options == PostOptions.SILVER)
+            {
+                price = PostOptionPrices.SILVER;
+            }
+            else if (options == PostOptions.GOLD)
+            {
+                price = PostOptionPrices.GOLD;
+            }
+            else if (options == PostOptions.DIAMOND)
+            {
+                price = PostOptionPrices.DIAMOND;
+            }
+            return price;
+
         }
     }
 }
