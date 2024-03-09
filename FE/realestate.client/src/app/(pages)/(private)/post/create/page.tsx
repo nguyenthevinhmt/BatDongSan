@@ -1,18 +1,14 @@
 "use client";
-
 import React, { useEffect, useMemo, useState } from "react";
 import "@/app/(pages)/(private)/styles/style.layout.css";
 import {
   Button,
-  Collapse,
-  CollapseProps,
   Flex,
   Form,
   GetProp,
   Image,
   Input,
   Modal,
-  Radio,
   Select,
   Tooltip,
   Upload,
@@ -34,6 +30,7 @@ import {
   getDistricts,
   getWards,
 } from "@/services/post/vnAddress.service";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -89,21 +86,16 @@ const CreatePost = () => {
   const [wards, setWards] = useState([]);
 
   useEffect(() => {
-    const getData = async () => {
-      const info = await getUserInfo();
-      const response = info?.data.data;
-      const provincesResponse = await getProvinces();
-
-      setFullName(response.fullname);
-      setPhone(response.phoneNumber);
-      setEmail(response.email);
-      setProvinces(provincesResponse?.data);
-      setDistricts([]);
-      setWards([]);
+    const fetchProvince = async () => {
+      const provinces = await getProvinces();
+      console.log("object", provinces?.data);
+      if (provinces?.status === HTTP_STATUS_CODE.OK) {
+        setProvinces(provinces?.data);
+      }
+      console.log(provinces?.data);
     };
-
-    getData();
-  }, []);
+    fetchProvince();
+  }, [provinces]);
 
   const initialValues = {
     name: fullName,
@@ -114,13 +106,13 @@ const CreatePost = () => {
   // Xử lý sự kiện khi chọn tỉnh/thành phố
   const handleProvinceChange = async (value: any, option: any) => {
     const provinceId = option.key;
-    const districtsResponse = await getDistricts(); // Gọi API lấy danh sách quận/huyện
+    const districtsResponse = await getDistricts(provinceId); // Gọi API lấy danh sách quận/huyện
 
     const filteredDistricts = districtsResponse?.data.filter(
       (district: any) => district.cityId === provinceId
     );
 
-    setDistricts(filteredDistricts);
+    setDistricts(districtsResponse?.data);
     // Reset danh sách phường/xã
     setWards([]);
   };
@@ -128,13 +120,11 @@ const CreatePost = () => {
   // Xử lý sự kiện khi chọn quận/huyện
   const handleDistrictChange = async (value: any, option: any) => {
     const districtId = option.key;
-    const wardsResponse = await getWards(); // Gọi API lấy danh sách quận/huyện
-
-    const filteredWards = wardsResponse?.data.filter(
-      (ward: any) => ward.districtId === districtId
-    );
-
-    setWards(filteredWards);
+    const wardsResponse = await getWards(districtId); // Gọi API lấy danh sách quận/huyện
+    // const filteredWards = wardsResponse?.data.filter(
+    //   (ward: any) => ward.districtId === districtId
+    // );
+    setWards(wardsResponse?.data);
   };
 
   const handleCancel = () => setPreviewOpen(false);
@@ -378,9 +368,13 @@ const CreatePost = () => {
                 onChange={(value, option) =>
                   handleProvinceChange(value, option)
                 }
+                // options={provinces?.map((item) => ({
+                //   value: item["name"],
+                //   label: item["name"],
+                // }))}
               >
-                {provinces.map((province) => (
-                  <Option key={province["cityId"]} value={province["name"]}>
+                {provinces?.map((province) => (
+                  <Option key={province["id"]} value={province["name"]}>
                     {province["name"]}
                   </Option>
                 ))}
@@ -401,7 +395,7 @@ const CreatePost = () => {
                 }
               >
                 {districts.map((district) => (
-                  <Option key={district["districtId"]} value={district["name"]}>
+                  <Option key={district["id"]} value={district["name"]}>
                     {district["name"]}
                   </Option>
                 ))}

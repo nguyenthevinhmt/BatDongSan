@@ -6,7 +6,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
     public class PublishPostDto
     {
         public int Id { get; set; }
-        //public DateTime PostEndDate {get; set;}
         /// <summary>
         ///Số ngày đăng
         /// </summary>

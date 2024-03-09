@@ -25,6 +25,9 @@ namespace RealEstate.Infrastructure.Persistence
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<RealEstateType> RealEstateTypes { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<Provinces> Provinces { get; set; }
+        public DbSet<Districts> Districts { get; set; }
+        public DbSet<Wards> Wards { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema(DbSchemas.Default);

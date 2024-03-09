@@ -117,5 +117,16 @@ namespace RealEstate.API.Controllers
             _postService.ApprovePost(id);
             return new();
         }
+        /// <summary>
+        /// Yêu cầu phê duyệt
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("request-approve")]
+        public ApiResponse RequestPost(int id)
+        {
+            _postService.RequestApprovePost(id);
+            return new();
+        }
     }
 }
