@@ -4,7 +4,8 @@ import { environment } from "../environment/environment";
 import { authConst } from "@/app/(auth)/auth/const/authConst";
 import { CookieService, saveToken } from "../services/cookies.service";
 import { CommonStatus } from "../consts/CommonStatus";
-import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 interface RefreshTokenType {
   grant_type: string;
@@ -25,7 +26,7 @@ let refreshSubscribers: ((token: string) => void)[] = [];
 axiosInstance.interceptors.request.use(
   async (config) => {
     let accessToken = CookieService.getAccessToken();
-    if(accessToken){
+    if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
@@ -76,15 +77,12 @@ axiosInstance.interceptors.response.use(
           });
 
           if (response.status === 200) {
-            const { res } = response?.data;
-            console.log("Data from refresh token success", response?.data);
-            saveToken({
-              access_token: response?.data.access_token,
-              refresh_token: response?.data.refresh_token,
-            });
+            const { access_token, refresh_token } = response?.data;
+            Cookies.set("access_token", access_token);
+            Cookies.set("refresh_token", refresh_token);
             axiosInstance.defaults.headers.common[
               "Authorization"
-            ] = `Bearer ${res.access_token}`;
+            ] = `Bearer ${access_token}`;
 
             return axiosInstance(error.config);
           } else {
@@ -92,6 +90,7 @@ axiosInstance.interceptors.response.use(
           }
         } catch (error) {
           CookieService.removeToken();
+          redirect("/auth/login");
         } finally {
           isRefreshing = false;
         }

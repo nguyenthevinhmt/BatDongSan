@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Http;
+using RealEstate.ApplicationService.WalletModule.Dtos.VnpayDto;
 
 namespace RealEstate.ApplicationService.WalletModule.Abstracts
 {
     public interface IVnpayService
     {
         /// <summary>
-        /// Tạo đường dẫn thanh toán
+        /// Tạo đường dẫn nạp tiền
         /// </summary>
-        /// <param name="WalletNumber"></param>
+        /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        string CreatePaymentUrl(string WalletNumber,HttpContext context);
+        string CreatePaymentUrl(PaymentRequestDto input, HttpContext context);
     }
 }

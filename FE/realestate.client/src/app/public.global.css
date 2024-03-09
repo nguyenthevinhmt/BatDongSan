@@ -33,3 +33,6 @@ body {
   text-overflow: ellipsis;
   white-space: normal;
 }
+.hide-copy-icon .ant-typography-copy {
+  display: none !important;
+}

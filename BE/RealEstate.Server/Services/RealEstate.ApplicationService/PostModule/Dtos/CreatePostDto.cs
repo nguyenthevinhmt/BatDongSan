@@ -99,6 +99,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// </summary>
         public int RealEstateTypeId { get; set; }
 
-        public List<Media> ListMedia { get; set; } = new();
+        public List<CreateMediaDto>? ListMedia { get; set; }
     }
 }

@@ -6,14 +6,14 @@ import Image from "next/image";
 import type { MenuProps } from "antd";
 import Link from "next/link";
 import {
-    DownOutlined,
-    HeartOutlined,
-    LockOutlined,
-    LogoutOutlined,
-    SolutionOutlined,
-    UnorderedListOutlined,
-    UserOutlined,
-    WalletOutlined,
+  DownOutlined,
+  HeartOutlined,
+  LockOutlined,
+  LogoutOutlined,
+  SolutionOutlined,
+  UnorderedListOutlined,
+  UserOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
@@ -27,22 +27,22 @@ import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
 const fetcher = async (url: string) => {
-    const token = CookieService.getAccessToken();
-    if (!token) {
-        console.log("Hết hạn đăng nhập! Vui lòng đăng nhập lại");
-    }
-    const res = await axiosInstance.get(url, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-    const data = await res.data;
-    return data;
+  const token = CookieService.getAccessToken();
+  if (!token) {
+    console.log("Hết hạn đăng nhập! Vui lòng đăng nhập lại");
+  }
+  const res = await axiosInstance.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await res.data;
+  return data;
 };
 
 const HeaderComponent = () => {
   const [userInfo, setUserInfo] = useState();
-  const pathname = usePathname()
+  const pathname = usePathname();
   const headerItems: MenuProps["items"] = [
     "Nhà đất bán",
     "Nhà đất cho thuê",
@@ -60,19 +60,20 @@ const HeaderComponent = () => {
     },
   }));
   useEffect(() => {
-    const repo = async() => {
-      try{
-        const res = await axiosInstance.get('http://localhost:5083/api/user/my-info', {
-      });
-      const data = await res.data;
-      return data;
+    const repo = async () => {
+      try {
+        const res = await axiosInstance.get(
+          "http://localhost:5083/api/user/my-info",
+          {}
+        );
+        const data = await res.data;
+        return data;
+      } catch (error) {
+        console.log(error);
       }
-      catch(error){
-        console.log(error)
-      }
-    }
-    repo().then(res => setUserInfo(res))
-  }, [])
+    };
+    repo().then((res) => setUserInfo(res));
+  }, []);
 
   const dispatch = useDispatch();
   // const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
@@ -103,12 +104,11 @@ const HeaderComponent = () => {
         // localStorage.clear();
         CookieService.removeToken();
       }
-      if(pathname?.includes('/dashboard')) {
+      if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }
     } catch (error) {
       console.log("Có lỗi xảy ra khi đăng xuất", error);
-      
     }
   };
   const items: MenuProps["items"] = [
@@ -184,7 +184,8 @@ const HeaderComponent = () => {
         borderBottomColor: "#111",
         boxShadow: "0px 2px 10px #ccc",
         zIndex: 99,
-        marginBottom: "10px"
+        marginBottom: "10px",
+        position: "sticky",
       }}
     >
       <div
@@ -321,21 +322,21 @@ const HeaderComponent = () => {
           )}
         </div>
 
-                <Button
-                    size="large"
-                    type="primary"
-                    danger
-                    ghost
-                    style={{ fontWeight: 500 }}
-                    onClick={() => {
-                        router.push("/dashboard");
-                    }}
-                >
-                    Đăng tin
-                </Button>
-            </div>
-        </Header>
-    );
+        <Button
+          size="large"
+          type="primary"
+          danger
+          ghost
+          style={{ fontWeight: 500 }}
+          onClick={() => {
+            router.push("/dashboard");
+          }}
+        >
+          Đăng tin
+        </Button>
+      </div>
+    </Header>
+  );
 };
 
 // export default React.memo(HeaderComponent);

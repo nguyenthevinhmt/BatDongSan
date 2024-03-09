@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import axios from "axios";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { CookieService } from "@/shared/services/cookies.service";
 
 export default function isAuth(Component: any) {
@@ -15,3 +14,45 @@ export default function isAuth(Component: any) {
     return <Component {...props} />;
   };
 }
+
+// "use client";
+// import { useEffect, useState } from "react";
+// import { redirect } from "next/navigation";
+// import { useAppDispatch, useAppSelector } from "@/redux/hook";
+
+// export const ProtectedRoutes = ({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) => {
+//   const [showLoading, setShowLoading] = useState(true);
+//   const dispatch = useAppDispatch();
+//   const { isAuthenticated, isLoading } = useAppSelector((state) => state.auth);
+
+//   useEffect(() => {
+//     async function checkAuth() {
+//       if (!isAuthenticated && localStorage.getItem("access") !== null) {
+//         try {
+//           await refreshToken();
+//           await verify();
+
+//           const user = await userLogged();
+//           dispatch(loginRedux(user));
+//         } catch (error: any) {
+//           localStorage.removeItem("access");
+//           localStorage.removeItem("refresh");
+
+//           console.log(error.response.data);
+//         }
+//       } else {
+//         setShowLoading(false);
+//       }
+//     }
+//     checkAuth();
+//   }, [isAuthenticated, isLoading]);
+
+//   if (showLoading) return <Loading />;
+//   if (!isAuthenticated && isLoading) return redirect("/login");
+
+//   return <>{children}</>;
+// };

@@ -11,3 +11,4 @@ const hideEmail = (email: string) => {
   return maskedPrefix + email.substring(atIndex);
 };
 export default hideEmail;
+

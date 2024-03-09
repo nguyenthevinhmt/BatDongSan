@@ -126,7 +126,7 @@ namespace RealEstate.API.Controllers
             }
             catch (UserFriendlyException ex)
             {
-                var properties = new AuthenticationProperties(new Dictionary<string, string>
+                var properties = new AuthenticationProperties(new Dictionary<string, string?>
                 {
                     [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
                     [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = _localization.Localize(_mapErrorCode.GetErrorMessageKey(ex.ErrorCode))
@@ -135,7 +135,7 @@ namespace RealEstate.API.Controllers
             }
             catch (Exception ex)
             {
-                var properties = new AuthenticationProperties(new Dictionary<string, string>
+                var properties = new AuthenticationProperties(new Dictionary<string, string?>
                 {
                     [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.ServerError,
                     [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] = ex.Message

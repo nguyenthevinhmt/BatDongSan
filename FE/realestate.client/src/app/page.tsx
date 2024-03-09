@@ -10,44 +10,44 @@ import hanoi from "../assets/image/hanoi.png";
 import HCM from "../assets/image/HCM.jpg";
 import FisrtSplitComponent from './components/FisrtSplitComponent';
 import ListGoods from './components/ListGoods';
-import { ArrowUpOutlined } from '@ant-design/icons'
+import { ArrowUpOutlined } from '@ant-design/icons';
+import { BsArrowUpSquare } from "react-icons/bs";
 
 const App = () => {
-    const { Search } = Input;
-    const { Meta } = Card;
-    const [location, setLocation] = useState("Trên toàn quốc");// search
+  const { Search } = Input;
+  const { Meta } = Card;
+  const [location, setLocation] = useState("Trên toàn quốc"); // search
 
-    const [selectText, setSelectText] = useState(listText[1]);
+  const [selectText, setSelectText] = useState(listText[1]);
 
-    const hoverStyles = {
-        transform: "scale(1,2)",
-
-    }
-    const j = {
-        transition: "0.3s",
-        ...hoverStyles
-    }
-    const onChange = (key: any) => {
-        setSelectText(listText[key])
-    };
-    const onSearch = (key: string) => {
-        console.log(key);
-    };
-    const onChangeCateHome = (value: string[]): void => {
-        console.log(value);
-    };
-    const onChangePrice = (value: string[]): void => {
-        console.log(value);
-    };
-    const onChangeAcreage = (value: string[]): void => {
-        console.log(value);
-    };
+  const hoverStyles = {
+    transform: "scale(1,2)",
+  };
+  const j = {
+    transition: "0.3s",
+    ...hoverStyles,
+  };
+  const onChange = (key: any) => {
+    setSelectText(listText[key]);
+  };
+  const onSearch = (key: string) => {
+    console.log(key);
+  };
+  const onChangeCateHome = (value: string[]): void => {
+    console.log(value);
+  };
+  const onChangePrice = (value: string[]): void => {
+    console.log(value);
+  };
+  const onChangeAcreage = (value: string[]): void => {
+    console.log(value);
+  };
 
     return (
         <>
-            <div style={{ width: "100%", height: "100%", backgroundColor: "#F4F4F4" }}>
+            <div style={{ width: "100%", height: "100%", backgroundColor: "#fafafa" }}>
                   <HeaderComponent />
-                <Layout style={{ margin: "0 auto", maxWidth: "1349px ", minWidth: "1349px ", backgroundColor: "#F4F4F4", padding: "0 167px" }}>
+                <Layout style={{ margin: "0 auto", maxWidth: "1349px ", minWidth: "1349px ", backgroundColor: "#fafafa", padding: "0 167px" }}>
                     <Flex vertical
                         style={{
                             margin: "20px auto",
@@ -130,13 +130,13 @@ const App = () => {
                     </div>
                 </div>
                 
-                <FloatButton.BackTop duration={1000} shape="square" style={{background:"#FAFAFA"}} icon={<ArrowUpOutlined />}/>
+                <FloatButton.BackTop duration={1000} shape="square" style={{ background: "#FAFAFA" }} icon={<BsArrowUpSquare />}/>
             </div>
         </>
     );
 };
 const AppPage = () => {
-    return withTheme(<App />);
+  return withTheme(<App />);
 };
 
 export default AppPage;
