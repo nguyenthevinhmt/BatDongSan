@@ -16,7 +16,7 @@ export const getProvinces = async () => {
 export const getDistricts = async (id: number) => {
   try {
     const response = await axios.get(
-      `${environment.baseUrl}/api/address-infomation/districts/${id}`
+      `${environment.baseUrl}/api/address-infomation/district/${id}`
     );
     return response.data;
   } catch (error) {

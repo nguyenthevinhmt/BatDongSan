@@ -25,7 +25,7 @@ namespace RealEstate.Domain.Entities
         /// Quận/huyện
         /// </summary>
         [MaxLength(50)]
-        public string Distinct { get; set; } = null!;
+        public string District { get; set; } = null!;
         /// <summary>
         /// Phường xã
         /// </summary>
@@ -37,6 +37,10 @@ namespace RealEstate.Domain.Entities
         public string Street { get; set; } = null!;
         [MaxLength(250)]
         public string? DetailAddress { get; set; }
+        /// <summary>
+        /// Đơn vị 
+        /// </summary>
+        public int CalculateType { get; set; }
         /// <summary>
         /// Diện tích
         /// </summary>
@@ -84,6 +88,14 @@ namespace RealEstate.Domain.Entities
         /// Ngày kết thúc đăng bài
         /// </summary>
         public DateTime PostEndDate { get; set; }
+        /// <summary>
+        /// Số ngày đăng bài
+        /// </summary>
+        public int LifeTime {  get; set; }
+        /// <summary>
+        /// Check thanh toán
+        /// </summary>
+        public bool IsPayment {  get; set; }
         public int UserId { get; set; }
         public User User { get; set; } = null!;
         /// <summary>

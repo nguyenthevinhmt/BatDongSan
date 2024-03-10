@@ -12,7 +12,7 @@
         /// <summary>
         /// Quận/huyện
         /// </summary>
-        public string Distinct { get; set; } = null!;
+        public string District { get; set; } = null!;
         /// <summary>
         /// Phường xã
         /// </summary>

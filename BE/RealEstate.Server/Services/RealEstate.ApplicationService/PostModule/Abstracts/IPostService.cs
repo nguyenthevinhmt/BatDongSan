@@ -34,6 +34,12 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <returns></returns>
         PostDetailDto Update(UpdatePostDto input);
         /// <summary>
+        /// Cập nhật trạng thái thanh toán bài viết
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        void UpdatePaymentStatus(UpdatePaymentStatusDto input);
+        /// <summary>
         /// Xóa bài viết
         /// </summary>
         /// <param name="id"></param>

@@ -43,7 +43,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 Title = input.Title,
                 Description = input.Description,
                 Province = input.Province,
-                Distinct = input.Distinct,
+                District = input.District,
                 Ward = input.Ward,
                 Street = input.Street,
                 DetailAddress = input.DetailAddress,
@@ -55,7 +55,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 RealEstateTypeId = input.RealEstateTypeId,
                 Status = PostStatuses.INIT,
                 UserId = currentUserId,
-                PostEndDate = DateTime.Now.AddDays(input.LifeTime),
+                //PostEndDate = DateTime.Now.AddDays(input.LifeTime),
+                LifeTime = input.LifeTime,
+                CalculateType = input.CalculateType,
                 Options = input.Options,
             };
             var post = _dbContext.Posts.Add(newPost).Entity;
@@ -75,39 +77,39 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                     _dbContext.Medias.Add(imageMedia);
                 }
             }
-            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
-                        ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
-            var price = CalculatePrice(input.Options);
-            var TotalAmount = input.LifeTime * price;
-            if (wallet.Balance < TotalAmount)
-            {
-                throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
-            }
-            else
-            {
-                wallet.Balance -= TotalAmount;
-            }
-            if (post.PostEndDate.Date >= DateTime.Now.Date)
-            {
-                var jobId = BackgroundJob.Schedule<IPostService>(
-                   x => x.ShowOffPost(post.Id),
-                   post.PostEndDate
-               );
-                post.BackgroundJobOffShowPostId = jobId;
-            }
+            //var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
+            //            ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
+            //var price = CalculatePrice(input.Options);
+            //var TotalAmount = input.LifeTime * price;
+            //if (wallet.Balance < TotalAmount)
+            //{
+            //    throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
+            //}
+            //else
+            //{
+            //    wallet.Balance -= TotalAmount;
+            //}
+            //if (post.PostEndDate.Date >= DateTime.Now.Date)
+            //{
+            //    var jobId = BackgroundJob.Schedule<IPostService>(
+            //       x => x.ShowOffPost(post.Id),
+            //       post.PostEndDate
+            //   );
+            //    post.BackgroundJobOffShowPostId = jobId;
+            //}
 
-            var payloadToTransaction = new Transaction()
-            {
-                Amount = TotalAmount,
-                Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
-                TransactionFrom = input.WalletNumber,
-                TransactionType = TransactionType.OUTPUT,
-                TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
-                TransactionTo = "Tai khoan he thong",
-                WalletID = wallet.Id,
-                CreateDate = DateTime.Now,
-            };
-            _dbContext.Transactions.Add(payloadToTransaction);
+            //var payloadToTransaction = new Transaction()
+            //{
+            //    Amount = TotalAmount,
+            //    Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
+            //    TransactionFrom = input.WalletNumber,
+            //    TransactionType = TransactionType.OUTPUT,
+            //    TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
+            //    TransactionTo = "Tai khoan he thong",
+            //    WalletID = wallet.Id,
+            //    CreateDate = DateTime.Now,
+            //};
+            //_dbContext.Transactions.Add(payloadToTransaction);
             _dbContext.SaveChanges();
             transaction.Commit();
         }
@@ -137,7 +139,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Area = post.Area,
                             Description = post.Description,
                             DetailAddress = post.DetailAddress,
-                            Distinct = post.Distinct,
+                            District = post.District,
                             Id = post.Id,
                             PostTypeId = post.PostTypeId,
                             Price = post.Price,
@@ -188,7 +190,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Area = post.Area,
                             Description = post.Description,
                             DetailAddress = post.DetailAddress,
-                            Distinct = post.Distinct,
+                            District = post.District,
                             Id = post.Id,
                             PostTypeId = post.PostTypeId,
                             Price = post.Price,
@@ -232,7 +234,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 Area = post.Area,
                                 Description = post.Description,
                                 DetailAddress = post.DetailAddress,
-                                Distinct = post.Distinct,
+                                District = post.District,
                                 PostTypeId = post.PostTypeId,
                                 Price = post.Price,
                                 Province = post.Province,
@@ -258,7 +260,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                              Area = post.Area,
                              Description= post.Description,
                              DetailAddress= post.DetailAddress,
-                             Distinct = post.Distinct,
+                             District = post.District,
                              PostTypeId = post.PostTypeId,
                              Medias = post.Medias ?? new List<Media>(),
                              Price = post.Price,
@@ -328,7 +330,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 Area = post.Area,
                                 Description = post.Description,
                                 DetailAddress = post.DetailAddress,
-                                Distinct = post.Distinct,
+                                District = post.District,
                                 PostTypeId = post.PostTypeId,
                                 Price = post.Price,
                                 Province = post.Province,
@@ -343,7 +345,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             findPost.Title = input.Title;
             findPost.Area = input.Area;
             findPost.Ward = input.Ward;
-            findPost.Distinct = input.Distinct;
+            findPost.District = input.Distinct;
             findPost.Province = input.Province;
             findPost.Street = input.Street;
             findPost.Description = input.Description;
@@ -410,6 +412,53 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 price = PostOptionPrices.DIAMOND;
             }
             return price;
+
+        }
+
+        public void UpdatePaymentStatus(UpdatePaymentStatusDto input)
+        {
+            var currentUserId = _httpContext.GetCurrentUserId();
+            var transactions = _dbContext.Database.BeginTransaction();
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == input.Id && !p.Deleted && p.Status == PostStatuses.INIT)
+                            ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.IsPayment = true;
+            post.PostEndDate = DateTime.Now.AddDays(post.LifeTime);
+            post.Status = PostStatuses.PENDING;
+            _dbContext.SaveChanges();
+
+            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
+                        ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
+            var price = CalculatePrice(post.Options);
+            var TotalAmount = post.LifeTime * price;
+            if (wallet.Balance < TotalAmount)
+            {
+                throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
+            }
+            else
+            {
+                wallet.Balance -= TotalAmount;
+            }
+            if (post.PostEndDate.Date >= DateTime.Now.Date)
+            {
+                var jobId = BackgroundJob.Schedule<IPostService>(
+                   x => x.ShowOffPost(post.Id),
+                   post.PostEndDate
+                );
+                post.BackgroundJobOffShowPostId = jobId;
+            }
+
+            var payloadToTransaction = new Transaction()
+            {
+                Amount = TotalAmount,
+                Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
+                TransactionFrom = input.WalletNumber,
+                TransactionType = TransactionType.OUTPUT,
+                TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                TransactionTo = "Tai khoan he thong",
+                WalletID = wallet.Id,
+                CreateDate = DateTime.Now,
+            };
+            _dbContext.Transactions.Add(payloadToTransaction);
 
         }
     }

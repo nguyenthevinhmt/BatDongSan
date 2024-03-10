@@ -21,37 +21,39 @@ import {
   apiUploadImage,
   getPublicIdFromUrl,
   addPost,
+  getRealEstateType,
 } from "@/services/post/post.service";
 import { UserType } from "@/shared/consts/userType";
 import isAuth from "@/app/isAuth";
-import { getUserInfo } from "@/services/user/user.service";
 import {
   getProvinces,
   getDistricts,
   getWards,
 } from "@/services/post/vnAddress.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-interface post {
+interface IPost {
   title: string;
   description: string;
   province: string;
-  distinct: string;
+  district: string;
   ward: string;
   street: string;
-  detailAddress: string;
+  detailAddress?: string;
   area: number;
   price: number;
-  rentalObject: number;
-  youtubeLink: string;
+  rentalObject?: number;
+  youtubeLink?: string;
   postTypeId: number;
   realEstateTypeId: number;
-  walletNumber: string;
-  transactionAmount: number;
-  transactionNumber: string;
-  listMedia: MediaType[];
+  options: number;
+  lifeTime: number;
+  calculateType: number;
+  listMedia?: MediaType[];
 }
 
 interface MediaType {
@@ -68,8 +70,6 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const { Option } = Select;
-
 const CreatePost = () => {
   const [form] = Form.useForm<{}>();
   const [postType, setPostType] = useState<number>(1);
@@ -78,53 +78,119 @@ const CreatePost = () => {
   const [previewTitle, setPreviewTitle] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [listMedia, setListMedia] = useState<MediaType[]>([]);
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
+  const [provinces, setProvinces] = useState<any>();
+  const [districts, setDistricts] = useState<any>();
+  const [wards, setWards] = useState<any>();
+  const [isDisableSelect, setIsDisableSelect] = useState({
+    districtDisable: true,
+    wardDisable: true,
+  });
+  const [realEstateType, setRealEstateType] = useState<any>();
 
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
+  const fullname = (userSelector as any)?.fullname;
+  const phoneNumber = (userSelector as any)?.phoneNumber;
+  const email = (userSelector as any)?.email;
+  const [userInfo, setUserInfo] = useState({
+    fullname,
+    phoneNumber,
+    email,
+  });
+
+  const [location, setLocation] = useState({
+    provinces: "",
+    districts: "",
+    wards: "",
+  });
+
+  const [calculateType, setCalculateType] = useState([
+    {
+      value: "1",
+      label: "VND",
+    },
+    {
+      value: "2",
+      label: "Giá/m²",
+    },
+    {
+      value: "3",
+      label: "Thỏa thuận",
+    },
+  ]);
   useEffect(() => {
     const fetchProvince = async () => {
-      const provinces = await getProvinces();
-      console.log("object", provinces?.data);
-      if (provinces?.status === HTTP_STATUS_CODE.OK) {
-        setProvinces(provinces?.data);
-      }
-      console.log(provinces?.data);
+      const provinceResponse = await getProvinces();
+      console.log("object", provinceResponse?.data);
+      await setProvinces(provinceResponse?.data);
     };
     fetchProvince();
-  }, [provinces]);
+  }, []);
+
+  useEffect(() => {
+    const fetchRealEstateType = async () => {
+      const response = await getRealEstateType();
+      await setRealEstateType(response?.data?.items);
+    };
+    fetchRealEstateType();
+  }, []);
 
   const initialValues = {
-    name: fullName,
-    phonNumber: phone,
+    name: fullname,
+    phonNumber: phoneNumber,
     email: email,
+    calculateType: calculateType[0].value,
+    provinces: "",
+    districts: "",
+    wards: "",
   };
 
   // Xử lý sự kiện khi chọn tỉnh/thành phố
   const handleProvinceChange = async (value: any, option: any) => {
-    const provinceId = option.key;
+    const provinceId = option?.value;
+    setLocation((prev: any) => {
+      return {
+        ...prev,
+        provinces: option?.label,
+      };
+    });
     const districtsResponse = await getDistricts(provinceId); // Gọi API lấy danh sách quận/huyện
-
-    const filteredDistricts = districtsResponse?.data.filter(
-      (district: any) => district.cityId === provinceId
-    );
-
-    setDistricts(districtsResponse?.data);
-    // Reset danh sách phường/xã
-    setWards([]);
+    await setDistricts(districtsResponse?.data);
+    setIsDisableSelect((prev) => {
+      return {
+        ...prev,
+        districtDisable: false,
+      };
+    });
   };
 
   // Xử lý sự kiện khi chọn quận/huyện
   const handleDistrictChange = async (value: any, option: any) => {
-    const districtId = option.key;
+    const districtId = option?.value;
+    setLocation((prev: any) => {
+      return {
+        ...prev,
+        districts: option?.label,
+      };
+    });
     const wardsResponse = await getWards(districtId); // Gọi API lấy danh sách quận/huyện
-    // const filteredWards = wardsResponse?.data.filter(
-    //   (ward: any) => ward.districtId === districtId
-    // );
-    setWards(wardsResponse?.data);
+    await setWards(wardsResponse?.data);
+    setIsDisableSelect((prev) => {
+      return {
+        ...prev,
+        wardDisable: false,
+      };
+    });
+  };
+
+  const handleWardChange = async (value: any, option: any) => {
+    setLocation((prev: any) => {
+      return {
+        ...prev,
+        wards: option?.label,
+      };
+    });
   };
 
   const handleCancel = () => setPreviewOpen(false);
@@ -195,31 +261,32 @@ const CreatePost = () => {
     ]);
   };
 
-  const handleSubmit = async () => {
-    const value = (await form.validateFields()) as post;
-
-    const postInfo: post = {
-      title: value.title,
-      description: value.description,
-      province: value.province,
-      distinct: value.distinct,
-      ward: value.ward,
-      street: value.street,
-      detailAddress: value.detailAddress,
-      area: value.area,
-      price: value.price,
-      rentalObject: 1,
-      youtubeLink: value.youtubeLink,
+  const handleSubmit = async (formValue: any) => {
+    // const value = (await form.validateFields()) as IPost;
+    console.log("form object", formValue);
+    const postInfo: IPost = {
+      title: formValue.title,
+      description: formValue.description,
+      province: location?.provinces,
+      district: location?.districts,
+      ward: location?.wards,
+      street: formValue.street,
+      detailAddress: formValue.detailAddress,
+      area: formValue.area,
+      price: formValue.price,
+      youtubeLink: formValue.youtubeLink,
       postTypeId: postType,
-      realEstateTypeId: value.realEstateTypeId,
-      walletNumber: "1", //tự tạo trong db
-      transactionAmount: 1, //tự tạo trong db
-      transactionNumber: "string", //tự tạo trong db
+      realEstateTypeId: formValue.realEstateTypeId,
+      calculateType: formValue.calculateType,
+      lifeTime: 10,
+      options: 1,
       listMedia: listMedia,
     };
 
     const response = await addPost(postInfo);
-    console.log("đã đăng tin!", response?.data);
+    if (response?.data?.code === HTTP_STATUS_CODE.OK) {
+      console.log("đã đăng tin!", response?.data);
+    }
   };
 
   return (
@@ -238,7 +305,10 @@ const CreatePost = () => {
           form={form}
           layout="vertical"
           autoComplete="off"
-          onFinish={handleSubmit}
+          onFinish={(formValue) => handleSubmit(formValue)}
+          onError={(formValue) => {
+            console.log("object", formValue);
+          }}
           initialValues={initialValues}
         >
           <p
@@ -298,55 +368,17 @@ const CreatePost = () => {
               label={<strong>Loại bất động sản</strong>}
               rules={[
                 { required: true, message: "Vui lòng chọn loại bất động sản" },
-              ]} // Thêm quy tắc yêu cầu
+              ]}
             >
               <Select
-                showSearch
                 style={{ width: "100%" }}
                 placeholder="Chọn loại bất động sản"
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option?.label ?? "").includes(input)
-                }
-                filterSort={(optionA, optionB) =>
-                  (optionA?.label ?? "")
-                    .toLowerCase()
-                    .localeCompare((optionB?.label ?? "").toLowerCase())
-                }
-                options={[
-                  {
-                    value: "1",
-                    label: "Căn hộ chung cư",
-                  },
-                  {
-                    value: "2",
-                    label: "Nhà riêng",
-                  },
-                  {
-                    value: "3",
-                    label: "Nhà biệt thự, liền kề",
-                  },
-                  {
-                    value: "4",
-                    label: "Nhà mặt phố",
-                  },
-                  {
-                    value: "5",
-                    label: "Shophouse, nhà phố thương mại",
-                  },
-                  {
-                    value: "6",
-                    label: "Đất nền dự án",
-                  },
-                  {
-                    value: "7",
-                    label: "Đất",
-                  },
-                  {
-                    value: "8",
-                    label: "Trang trại, khu nghỉ dưỡng",
-                  },
-                ]}
+                options={realEstateType?.map((item: any) => {
+                  return {
+                    value: item?.id,
+                    label: item?.name,
+                  };
+                })}
               />
             </Form.Item>
           </div>
@@ -368,17 +400,13 @@ const CreatePost = () => {
                 onChange={(value, option) =>
                   handleProvinceChange(value, option)
                 }
-                // options={provinces?.map((item) => ({
-                //   value: item["name"],
-                //   label: item["name"],
-                // }))}
-              >
-                {provinces?.map((province) => (
-                  <Option key={province["id"]} value={province["name"]}>
-                    {province["name"]}
-                  </Option>
-                ))}
-              </Select>
+                options={provinces?.map((item: any) => {
+                  return {
+                    value: item?.id,
+                    label: item?.name,
+                  };
+                })}
+              />
             </Form.Item>
             <Form.Item
               name="distinct"
@@ -393,13 +421,14 @@ const CreatePost = () => {
                 onChange={(value, option) =>
                   handleDistrictChange(value, option)
                 }
-              >
-                {districts.map((district) => (
-                  <Option key={district["id"]} value={district["name"]}>
-                    {district["name"]}
-                  </Option>
-                ))}
-              </Select>
+                disabled={isDisableSelect.districtDisable}
+                options={districts?.map((item: any) => {
+                  return {
+                    value: item?.id,
+                    label: item?.fullName,
+                  };
+                })}
+              />
             </Form.Item>
           </Flex>
 
@@ -412,13 +441,17 @@ const CreatePost = () => {
                 { required: true, message: "Phường, xã không được bỏ trống" },
               ]}
             >
-              <Select placeholder="Chọn phường/xã">
-                {wards.map((ward) => (
-                  <Option key={ward["wardId"]} value={ward["name"]}>
-                    {ward["name"]}
-                  </Option>
-                ))}
-              </Select>
+              <Select
+                placeholder="Chọn phường/xã"
+                disabled={isDisableSelect.wardDisable}
+                options={wards?.map((item: any) => {
+                  return {
+                    value: item?.id,
+                    label: item?.name,
+                  };
+                })}
+                onChange={(value, option) => handleWardChange(value, option)}
+              />
             </Form.Item>
             <Form.Item
               name="street"
@@ -545,38 +578,17 @@ const CreatePost = () => {
                 //chưa có trường dữ liệu trong db cần thông tin này
               }
               <Form.Item
-                name="Đơn vị"
+                name="calculateType"
                 label={<strong>Đơn vị</strong>}
                 style={{ width: "30%" }}
                 rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
               >
                 <Select
-                  showSearch
                   style={{ width: "100%" }}
-                  placeholder="Search to Select"
+                  defaultValue={calculateType[0].value}
+                  value={calculateType[0].value}
                   optionFilterProp="children"
-                  filterOption={(input, option) =>
-                    (option?.label ?? "").includes(input)
-                  }
-                  filterSort={(optionA, optionB) =>
-                    (optionA?.label ?? "")
-                      .toLowerCase()
-                      .localeCompare((optionB?.label ?? "").toLowerCase())
-                  }
-                  options={[
-                    {
-                      value: "1",
-                      label: "VND",
-                    },
-                    {
-                      value: "2",
-                      label: "Giá / m2",
-                    },
-                    {
-                      value: "3",
-                      label: "Thỏa thuận",
-                    },
-                  ]}
+                  options={calculateType}
                 />
               </Form.Item>
             </Flex>
@@ -671,24 +683,22 @@ const CreatePost = () => {
                 name="name"
                 label={<strong>Tên liên hệ</strong>}
                 style={{ width: "50%" }}
-                //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
               >
                 <Input
-                  value={fullName}
-                  placeholder={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  value={userInfo.fullname}
+                  placeholder={userInfo.fullname}
+                  disabled={true}
                 />
               </Form.Item>
               <Form.Item
                 name="phoneNumber"
                 label={<strong>Số điện thoại</strong>}
                 style={{ width: "50%" }}
-                //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
               >
                 <Input
-                  value={phone}
-                  placeholder={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={userInfo.phoneNumber}
+                  placeholder={userInfo.phoneNumber}
+                  disabled={true}
                 />
               </Form.Item>
             </Flex>
@@ -697,12 +707,11 @@ const CreatePost = () => {
               name="email"
               label={<strong>Email</strong>}
               style={{ width: "50%", marginTop: "-5px" }}
-              //rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
             >
               <Input
-                value={email}
-                placeholder={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={userInfo.email}
+                placeholder={userInfo.email}
+                disabled={true}
               />
             </Form.Item>
           </div>
@@ -730,10 +739,6 @@ const CreatePost = () => {
                     backgroundColor: "#fafafa",
                     border: "1px solid #ccc",
                   }}
-                  onClick={() => {
-                    console.log("urls", listMedia);
-                    console.log("urls1", fileList);
-                  }}
                 >
                   Hủy
                 </Button>
@@ -747,7 +752,6 @@ const CreatePost = () => {
                     backgroundColor: "rgb(224, 60, 49)",
                     border: "none",
                   }}
-                  type="primary"
                   htmlType="submit"
                 >
                   Tiếp tục
