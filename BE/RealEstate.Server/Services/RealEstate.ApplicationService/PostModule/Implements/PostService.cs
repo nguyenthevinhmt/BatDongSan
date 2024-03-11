@@ -422,6 +422,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var post = _dbContext.Posts.FirstOrDefault(p => p.Id == input.Id && !p.Deleted && p.Status == PostStatuses.INIT)
                             ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.IsPayment = true;
+            post.Options = input.Options;
+            post.LifeTime = input.LifeTime;
             post.PostEndDate = DateTime.Now.AddDays(post.LifeTime);
             post.Status = PostStatuses.PENDING;
             _dbContext.SaveChanges();

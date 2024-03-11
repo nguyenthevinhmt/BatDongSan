@@ -6,6 +6,7 @@ const theme: ThemeConfig = {
     fontSize: 14,
     colorPrimary: "#FF4D4F",
     colorBgLayout: "#fafafa",
+    colorBgTextActive: "#ccc"
   },
   components: {
     Menu: {
@@ -14,9 +15,6 @@ const theme: ThemeConfig = {
       itemSelectedColor: "#FF4D4F",
       groupTitleFontSize: 20,
     },
-    cardBg:{
-      background: "black"
-    }
   },
 };
 
