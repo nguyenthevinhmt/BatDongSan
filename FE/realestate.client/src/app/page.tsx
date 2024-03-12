@@ -6,10 +6,11 @@ import { Flex, Tabs, Input, Cascader, Layout, Card, Affix } from "antd";
 import { options, listTabs, listText } from "./utils";
 import Image from "next/image";
 import danang from "../assets/image/danang.jpg";
+import hue from "../assets/image/hue.jpg";
 import hanoi from "../assets/image/hanoi.png";
 import HCM from "../assets/image/HCM.jpg";
-import FisrtSplitComponent from "./homeComponent/FisrtSplitComponent";
-import ListGoods from "./homeComponent/ListGoods";
+import FisrtSplitComponent from "./components/FisrtSplitComponent";
+import ListGoods from "./components/ListGoods";
 const App = () => {
   const { Search } = Input;
   const { Meta } = Card;

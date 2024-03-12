@@ -93,7 +93,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
               width={248}
               style={{
                 height: "100%",
-                // backgroundColor: "#fff",
+                backgroundColor: "#fff",
                 zIndex: 99,
               }}
             >
@@ -123,6 +123,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                 style={{
                   height: "100%",
                   borderRight: 0,
+                  backgroundColor: "#fff",
                   position: "relative",
                   overflow: "auto",
                 }}

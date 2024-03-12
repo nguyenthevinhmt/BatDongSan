@@ -43,6 +43,8 @@ const HeaderComponent = () => {
       lineHeight: "20px",
     },
   }));
+
+
   useEffect(() => {
     const repo = async () => {
       try {
@@ -57,39 +59,42 @@ const HeaderComponent = () => {
     };
     repo().then((res) => setUserInfo(res));
   }, []);
-};
-repo().then((res) => setUserInfo(res));
-  }, []);
 
-const dispatch = useDispatch();
-const userSelector = useSelector((state: RootState) => {
-  return state.auth.user.data;
-});
-const fullname = (userSelector as any)?.fullname;
-const avatarUrl = (userSelector as any)?.avatarUrl;
-const router = useRouter();
-const handleLogout = async () => {
-  dispatch(clearUserInfo());
-  try {
-    const response = await axiosInstance.post(
-      "http://localhost:5083/connect/logout",
-      null,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
-    if (response.status === HTTP_STATUS_CODE.OK) {
-      CookieService.removeToken();
+  const dispatch = useDispatch();
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(saveUserInfo(userInfo));
     }
-    if (pathname?.includes("/dashboard")) {
+  }, [userInfo, dispatch]);
+  const fullname = (userSelector as any)?.fullname;
+  const avatarUrl = (userSelector as any)?.avatarUrl;
+  const router = useRouter();
+  const handleLogout = async () => {
+    dispatch(clearUserInfo());
+    try {
+      const response = await axiosInstance.post(
+        "http://localhost:5083/connect/logout",
+        null,
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+      if (response.status === HTTP_STATUS_CODE.OK) {
+        CookieService.removeToken();
+      }
       if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.log("Có lỗi xảy ra khi đăng xuất", error);
     }
+    ;
   };
   const items: MenuProps["items"] = [
     {
@@ -156,11 +161,7 @@ const handleLogout = async () => {
       },
     },
   ];
-  useEffect(() => {
-    if (userInfo) {
-      dispatch(saveUserInfo(userInfo));
-    }
-  }, [userInfo, dispatch]);
+
   return (
     <Header
       style={{
@@ -326,7 +327,6 @@ const handleLogout = async () => {
       </div>
     </Header>
   );
-};
-
+}
 // export default React.memo(HeaderComponent);
 export default HeaderComponent;
