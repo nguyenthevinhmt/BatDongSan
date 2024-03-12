@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -191,35 +192,19 @@ namespace WebAPIBase
             services.AddLogging();
 
             // Add Hangfire services.
-            //services.AddHangfire(configuration =>
-            //{
-            //    configuration
-            //        .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-            //        .UseLog4NetLogProvider()
-            //        .UseSimpleAssemblyNameTypeSerializer()
-            //        .UseSerializerSettings(new JsonSerializerSettings
-            //        {
-            //            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //        });
-            //    if (!string.IsNullOrWhiteSpace(redisConnectionString))
-            //    {
-            //        configuration.UseRedisStorage(redisConnectionString, new RedisStorageOptions
-            //        {
-            //            Prefix = $"{{hangfire-{Assembly.GetExecutingAssembly().GetName().Name}}}:",
-            //        });
-            //    }
-            //    else
-            //    {
-            //        configuration.UseInMemoryStorage();
-            //    }
-            //});
-
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(connectionString,
+                new Hangfire.SqlServer.SqlServerStorageOptions(){}
+                ));
             // Add the processing server as IHostedService
-            //services.AddHangfireServer((service, options) =>
-            //{
-            //    options.ServerName = Assembly.GetExecutingAssembly().GetName().Name;
-            //    options.WorkerCount = 100;
-            //});
+            services.AddHangfireServer((service, options) =>
+            {
+                options.ServerName = Assembly.GetExecutingAssembly().GetName().Name;
+                options.WorkerCount = 100;
+            });
 
             ////signalR
             //var signalRBuilder = services.AddSignalR();
@@ -263,9 +248,9 @@ namespace WebAPIBase
 
         public static void ConfigureEndpoint(this WebApplication app)
         {
-            //app.UseHangfireDashboard();
+            app.UseHangfireDashboard();
             app.MapHealthChecks("/health");
-            //app.MapHangfireDashboard("/hangfire");
+            app.MapHangfireDashboard("/hangfire");
             app.MapControllers();
         }
 

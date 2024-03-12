@@ -1,5 +1,4 @@
 ﻿using RealEstate.ApplicationBase.Common.Validations;
-using RealEstate.Domain.Entities;
 using RealEstate.Utils.ConstantVariables.Post;
 using System.ComponentModel.DataAnnotations;
 
@@ -35,15 +34,15 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
             get => _province;
             set => _province = value.Trim();
         }
-        private string _distinct = null!;
+        private string _district = null!;
         /// <summary>
         /// Quận/huyện
         /// </summary>
         [CustomMaxLength(50)]
-        public string Distinct
+        public string District
         {
-            get => _distinct;
-            set => _distinct = value.Trim();
+            get => _district;
+            set => _district = value.Trim();
         }
         private string _ward = null!;
         /// <summary>
@@ -89,28 +88,42 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
             get => _youtubeLink;
             set => _youtubeLink = value?.Trim();
         }
+        [IntegerRange(AllowableValues = new int[] {PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
+        public int Options {  get; set; }
+        /// <summary>
+        /// Số ngày đăng bài 
+        /// </summary>
+        public int LifeTime { get; set; }
         /// <summary>
         /// Loại bài viết
         /// </summary>
         public int PostTypeId { get; set; }
-        
+
         /// <summary>
         /// Loại bất động sản
         /// </summary>
         public int RealEstateTypeId { get; set; }
 
+        ///// <summary>
+        ///// Mã ví
+        ///// </summary>
+        //public string WalletNumber { get; set; } = null!;
+        ///// <summary>
+        ///// Số giao dịch
+        ///// </summary>
+        //public string TransactionNumber { get; set; } = null!;
+
         /// <summary>
-        /// Mã ví
+        /// Đơn vị
+        /// <see cref="RealEstate.Utils.ConstantVariables.Post.CalculateType"/>
         /// </summary>
-        public string WalletNumber { get; set; } = null!;
-        /// <summary>
-        /// Số tiền thanh toán 
-        /// </summary>
-        public double TransactionAmount { get; set; }
-        /// <summary>
-        /// Số giao dịch
-        /// </summary>
-        public string TransactionNumber { get; set; } = null!;
+        [IntegerRange(AllowableValues = new int[]
+        {
+            Utils.ConstantVariables.Post.CalculateType.VND,
+            Utils.ConstantVariables.Post.CalculateType.PriceOfSquareMeter,
+            Utils.ConstantVariables.Post.CalculateType.Agree
+        })]
+        public int CalculateType { get; set; }
 
         public List<CreateMediaDto>? ListMedia { get; set; }
     }

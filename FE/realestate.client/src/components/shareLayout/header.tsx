@@ -13,7 +13,7 @@ import {
   SolutionOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  WalletOutlined,
+  WalletOutlined
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
@@ -43,6 +43,8 @@ const HeaderComponent = () => {
       lineHeight: "20px",
     },
   }));
+
+
   useEffect(() => {
     const repo = async () => {
       try {
@@ -62,6 +64,11 @@ const HeaderComponent = () => {
   const userSelector = useSelector((state: RootState) => {
     return state.auth.user.data;
   });
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(saveUserInfo(userInfo));
+    }
+  }, [userInfo, dispatch]);
   const fullname = (userSelector as any)?.fullname;
   const avatarUrl = (userSelector as any)?.avatarUrl;
   const router = useRouter();
@@ -83,9 +90,11 @@ const HeaderComponent = () => {
       if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.log("Có lỗi xảy ra khi đăng xuất", error);
     }
+    ;
   };
   const items: MenuProps["items"] = [
     {
@@ -152,11 +161,7 @@ const HeaderComponent = () => {
       },
     },
   ];
-  useEffect(() => {
-    if (userInfo) {
-      dispatch(saveUserInfo(userInfo));
-    }
-  }, [userInfo, dispatch]);
+
   return (
     <Header
       style={{
@@ -322,7 +327,6 @@ const HeaderComponent = () => {
       </div>
     </Header>
   );
-};
-
+}
 // export default React.memo(HeaderComponent);
 export default HeaderComponent;

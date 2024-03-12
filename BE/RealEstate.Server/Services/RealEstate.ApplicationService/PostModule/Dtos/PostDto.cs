@@ -12,7 +12,7 @@
         /// <summary>
         /// Quận/huyện
         /// </summary>
-        public string Distinct { get; set; } = null!;
+        public string District { get; set; } = null!;
         /// <summary>
         /// Phường xã
         /// </summary>
@@ -38,6 +38,10 @@
         /// Link video youtube
         /// </summary>
         public string? YoutubeLink { get; set; }
+        /// <summary>
+        /// Ngày hết hạn
+        /// </summary>
+        public DateTime PostEndDate {  get; set; }
         /// <summary>
         /// Thời gian duyệt
         /// </summary>

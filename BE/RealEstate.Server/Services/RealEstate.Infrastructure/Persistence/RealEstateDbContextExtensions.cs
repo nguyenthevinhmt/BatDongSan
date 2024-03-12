@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RealEstate.Domain.Entities;
+using RealEstate.Infrastructure.Persistence.SeedData;
 using RealEstate.Utils.ConstantVariables.User;
 using RealEstate.Utils.Securiry;
 
@@ -132,6 +133,10 @@ namespace RealEstate.Infrastructure.Persistence
                     Deleted = false,
                 });
             #endregion
+
+            modelBuilder.SeedDataProvinces();
+            modelBuilder.SeedDataDistricts();
+            modelBuilder.SeedDataWards();
         }
     }
 }

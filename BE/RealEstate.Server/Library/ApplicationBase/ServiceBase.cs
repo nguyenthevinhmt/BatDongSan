@@ -24,6 +24,15 @@ namespace RealEstate.ApplicationBase
             _mapper = _httpContext.HttpContext.RequestServices.GetService<IMapper>()!;
         }
 
+        protected ServiceBase(ILogger logger, IHttpContextAccessor httpContext, TDbContext dbContext, LocalizationBase localize, IMapper mapper)
+        {
+            _logger = logger;
+            _httpContext = httpContext;
+            _dbContext = dbContext;
+            _localization = localize;
+            _mapper = mapper;
+        }
+
         /// <summary>
         /// Dịch sang ngôn ngữ đích dựa theo keyName và request ngôn ngữ là gì <br/>
         /// Input: <paramref name="keyName"/> = "error_System" <br/>

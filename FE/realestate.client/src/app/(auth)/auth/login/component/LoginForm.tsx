@@ -50,10 +50,8 @@ const LoginForm = () => {
     setLoginFormValue(loginBody);
     try {
       const res = await login(loginBody);
-      console.log(res);
       const response = res as any;
       if (response.data) {
-        console.log("response", response.data);
         Cookies.set(
           "access_token",
           (response.data as ITokenResponse).access_token
@@ -63,7 +61,6 @@ const LoginForm = () => {
           (response.data as ITokenResponse).refresh_token
         );
         dispatch(saveLoginInfo(response));
-        // localStorage.setItem("user", response.data.json());
         router.replace("/");
       } else {
         let getErrorMessage = res as any;
