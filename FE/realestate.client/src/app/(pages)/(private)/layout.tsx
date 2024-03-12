@@ -154,4 +154,4 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   );
 };
 export default PrivateLayout;
-// export default isAuth(PrivateLayout);
+

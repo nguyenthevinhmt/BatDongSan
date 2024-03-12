@@ -1,11 +1,17 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Options;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.Common;
 using RealEstate.ApplicationService.WalletModule.Abstracts;
+using RealEstate.ApplicationService.WalletModule.Dtos.VnpayDto;
+using RealEstate.ApplicationService.WalletModule.VnpayLib;
+using RealEstate.Domain.Entities;
 using RealEstate.ApplicationService.WalletModule.Dtos.VnpayDto;
 using RealEstate.ApplicationService.WalletModule.VnpayLib;
 using RealEstate.Domain.Entities;
@@ -18,8 +24,10 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
         public VnpayService(IOptions<VnpaySetting> appSettings, ILogger<VnpayService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
             _appSettings = appSettings;
+            _appSettings = appSettings;
         }
 
+        public string CreatePaymentUrl(PaymentRequestDto input, HttpContext context)
         public string CreatePaymentUrl(PaymentRequestDto input, HttpContext context)
         {
             var tick = DateTime.Now.Ticks.ToString();
@@ -41,6 +49,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_BankCode", input.BankCode);
 
+            var paymentUrl = pay.CreateRequestUrl(_appSettings.Value.BaseUrl, _appSettings.Value.HashSecret);
             var paymentUrl = pay.CreateRequestUrl(_appSettings.Value.BaseUrl, _appSettings.Value.HashSecret);
 
             return paymentUrl;

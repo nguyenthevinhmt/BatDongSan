@@ -13,7 +13,7 @@ import {
   SolutionOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  WalletOutlined,
+  WalletOutlined
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
@@ -57,29 +57,33 @@ const HeaderComponent = () => {
     };
     repo().then((res) => setUserInfo(res));
   }, []);
+};
+repo().then((res) => setUserInfo(res));
+  }, []);
 
-  const dispatch = useDispatch();
-  const userSelector = useSelector((state: RootState) => {
-    return state.auth.user.data;
-  });
-  const fullname = (userSelector as any)?.fullname;
-  const avatarUrl = (userSelector as any)?.avatarUrl;
-  const router = useRouter();
-  const handleLogout = async () => {
-    dispatch(clearUserInfo());
-    try {
-      const response = await axiosInstance.post(
-        "http://localhost:5083/connect/logout",
-        null,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-      if (response.status === HTTP_STATUS_CODE.OK) {
-        CookieService.removeToken();
+const dispatch = useDispatch();
+const userSelector = useSelector((state: RootState) => {
+  return state.auth.user.data;
+});
+const fullname = (userSelector as any)?.fullname;
+const avatarUrl = (userSelector as any)?.avatarUrl;
+const router = useRouter();
+const handleLogout = async () => {
+  dispatch(clearUserInfo());
+  try {
+    const response = await axiosInstance.post(
+      "http://localhost:5083/connect/logout",
+      null,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      CookieService.removeToken();
+    }
+    if (pathname?.includes("/dashboard")) {
       if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }

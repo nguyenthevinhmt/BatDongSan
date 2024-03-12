@@ -7,7 +7,7 @@ import { UserType } from "@/shared/consts/userType";
 
 const DashboardPage = () => {
   const router = useRouter();
-  useEffect(() => {}, [router]);
+  useEffect(() => { }, [router]);
 
   return <div>Dashboard</div>;
 };

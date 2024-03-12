@@ -7,7 +7,6 @@ import { options, listTabs, listText } from "./utils";
 import Image from "next/image";
 import danang from "../assets/image/danang.jpg";
 import hanoi from "../assets/image/hanoi.png";
-import hue from "../assets/image/hue.jpg";
 import HCM from "../assets/image/HCM.jpg";
 import FisrtSplitComponent from "./homeComponent/FisrtSplitComponent";
 import ListGoods from "./homeComponent/ListGoods";
