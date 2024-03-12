@@ -24,10 +24,8 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
         public VnpayService(IOptions<VnpaySetting> appSettings, ILogger<VnpayService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
             _appSettings = appSettings;
-            _appSettings = appSettings;
         }
 
-        public string CreatePaymentUrl(PaymentRequestDto input, HttpContext context)
         public string CreatePaymentUrl(PaymentRequestDto input, HttpContext context)
         {
             var tick = DateTime.Now.Ticks.ToString();
@@ -49,7 +47,6 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_BankCode", input.BankCode);
 
-            var paymentUrl = pay.CreateRequestUrl(_appSettings.Value.BaseUrl, _appSettings.Value.HashSecret);
             var paymentUrl = pay.CreateRequestUrl(_appSettings.Value.BaseUrl, _appSettings.Value.HashSecret);
 
             return paymentUrl;
