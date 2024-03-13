@@ -424,7 +424,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             post.IsPayment = true;
             post.Options = input.Options;
             post.LifeTime = input.LifeTime;
-            post.PostEndDate = DateTime.Now.AddDays(post.LifeTime);
+            post.PostStartDate = input.PostStartDate;
+            post.PostEndDate = input.PostStartDate.AddDays(post.LifeTime);
             post.Status = PostStatuses.PENDING;
             _dbContext.SaveChanges();
 
@@ -439,6 +440,15 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             else
             {
                 wallet.Balance -= TotalAmount;
+            }
+
+            if (post.PostStartDate >= DateTime.Now.Date)
+            {
+                var jobId = BackgroundJob.Schedule<IPostService>(
+                   x => x.ShowOnPost(post.Id),
+                   post.PostStartDate
+                );
+                post.BackgroundJobOnShowPostId = jobId;
             }
             if (post.PostEndDate.Date >= DateTime.Now.Date)
             {
@@ -462,6 +472,15 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             };
             _dbContext.Transactions.Add(payloadToTransaction);
 
+        }
+
+        public void ShowOnPost(int id)
+        {
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == id
+                                                           && (p.Status != PostStatuses.POSTED)
+                                                           && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Status = PostStatuses.POSTED;
+            _dbContext.SaveChanges();
         }
     }
 }

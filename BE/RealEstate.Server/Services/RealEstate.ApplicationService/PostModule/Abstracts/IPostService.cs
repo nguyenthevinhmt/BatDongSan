@@ -65,6 +65,11 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="id"></param>
         void ShowOffPost(int id);
         /// <summary>
+        /// Kích hoạt đăng bài
+        /// </summary>
+        /// <param name="id"></param>
+        void ShowOnPost(int id);
+        /// <summary>
         /// Duyệt bài
         /// </summary>
         /// <param name="id"></param>
