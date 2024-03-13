@@ -81,9 +81,6 @@ interface IPost {
   options: number;
   lifeTime: number;
   calculateType: number;
-  // walletNumber: string;
-  // transactionAmount: number;
-  // transactionNumber: string;
   listMedia?: MediaType[];
 }
 
@@ -174,6 +171,27 @@ export const getRealEstateType = async () => {
       return response?.data;
     }
   } catch (error) {
+    console.log("Error: Gọi api GET loại bất động sản");
+    return null;
+  }
+};
+
+interface IPayment {
+  options: number;
+  lifeTime: number;
+  postStartDate?: Date;
+  postEndDate?: Date;
+}
+export const updatePaymentStatus = async (payload: IPayment) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/update-payment-status`,
+      payload
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch {
     console.log("Error: Gọi api GET loại bất động sản");
     return null;
   }

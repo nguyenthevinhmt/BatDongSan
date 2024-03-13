@@ -428,7 +428,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             post.Status = PostStatuses.PENDING;
             _dbContext.SaveChanges();
 
-            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
+            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.UserId == currentUserId)
                         ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
             var price = CalculatePrice(post.Options);
             var TotalAmount = post.LifeTime * price;
@@ -453,7 +453,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 Amount = TotalAmount,
                 Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
-                TransactionFrom = input.WalletNumber,
+                TransactionFrom = wallet.WalletNumber,
                 TransactionType = TransactionType.OUTPUT,
                 TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
                 TransactionTo = "Tai khoan he thong",
