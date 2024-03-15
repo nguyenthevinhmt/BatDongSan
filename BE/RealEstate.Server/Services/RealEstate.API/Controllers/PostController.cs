@@ -139,5 +139,16 @@ namespace RealEstate.API.Controllers
             _postService.UpdatePaymentStatus(input);
             return new();
         }
+        /// <summary>
+        /// cập nhật trạng thái bài đăng
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPut("update-status")]
+        public ApiResponse UpdateStatus(UpdatePostStatusDto input)
+        {
+            _postService.UpdateStatus(input);
+            return new();
+        }
     }
 }

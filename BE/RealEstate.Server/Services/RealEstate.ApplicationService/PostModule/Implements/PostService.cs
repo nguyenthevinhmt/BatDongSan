@@ -118,6 +118,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         {
             _logger.LogInformation($"{nameof(Delete)}: id : {id}");
             var post = _dbContext.Posts.FirstOrDefault(c => !c.Deleted && c.Id == id) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Deleted = true;
             _dbContext.SaveChanges();
         }
 
@@ -127,10 +128,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var query = from post in _dbContext.Posts
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.DefaultIfEmpty()
-                        where !post.Deleted &&( !postmedia.Deleted
-                                || (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
-                                || (post.PostTypeId == input.PostType)
-                                || (post.RealEstateTypeId == input.RealEstateType))
+                        where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                && (input.PostType == null || post.PostTypeId == input.PostType)
+                                && (input.PostStatus == null || post.Status == input.PostStatus)
+                                && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
+                                && !post.Deleted
                         select new PostDto
                         {
                             Title = post.Title,
@@ -156,6 +158,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl,
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -164,7 +167,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             query = query.OrderDynamic(input.Sort);
             if (input.PageSize != -1)
             {
-                query = query.Skip(input.PageSize).Take(input.PageSize);
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
             }
             result.Items = query;
             return result;
@@ -215,7 +218,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             query = query.OrderDynamic(input.Sort);
             if (input.PageSize != -1)
             {
-                query = query.Skip(input.PageSize).Take(input.PageSize);
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
             }
             result.Items = query;
             return result;

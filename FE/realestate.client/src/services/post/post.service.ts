@@ -1,3 +1,5 @@
+import { postStatus } from '@/shared/consts/postStatus';
+
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
 import crypto from "crypto";
@@ -151,6 +153,36 @@ export const addPost = async (info: IPost) => {
   }
 };
 
+interface IFindAllPost {
+  status?: number;
+  postType?: number;
+  realEstateType?: number;
+  pageSize?: number;
+  pageNumber?: number;
+  keyword?: string;
+}
+
+export const findAll = async (info: IFindAllPost) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/find-all`, {
+      params: {
+        status: info.status || null,
+        postType: info.postType || null,
+        realEstateType: info.realEstateType || null,
+        pageSize: info.pageSize || -1,
+        pageNumber: info.pageNumber || 1,
+        keyword: info.keyword || null,
+      },
+    });
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api findAll của post bị lỗi!!!");
+    return null;
+  }
+};
+
 export const getById = async (id: number) => {
   try {
     const response = await axiosInstance.get(
@@ -178,3 +210,53 @@ export const getRealEstateType = async () => {
     return null;
   }
 };
+
+//status pending mới phê duyệt dc
+export const approvedPost = async (id: number) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/approve?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api approved của post bị lỗi!!!");
+    return null;
+  }
+}
+
+export const removePost = async (id: number) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${environment.baseUrl}/api/post/remove?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api remove của post bị lỗi!!!");
+    return null;
+  }
+}
+
+interface IUpdateStatus {
+  id: number;
+  status: number;
+}
+
+export const updateStatus = async (info: IUpdateStatus) => {
+  try {
+    const response = await axiosInstance.put(`${environment.baseUrl}/api/post/update-status`, {
+      id: info.id,
+      postStatus: info.status
+    }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api updateStatus của post bị lỗi!!!");
+    return null;
+  }
+}

@@ -69,5 +69,7 @@
         public DateTime? ModifiedDate { get; set; }
         public int? ModifiedBy { get; set; }
 
+        public string? FirstImageUrl { get; set; }
+
     }
 }
