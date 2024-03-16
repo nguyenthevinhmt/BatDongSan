@@ -1,5 +1,6 @@
 "use client";
 import { updatePaymentStatus } from "@/services/post/post.service";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import { formatNumber } from "@/shared/utils/common-helpers";
 import { LeftOutlined } from "@ant-design/icons";
 import {
@@ -10,10 +11,13 @@ import {
   Flex,
   Form,
   InputNumber,
+  Modal,
   Radio,
+  message,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface IForm {
@@ -23,13 +27,15 @@ interface IForm {
   postEndDate?: Date;
 }
 
-const PaymentForm = () => {
+const PaymentForm = ({ prop }: any) => {
   const [formData, setFormData] = useState<IForm>({
     options: 1,
     lifeTime: 5,
     postStartDate: new Date(),
     postEndDate: undefined,
   });
+
+  const router = useRouter();
   const postInfo = [
     {
       option: 1,
@@ -58,9 +64,15 @@ const PaymentForm = () => {
     const payload = {
       options: formData.options,
       lifeTime: formData.lifeTime,
-      id: 1,
+      id: prop,
     };
     const response = await updatePaymentStatus(payload);
+    if (response?.code === HTTP_STATUS_CODE.OK) {
+      message.success("Bạn đã thanh toán thành công");
+      setTimeout(() => {
+        router.replace("/post");
+      }, 1000);
+    }
   };
   return (
     <Flex justify="center" gap="small" vertical>
@@ -79,9 +91,8 @@ const PaymentForm = () => {
           autoComplete="off"
           onFinish={(formValue) => handleSubmit(formValue)}
           onError={(formValue) => {
-            console.log("object", formValue);
+            message.error("Vui lòng kiểm tra lại các trường thông tin");
           }}
-          //   style={{ width: "100%" }}
         >
           <h1
             style={{
@@ -182,7 +193,8 @@ const PaymentForm = () => {
               <Form.Item name="lifeTime">
                 <InputNumber
                   min={1}
-                  value={formData.lifeTime}
+                  // value={formData.lifeTime}
+                  defaultValue={formData.lifeTime}
                   style={{ width: "100%" }}
                   onChange={(value) => {
                     setFormData((prev: any) => {
@@ -331,6 +343,20 @@ const PaymentForm = () => {
             <Button
               style={{ height: "48px", fontSize: "16px", color: "#555" }}
               icon={<LeftOutlined />}
+              onClick={() => {
+                Modal.confirm({
+                  title: "Bạn có chắc chắn muốn hủy?",
+                  content: "Các thay đổi của bạn sẽ không được lưu.",
+                  okText: "Đồng ý",
+                  cancelText: "Hủy",
+                  onOk() {
+                    router.back();
+                  },
+                  onCancel() {
+                    console.log("cancel");
+                  },
+                });
+              }}
             >
               Quay lại
             </Button>

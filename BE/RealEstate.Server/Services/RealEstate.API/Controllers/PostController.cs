@@ -69,8 +69,7 @@ namespace RealEstate.API.Controllers
         [HttpPost("add")]
         public ApiResponse CreatePost([FromBody]CreatePostDto input)
         {
-            _postService.CreatePost(input);
-            return new();
+            return new(_postService.CreatePost(input));
         }
 
         /// <summary>

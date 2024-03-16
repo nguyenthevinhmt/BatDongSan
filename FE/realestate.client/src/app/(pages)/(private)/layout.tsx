@@ -18,6 +18,7 @@ import theme from "@/theme/themeConfig";
 import MenuItem from "antd/es/menu/MenuItem";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ToastProvider from "@/shared/provider/toast.provider";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -52,7 +53,11 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
         "post/draft"
       ),
     ]),
-    getItem(<Link href={"/user"}>Thông tin cá nhân</Link>, "/user", <ContainerOutlined />),
+    getItem(
+      <Link href={"/user"}>Thông tin cá nhân</Link>,
+      "/user",
+      <ContainerOutlined />
+    ),
 
     getItem("Quản lý tài chính", "wallet/manager", <MailOutlined />, [
       getItem("Thông tin số dư", "5"),
@@ -76,7 +81,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   };
 
   useEffect(() => {
-    console.log(pathname)
+    console.log(pathname);
     setActiveKey((prev) => [pathname]);
   }, [pathname]);
 
@@ -145,7 +150,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                   borderRadius: "8px",
                 }}
               >
-                {children}
+                <ToastProvider>{children}</ToastProvider>
               </Content>
             </Layout>
           </Layout>
@@ -155,4 +160,3 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   );
 };
 export default PrivateLayout;
-

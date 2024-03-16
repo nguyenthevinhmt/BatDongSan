@@ -33,7 +33,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         }
 
 
-        public void CreatePost(CreatePostDto input)
+        public int CreatePost(CreatePostDto input)
         {
             var currentUserId = _httpContext.GetCurrentUserId();
             _logger.LogInformation($"{nameof(CreatePost)}: input: {JsonSerializer.Serialize(input)}, userId = {currentUserId}");
@@ -112,6 +112,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             //_dbContext.Transactions.Add(payloadToTransaction);
             _dbContext.SaveChanges();
             transaction.Commit();
+            return post.Id;
         }
 
         public void Delete(int id)
@@ -127,10 +128,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var query = from post in _dbContext.Posts
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.DefaultIfEmpty()
-                        where !post.Deleted &&( !postmedia.Deleted
-                                || (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
-                                || (post.PostTypeId == input.PostType)
-                                || (post.RealEstateTypeId == input.RealEstateType))
+                        where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                && (input.PostType == null || post.PostTypeId == input.PostType)
+                                && (input.PostStatus == null || post.Status == input.PostStatus)
+                                && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
+                                && !post.Deleted
                         select new PostDto
                         {
                             Title = post.Title,
@@ -156,6 +158,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl,
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -177,11 +180,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var query = from post in _dbContext.Posts
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.DefaultIfEmpty()
-                        where !post.Deleted && post.CreatedBy == currentUserId && (!postmedia.Deleted
-                                || (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
-                                || (post.PostTypeId == input.PostType)
-                                || (post.RealEstateTypeId == input.RealEstateType))
-                                || (post.Status == input.PostStatus)
+                        where !post.Deleted && post.CreatedBy == currentUserId
+                                && (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                && (input.PostType == null || post.PostTypeId == input.PostType)
+                                && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
+                                && (input.PostStatus == null || post.Status == input.PostStatus)
                         select new PostDto
                         {
                             Title = post.Title,

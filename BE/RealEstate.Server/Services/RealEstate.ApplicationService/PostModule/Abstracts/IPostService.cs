@@ -9,7 +9,7 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// Thêm mới bài đăng
         /// </summary>
         /// <param name="input"></param>
-        void CreatePost(CreatePostDto input);
+        int CreatePost(CreatePostDto input);
         /// <summary>
         /// Danh sách bài viết
         /// </summary>

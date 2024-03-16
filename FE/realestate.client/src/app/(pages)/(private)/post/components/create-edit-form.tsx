@@ -25,6 +25,7 @@ import {
   Upload,
   UploadFile,
   UploadProps,
+  message,
 } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -32,6 +33,9 @@ import Image from "next/image";
 import BingMapsReact from "bingmaps-react";
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import PaymentForm from "./payment-form";
+import { toast } from "react-toastify";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -71,6 +75,11 @@ const getBase64 = (file: FileType): Promise<string> =>
 
 //type = [create: 1, edit: 2]
 const CreateEditForm = ({ type }: { type: number }) => {
+  const router = useRouter();
+
+  const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
+  const [postId, setpostId] = useState(0);
+  const [bingMapReady, setBingMapReady] = useState(false);
   const [postType, setPostType] = useState<number>(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -319,8 +328,12 @@ const CreateEditForm = ({ type }: { type: number }) => {
     console.log("object form", form.getFieldValue("calculateType"));
 
     const response = await addPost(postInfo);
-    if (response?.data?.code === HTTP_STATUS_CODE.OK) {
+    if (response?.code === HTTP_STATUS_CODE.OK) {
       console.log("đã đăng tin!", response?.data);
+      toast.done("Thêm mới thành công");
+      setIsShowPaymentForm(true);
+      setpostId(response?.data);
+      console.log(isShowPaymentForm);
     }
   };
 
@@ -336,518 +349,583 @@ const CreateEditForm = ({ type }: { type: number }) => {
   };
 
   return (
-    <Flex justify="center" gap="small" vertical>
-      <div
-        style={{
-          width: "50%",
-          margin: "auto",
-          padding: 20,
-          backgroundColor: "#fff",
-          borderRadius: 8,
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        <Form
-          form={form}
-          layout="vertical"
-          autoComplete="off"
-          onFinish={(formValue) => handleSubmit(formValue)}
-          onError={(formValue) => {
-            console.log("object", formValue);
-          }}
-          initialValues={initialValues}
-        >
-          <p
-            style={{
-              fontSize: 24,
-              fontWeight: "500",
-              marginBottom: 5,
-            }}
-          >
-            Thông tin cơ bản
-          </p>
-
-          <div
-            style={{ display: "flex", justifyContent: "center", height: 40 }}
-          >
-            <Form.Item style={{ width: "50%" }}>
-              <Button
-                style={{
-                  width: "100%",
-                  backgroundColor:
-                    postType === 1 ? "rgba(0, 0, 0, 0.6)" : "#fff",
-                  color: postType === 1 ? "white" : "rgb(153, 153, 153)",
-                  fontWeight: postType === 1 ? "bold" : "normal",
-                  border: "1px solid rgb(204, 204, 204)",
-                  borderTopLeftRadius: 5,
-                  borderBottomLeftRadius: 5,
-                }}
-                value={1}
-                onClick={() => setPostType(1)}
-              >
-                Bán
-              </Button>
-            </Form.Item>
-            <Form.Item style={{ width: "50%" }}>
-              <Button
-                style={{
-                  width: "100%",
-                  backgroundColor:
-                    postType === 2 ? "rgba(0, 0, 0, 0.6)" : "#fff",
-                  color: postType === 2 ? "white" : "rgb(153, 153, 153)",
-                  fontWeight: postType === 2 ? "bold" : "normal",
-                  border: "1px solid rgb(204, 204, 204)",
-                  borderTopRightRadius: 5,
-                  borderBottomRightRadius: 5,
-                }}
-                value={2}
-                onClick={() => setPostType(2)}
-              >
-                Cho thuê
-              </Button>
-            </Form.Item>
-          </div>
-
-          <div>
-            <Form.Item
-              name="realEstateTypeId"
-              label={<strong>Loại bất động sản</strong>}
-              rules={[
-                { required: true, message: "Vui lòng chọn loại bất động sản" },
-              ]}
-            >
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Chọn loại bất động sản"
-                options={realEstateType?.map((item: any) => {
-                  return {
-                    value: item?.id,
-                    label: item?.name,
-                  };
-                })}
-              />
-            </Form.Item>
-          </div>
-
-          <Flex justify="center" gap={"small"}>
-            <Form.Item
-              name="province"
-              label={<strong>Tỉnh, thành phố</strong>}
-              style={{ width: "50%" }}
-              rules={[
-                {
-                  required: true,
-                  message: "Tỉnh, Thành phố không được bỏ trống",
-                },
-              ]}
-            >
-              <Select
-                placeholder="Chọn tỉnh/thành phố"
-                onChange={(value, option) =>
-                  handleProvinceChange(value, option)
-                }
-                options={provinces?.map((item: any) => {
-                  return {
-                    value: item?.id,
-                    label: item?.name,
-                  };
-                })}
-              />
-            </Form.Item>
-            <Form.Item
-              name="distinct"
-              label={<strong>Quận, huyện</strong>}
-              style={{ width: "50%" }}
-              rules={[
-                { required: true, message: "Quận, huyện không được bỏ trống" },
-              ]}
-            >
-              <Select
-                placeholder="Chọn quận/huyện"
-                onChange={(value, option) =>
-                  handleDistrictChange(value, option)
-                }
-                disabled={isDisableSelect.districtDisable}
-                options={districts?.map((item: any) => {
-                  return {
-                    value: item?.id,
-                    label: item?.fullName,
-                  };
-                })}
-              />
-            </Form.Item>
-          </Flex>
-
-          <Flex justify="center" gap={"small"}>
-            <Form.Item
-              name="ward"
-              label={<strong>Phường, xã</strong>}
-              style={{ width: "50%" }}
-              rules={[
-                { required: true, message: "Phường, xã không được bỏ trống" },
-              ]}
-            >
-              <Select
-                placeholder="Chọn phường/xã"
-                disabled={isDisableSelect.wardDisable}
-                options={wards?.map((item: any) => {
-                  return {
-                    value: item?.id,
-                    label: item?.name,
-                  };
-                })}
-                onChange={(value, option) => handleWardChange(value, option)}
-              />
-            </Form.Item>
-            <Form.Item
-              name="street"
-              label={<strong>Đường, phố</strong>}
-              style={{ width: "50%" }}
-              rules={[
-                { required: true, message: "Đường, phố không được bỏ trống" },
-              ]}
-            >
-              <Input
-                value={location.street}
-                onChange={(e) => {
-                  setLocation((prev: any) => {
-                    return {
-                      ...prev,
-                      street: e.target.value,
-                    };
-                  });
-                }}
-              />
-            </Form.Item>
-          </Flex>
-
-          <Form.Item
-            name="detailAddress"
-            label={<strong>Địa chỉ chi tiết</strong>}
-            rules={[
-              {
-                required: true,
-                message: "Địa chỉ chi tiết không được bỏ trống",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          {showMap && (
-            <Flex justify="center">
-              <BingMapsReact
-                bingMapsKey={environment.BingMapsApiKey}
-                height={270}
-                width={850}
-                pushPins={[
-                  {
-                    center: {
-                      latitude: coordinates.latitude,
-                      longitude: coordinates.longitude,
-                    },
-                  },
-                ]}
-                viewOptions={{
-                  center: {
-                    latitude: coordinates.latitude,
-                    longitude: coordinates.longitude,
-                  },
-                  mapTypeId: "road",
-                  zoom: 16,
-                }}
-              />
-            </Flex>
-          )}
-          <div
-            style={{
-              width: "100%",
-              margin: "auto",
-              backgroundColor: "#fff",
-              marginTop: "20px",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 24,
-                marginBottom: 5,
-                fontWeight: "500",
-              }}
-            >
-              Thông tin bài viết
-            </p>
-            <Tooltip
-              placement="bottom"
-              title={
-                <div style={{ width: "100%" }}>
-                  <strong>Tiêu đề nên có:</strong>
-                  <p>Loại hình bất động sản, diện tích, địa chỉ.</p>
-                  <p>VD: bán nhà riêng 50m2 chính chủ tại Cầu Giấy</p>
-                  <strong>Tiêu đề không nên có:</strong>
-                  <p>Nội dung không liên quan đến bất động sản.</p>
-                  <p>Số điện thoại chưa đăng ký.</p>
-                  <p>
-                    Tiếng Việt không dấu hoặc ngôn ngữ khác ngoài tiếng Việt.
-                  </p>
-                </div>
-              }
-              arrow={mergedArrow}
-            >
-              <Form.Item
-                name="title"
-                label={
-                  <strong>
-                    Tiêu đề{" "}
-                    <span style={{ fontWeight: "lighter" }}>
-                      (Tối thiểu 30 ký tự, tối đa 99 ký tự)
-                    </span>
-                  </strong>
-                }
-                rules={[{ required: true, message: "* Tiêu đề bắt buộc nhập" }]}
-              >
-                <Input style={{ height: 50 }} />
-              </Form.Item>
-            </Tooltip>
-            <Form.Item
-              name="description"
-              label={
-                <strong>
-                  Mô tả{" "}
-                  <span style={{ fontWeight: "lighter" }}>
-                    (Tối thiểu 30 ký tự, tối đa 3000 ký tự)
-                  </span>
-                </strong>
-              }
-              rules={[{ required: true, message: "* Mô tả bắt buộc nhập" }]}
-            >
-              <Input.TextArea style={{ height: 150 }} />
-            </Form.Item>
-          </div>
-
-          <div
-            style={{
-              width: "100%",
-              margin: "auto",
-              backgroundColor: "#fff",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 24,
-                marginBottom: 5,
-                fontWeight: "500",
-              }}
-            >
-              Thông tin bất động sản
-            </p>
-            <Form.Item
-              name="area"
-              label={<strong>Diện tích</strong>}
-              rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
-            >
-              <Input type="number" placeholder="m²" />
-            </Form.Item>
-            <Flex justify="center" gap={"small"}>
-              <Form.Item
-                name="price"
-                label={
-                  <strong>
-                    <span style={{ color: "#ff4d4f" }}>* </span>Mức giá
-                  </strong>
-                }
-                style={{ width: "70%" }}
-                rules={[{ validator: validatePrice }]}
-              >
-                <Input disabled={currentCalculateType === 3} />
-              </Form.Item>
-
-              <Form.Item
-                name="calculateType"
-                label={<strong>Đơn vị</strong>}
-                style={{ width: "30%" }}
-                rules={[{ required: true, message: "Trường bắt buộc nhập" }]}
-              >
-                <Select
-                  style={{ width: "100%" }}
-                  value={calculateType[0].value}
-                  optionFilterProp="children"
-                  options={calculateType}
-                  onChange={(value: string, option) => {
-                    // console.log("object", value, option)
-                    setCurrentCalculateType(+value);
-                  }}
-                />
-              </Form.Item>
-            </Flex>
-          </div>
-
-          <div
-            style={{
-              width: "100%",
-              margin: "auto",
-              backgroundColor: "#fff",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 24,
-                marginBottom: 5,
-                fontWeight: "500",
-              }}
-            >
-              Hình ảnh & Video
-            </p>
-            <ul style={{ paddingLeft: 20 }}>
-              <li>Đăng tối thiểu 4 ảnh thường với tin VIP</li>
-              <li>Đăng tối đa 24 ảnh với tất cả các loại tin</li>
-              <li>Hãy dùng ảnh thật, không trùng, không chèn SDT</li>
-              <li>Mỗi ảnh kích thước tối thiểu 100x100 px, tối đa 15MB</li>
-              <li>Mô tả ảnh tối đa 45 ký tự</li>
-            </ul>
-            <Form.Item
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "10px",
-              }}
-              valuePropName="fileList"
-              getValueFromEvent={normFile}
-            >
-              <Upload
-                customRequest={handleUpload}
-                multiple={true}
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={handlePreview}
-                onRemove={handleRemove}
-                onChange={handleChange}
-              >
-                <button style={{ border: 0, background: "none" }} type="button">
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>
-                    Bấm để chọn ảnh cần tải lên
-                  </div>
-                </button>
-              </Upload>
-              <Modal
-                open={previewOpen}
-                title={previewTitle}
-                footer={null}
-                onCancel={handleCancel}
-              >
-                <Image
-                  alt="example"
-                  style={{ width: "100%" }}
-                  src={previewImage}
-                />
-              </Modal>
-            </Form.Item>
-            <Form.Item
-              name={"youtubeLink"}
-              label={<strong>Link youtube</strong>}
-            >
-              <Input placeholder="Dán đường dẫn youtube tại đây" />
-            </Form.Item>
-          </div>
-
-          <div
-            style={{
-              width: "100%",
-              margin: "auto",
-              backgroundColor: "#fff",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 24,
-                fontWeight: "500",
-              }}
-            >
-              Thông tin liên hệ
-            </p>
-            <Flex justify="center" gap={"small"}>
-              <Form.Item
-                name="name"
-                label={<strong>Tên liên hệ</strong>}
-                style={{ width: "50%" }}
-              >
-                <Input
-                  value={userInfo.fullname}
-                  placeholder={userInfo.fullname}
-                  disabled={true}
-                />
-              </Form.Item>
-              <Form.Item
-                name="phoneNumber"
-                label={<strong>Số điện thoại</strong>}
-                style={{ width: "50%" }}
-              >
-                <Input
-                  value={userInfo.phoneNumber}
-                  placeholder={userInfo.phoneNumber}
-                  disabled={true}
-                />
-              </Form.Item>
-            </Flex>
-
-            <Form.Item
-              name="email"
-              label={<strong>Email</strong>}
-              style={{ width: "50%", marginTop: "-5px" }}
-            >
-              <Input
-                value={userInfo.email}
-                placeholder={userInfo.email}
-                disabled={true}
-              />
-            </Form.Item>
-          </div>
-
-          <div
-            style={{
-              // height: 70,
-              width: "100%",
-              margin: "auto",
-              backgroundColor: "#fff",
-            }}
-          >
+    <>
+      {!isShowPaymentForm && (
+        <>
+          {" "}
+          <Flex justify="center" gap="small" vertical>
             <div
               style={{
-                display: "flex",
-                justifyContent: "flex-end",
+                width: "50%",
+                margin: "auto",
+                padding: 20,
+                backgroundColor: "#fff",
+                borderRadius: 8,
+                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
               }}
             >
-              <Form.Item>
-                <Button
+              <Form
+                form={form}
+                layout="vertical"
+                autoComplete="off"
+                onFinish={(formValue) => handleSubmit(formValue)}
+                onFinishFailed={() => {
+                  message.error("Vui lòng kiểm tra lại các trường thông tin!");
+                }}
+                initialValues={initialValues}
+              >
+                <p
                   style={{
-                    padding: "0 15px",
-                    margin: "0 10px",
-                    color: "#555",
-                    backgroundColor: "#fafafa",
-                    border: "1px solid #ccc",
+                    fontSize: 24,
+                    fontWeight: "500",
+                    marginBottom: 5,
                   }}
                 >
-                  Hủy
-                </Button>
-              </Form.Item>
+                  Thông tin cơ bản
+                </p>
 
-              <Form.Item>
-                <Button
+                <div
                   style={{
-                    padding: "0 15px",
-                    color: "white",
-                    backgroundColor: "rgb(224, 60, 49)",
-                    border: "none",
+                    display: "flex",
+                    justifyContent: "center",
+                    height: 40,
                   }}
-                  htmlType="submit"
                 >
-                  Tiếp tục
-                </Button>
-              </Form.Item>
+                  <Form.Item style={{ width: "50%" }}>
+                    <Button
+                      style={{
+                        width: "100%",
+                        backgroundColor:
+                          postType === 1 ? "rgba(0, 0, 0, 0.6)" : "#fff",
+                        color: postType === 1 ? "white" : "rgb(153, 153, 153)",
+                        fontWeight: postType === 1 ? "bold" : "normal",
+                        border: "1px solid rgb(204, 204, 204)",
+                        borderTopLeftRadius: 5,
+                        borderBottomLeftRadius: 5,
+                      }}
+                      value={1}
+                      onClick={() => setPostType(1)}
+                    >
+                      Bán
+                    </Button>
+                  </Form.Item>
+                  <Form.Item style={{ width: "50%" }}>
+                    <Button
+                      style={{
+                        width: "100%",
+                        backgroundColor:
+                          postType === 2 ? "rgba(0, 0, 0, 0.6)" : "#fff",
+                        color: postType === 2 ? "white" : "rgb(153, 153, 153)",
+                        fontWeight: postType === 2 ? "bold" : "normal",
+                        border: "1px solid rgb(204, 204, 204)",
+                        borderTopRightRadius: 5,
+                        borderBottomRightRadius: 5,
+                      }}
+                      value={2}
+                      onClick={() => setPostType(2)}
+                    >
+                      Cho thuê
+                    </Button>
+                  </Form.Item>
+                </div>
+
+                <div>
+                  <Form.Item
+                    name="realEstateTypeId"
+                    label={<strong>Loại bất động sản</strong>}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng chọn loại bất động sản",
+                      },
+                    ]}
+                  >
+                    <Select
+                      style={{ width: "100%" }}
+                      placeholder="Chọn loại bất động sản"
+                      options={realEstateType?.map((item: any) => {
+                        return {
+                          value: item?.id,
+                          label: item?.name,
+                        };
+                      })}
+                    />
+                  </Form.Item>
+                </div>
+
+                <Flex justify="center" gap={"small"}>
+                  <Form.Item
+                    name="province"
+                    label={<strong>Tỉnh, thành phố</strong>}
+                    style={{ width: "50%" }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Tỉnh, Thành phố không được bỏ trống",
+                      },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Chọn tỉnh/thành phố"
+                      onChange={(value, option) =>
+                        handleProvinceChange(value, option)
+                      }
+                      options={provinces?.map((item: any) => {
+                        return {
+                          value: item?.id,
+                          label: item?.name,
+                        };
+                      })}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="distinct"
+                    label={<strong>Quận, huyện</strong>}
+                    style={{ width: "50%" }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Quận, huyện không được bỏ trống",
+                      },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Chọn quận/huyện"
+                      onChange={(value, option) =>
+                        handleDistrictChange(value, option)
+                      }
+                      disabled={isDisableSelect.districtDisable}
+                      options={districts?.map((item: any) => {
+                        return {
+                          value: item?.id,
+                          label: item?.fullName,
+                        };
+                      })}
+                    />
+                  </Form.Item>
+                </Flex>
+
+                <Flex justify="center" gap={"small"}>
+                  <Form.Item
+                    name="ward"
+                    label={<strong>Phường, xã</strong>}
+                    style={{ width: "50%" }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Phường, xã không được bỏ trống",
+                      },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Chọn phường/xã"
+                      disabled={isDisableSelect.wardDisable}
+                      options={wards?.map((item: any) => {
+                        return {
+                          value: item?.id,
+                          label: item?.name,
+                        };
+                      })}
+                      onChange={(value, option) =>
+                        handleWardChange(value, option)
+                      }
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="street"
+                    label={<strong>Đường, phố</strong>}
+                    style={{ width: "50%" }}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Đường, phố không được bỏ trống",
+                      },
+                    ]}
+                  >
+                    <Input
+                      value={location.street}
+                      onChange={(e) => {
+                        setLocation((prev: any) => {
+                          return {
+                            ...prev,
+                            street: e.target.value,
+                          };
+                        });
+                      }}
+                    />
+                  </Form.Item>
+                </Flex>
+
+                <Form.Item
+                  name="detailAddress"
+                  label={<strong>Địa chỉ chi tiết</strong>}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Địa chỉ chi tiết không được bỏ trống",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+                {showMap && (
+                  <Flex justify="center">
+                    <BingMapsReact
+                      bingMapsKey={environment.BingMapsApiKey}
+                      height={270}
+                      width={850}
+                      pushPins={
+                        bingMapReady
+                          ? [
+                              {
+                                center: {
+                                  latitude: coordinates.latitude,
+                                  longitude: coordinates.longitude,
+                                },
+                              },
+                            ]
+                          : null
+                      }
+                      viewOptions={{
+                        center: {
+                          latitude: coordinates.latitude,
+                          longitude: coordinates.longitude,
+                        },
+                        mapTypeId: "road",
+                        zoom: 16,
+                      }}
+                      onMapReady={() => {
+                        setBingMapReady(true);
+                      }}
+                    />
+                  </Flex>
+                )}
+                <div
+                  style={{
+                    width: "100%",
+                    margin: "auto",
+                    backgroundColor: "#fff",
+                    marginTop: "20px",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 24,
+                      marginBottom: 5,
+                      fontWeight: "500",
+                    }}
+                  >
+                    Thông tin bài viết
+                  </p>
+                  <Tooltip
+                    placement="bottom"
+                    title={
+                      <div style={{ width: "100%" }}>
+                        <strong>Tiêu đề nên có:</strong>
+                        <p>Loại hình bất động sản, diện tích, địa chỉ.</p>
+                        <p>VD: bán nhà riêng 50m2 chính chủ tại Cầu Giấy</p>
+                        <strong>Tiêu đề không nên có:</strong>
+                        <p>Nội dung không liên quan đến bất động sản.</p>
+                        <p>Số điện thoại chưa đăng ký.</p>
+                        <p>
+                          Tiếng Việt không dấu hoặc ngôn ngữ khác ngoài tiếng
+                          Việt.
+                        </p>
+                      </div>
+                    }
+                    arrow={mergedArrow}
+                  >
+                    <Form.Item
+                      name="title"
+                      label={
+                        <strong>
+                          Tiêu đề{" "}
+                          <span style={{ fontWeight: "lighter" }}>
+                            (Tối thiểu 30 ký tự, tối đa 99 ký tự)
+                          </span>
+                        </strong>
+                      }
+                      rules={[
+                        { required: true, message: "* Tiêu đề bắt buộc nhập" },
+                      ]}
+                    >
+                      <Input style={{ height: 50 }} />
+                    </Form.Item>
+                  </Tooltip>
+                  <Form.Item
+                    name="description"
+                    label={
+                      <strong>
+                        Mô tả{" "}
+                        <span style={{ fontWeight: "lighter" }}>
+                          (Tối thiểu 30 ký tự, tối đa 3000 ký tự)
+                        </span>
+                      </strong>
+                    }
+                    rules={[
+                      { required: true, message: "* Mô tả bắt buộc nhập" },
+                    ]}
+                  >
+                    <Input.TextArea style={{ height: 150 }} />
+                  </Form.Item>
+                </div>
+
+                <div
+                  style={{
+                    width: "100%",
+                    margin: "auto",
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 24,
+                      marginBottom: 5,
+                      fontWeight: "500",
+                    }}
+                  >
+                    Thông tin bất động sản
+                  </p>
+                  <Form.Item
+                    name="area"
+                    label={<strong>Diện tích</strong>}
+                    rules={[
+                      { required: true, message: "Trường bắt buộc nhập" },
+                    ]}
+                  >
+                    <Input type="number" placeholder="m²" />
+                  </Form.Item>
+                  <Flex justify="center" gap={"small"}>
+                    <Form.Item
+                      name="price"
+                      label={
+                        <strong>
+                          <span style={{ color: "#ff4d4f" }}>* </span>Mức giá
+                        </strong>
+                      }
+                      style={{ width: "70%" }}
+                      rules={[{ validator: validatePrice }]}
+                    >
+                      <Input disabled={currentCalculateType === 3} />
+                    </Form.Item>
+
+                    <Form.Item
+                      name="calculateType"
+                      label={<strong>Đơn vị</strong>}
+                      style={{ width: "30%" }}
+                      rules={[
+                        { required: true, message: "Trường bắt buộc nhập" },
+                      ]}
+                    >
+                      <Select
+                        style={{ width: "100%" }}
+                        value={calculateType[0].value}
+                        optionFilterProp="children"
+                        options={calculateType}
+                        onChange={(value: string, option) => {
+                          // console.log("object", value, option)
+                          setCurrentCalculateType(+value);
+                        }}
+                      />
+                    </Form.Item>
+                  </Flex>
+                </div>
+
+                <div
+                  style={{
+                    width: "100%",
+                    margin: "auto",
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 24,
+                      marginBottom: 5,
+                      fontWeight: "500",
+                    }}
+                  >
+                    Hình ảnh & Video
+                  </p>
+                  <ul style={{ paddingLeft: 20 }}>
+                    <li>Đăng tối thiểu 4 ảnh thường với tin VIP</li>
+                    <li>Đăng tối đa 24 ảnh với tất cả các loại tin</li>
+                    <li>Hãy dùng ảnh thật, không trùng, không chèn SDT</li>
+                    <li>
+                      Mỗi ảnh kích thước tối thiểu 100x100 px, tối đa 15MB
+                    </li>
+                    <li>Mô tả ảnh tối đa 45 ký tự</li>
+                  </ul>
+                  <Form.Item
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "10px",
+                    }}
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
+                  >
+                    <Upload
+                      customRequest={handleUpload}
+                      multiple={true}
+                      listType="picture-card"
+                      fileList={fileList}
+                      onPreview={handlePreview}
+                      onRemove={handleRemove}
+                      onChange={handleChange}
+                    >
+                      <button
+                        style={{ border: 0, background: "none" }}
+                        type="button"
+                      >
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>
+                          Bấm để chọn ảnh cần tải lên
+                        </div>
+                      </button>
+                    </Upload>
+                    <Modal
+                      open={previewOpen}
+                      title={previewTitle}
+                      footer={null}
+                      onCancel={handleCancel}
+                    >
+                      <Image
+                        alt="example"
+                        style={{ width: "100%" }}
+                        src={previewImage}
+                      />
+                    </Modal>
+                  </Form.Item>
+                  <Form.Item
+                    name={"youtubeLink"}
+                    label={<strong>Link youtube</strong>}
+                  >
+                    <Input placeholder="Dán đường dẫn youtube tại đây" />
+                  </Form.Item>
+                </div>
+
+                <div
+                  style={{
+                    width: "100%",
+                    margin: "auto",
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 24,
+                      fontWeight: "500",
+                    }}
+                  >
+                    Thông tin liên hệ
+                  </p>
+                  <Flex justify="center" gap={"small"}>
+                    <Form.Item
+                      name="name"
+                      label={<strong>Tên liên hệ</strong>}
+                      style={{ width: "50%" }}
+                    >
+                      <Input
+                        value={userInfo.fullname}
+                        placeholder={userInfo.fullname}
+                        disabled={true}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="phoneNumber"
+                      label={<strong>Số điện thoại</strong>}
+                      style={{ width: "50%" }}
+                    >
+                      <Input
+                        value={userInfo.phoneNumber}
+                        placeholder={userInfo.phoneNumber}
+                        disabled={true}
+                      />
+                    </Form.Item>
+                  </Flex>
+
+                  <Form.Item
+                    name="email"
+                    label={<strong>Email</strong>}
+                    style={{ width: "50%", marginTop: "-5px" }}
+                  >
+                    <Input
+                      value={userInfo.email}
+                      placeholder={userInfo.email}
+                      disabled={true}
+                    />
+                  </Form.Item>
+                </div>
+
+                <div
+                  style={{
+                    // height: 70,
+                    width: "100%",
+                    margin: "auto",
+                    backgroundColor: "#fff",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Form.Item>
+                      <Button
+                        style={{
+                          padding: "0 15px",
+                          margin: "0 10px",
+                          color: "#555",
+                          backgroundColor: "#fafafa",
+                          border: "1px solid #ccc",
+                        }}
+                        onClick={() => {
+                          Modal.confirm({
+                            title: "Bạn có chắc chắn muốn hủy?",
+                            content: "Các thay đổi của bạn sẽ không được lưu.",
+                            okText: "Đồng ý",
+                            cancelText: "Hủy",
+                            onOk() {
+                              router.replace("/post");
+                            },
+                            onCancel() {
+                              console.log("cancel");
+                            },
+                          });
+                        }}
+                      >
+                        Hủy
+                      </Button>
+                    </Form.Item>
+
+                    <Form.Item>
+                      <Button
+                        style={{
+                          padding: "0 15px",
+                          color: "white",
+                          backgroundColor: "rgb(224, 60, 49)",
+                          border: "none",
+                        }}
+                        htmlType="submit"
+                      >
+                        Tiếp tục
+                      </Button>
+                    </Form.Item>
+                  </div>
+                </div>
+              </Form>
             </div>
-          </div>
-        </Form>
-      </div>
-    </Flex>
+          </Flex>
+        </>
+      )}
+      {isShowPaymentForm && (
+        <>
+          <PaymentForm prop={postId} />
+        </>
+      )}
+    </>
   );
 };
 
