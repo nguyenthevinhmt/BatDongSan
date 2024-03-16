@@ -10,6 +10,7 @@ export default function isAuth(Component: any, allowedRoles: number[] = []) {
     const authStore = useSelector((state: RootState) => state.auth);
     const userToken = authStore.data.access_token;
     const role = authStore?.user?.data?.userType;
+    console.log("role", role);
     const [toastShown, setToastShown] = useState(false);
     useEffect(() => {
       console.log("userToken", userToken);
@@ -19,7 +20,7 @@ export default function isAuth(Component: any, allowedRoles: number[] = []) {
 
       if (
         allowedRoles.length > 0 &&
-        allowedRoles.every((c: any) => c === role)
+        allowedRoles.every((c: any) => c !== role)
       ) {
         if (!toastShown) {
           toast.error("Tài khoản không có quyền truy cập");

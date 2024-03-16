@@ -70,7 +70,6 @@
         public int? ModifiedBy { get; set; }
         public string? FirstImageUrl { get;set; }
 
-        public string? FirstImageUrl { get; set; }
 
     }
 }
