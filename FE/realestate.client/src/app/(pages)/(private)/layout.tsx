@@ -45,13 +45,10 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
       "/dashboard",
       <PieChartOutlined />
     ),
-    getItem("Quản lý tin đăng", "post/manager", <DesktopOutlined />, [
+    getItem("Quản lý tin đăng", "post", <DesktopOutlined />, [
       getItem(<Link href={"/post/create"}>Đăng mới</Link>, "/post/create"),
-      getItem(<Link href={"/post"}>Danh sách tin</Link>, "/post"),
-      getItem(
-        <Link href={"post/draft"}>Danh sách tin nháp</Link>,
-        "post/draft"
-      ),
+      getItem(<Link href={"/post/manage"}>Danh sách tin</Link>, "/post/manage"),
+      getItem(<Link href={"post/draft"}>Danh sách tin nháp</Link>,"post/draft"),
     ]),
     getItem(
       <Link href={"/user"}>Thông tin cá nhân</Link>,
