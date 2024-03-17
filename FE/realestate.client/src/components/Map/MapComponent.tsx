@@ -1,40 +1,44 @@
-import React from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import { environment } from "@/shared/environment/environment";
+import React, { useEffect, useState } from "react";
+import BingMapsReact from "bingmaps-react";
 
 const MapComponent = ({ prop }: any) => {
-  const position = [51.505, -0.09];
+  const [bingMapReady, setBingMapReady] = useState(false);
+  const onMapReady = () => {
+    setBingMapReady(true);
+  };
+  useEffect(() => {
+    console.log("MapComp", prop);
+    if (prop?.latitude !== 0 && prop?.longitude !== 0) {
+      onMapReady();
+    }
+  }, [prop]);
   return (
-    <MapContainer
-      style={{ width: "100%", height: "270" }}
-      center={{ lat: prop?.latitude, lng: prop?.longitude }}
-      zoom={13}
-      scrollWheelZoom={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <Marker
-        // icon={
-        //   new L.Icon({
-        //     iconUrl: MarkerIcon.src,
-        //     iconRetinaUrl: MarkerIcon.src,
-        //     iconSize: [25, 41],
-        //     iconAnchor: [12.5, 41],
-        //     popupAnchor: [0, -41],
-        //     shadowUrl: MarkerShadow.src,
-        //     shadowSize: [41, 41],
-        //   })
-        // }
-        position={[51.505, -0.09]}
-      >
-        <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
-        </Popup>
-      </Marker>
-    </MapContainer>
+    <>
+      {bingMapReady && (
+        <BingMapsReact
+          bingMapsKey={environment.BingMapsApiKey}
+          height={270}
+          width={850}
+          pushPins={[
+            {
+              center: {
+                latitude: prop.latitude,
+                longitude: prop.longitude,
+              },
+            },
+          ]}
+          viewOptions={{
+            center: {
+              latitude: prop?.latitude,
+              longitude: prop?.longitude,
+            },
+            mapTypeId: "road",
+            zoom: 16,
+          }}
+        />
+      )}
+    </>
   );
 };
 

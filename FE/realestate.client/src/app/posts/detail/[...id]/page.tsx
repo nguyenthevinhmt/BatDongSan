@@ -32,6 +32,7 @@ const page = () => {
         <Link href="https://www.facebook.com">
           <Image
             preview={false}
+            alt="#"
             src={facebook_icon.src}
             style={{
               width: "40px",
@@ -51,6 +52,7 @@ const page = () => {
           <Image
             preview={false}
             src={zaloIcon.src}
+            alt="#"
             style={{
               width: "40px",
               borderRadius: "2px",
@@ -70,7 +72,6 @@ const page = () => {
     },
   ];
 
-  const params = useParams<{ id: string }>();
   // const encodedNumber = '097763637'.slice(0, -3) + '***';
   // const [copy,setCopy] = useState(`${encodedNumber}<LuDot />Hiện số`)
 
@@ -159,12 +160,13 @@ const page = () => {
             >
               {dataImage.map((item, index) => {
                 return (
-                  <div>
-                    <img
+                  <div key={index}>
+                    <Image
                       height={400}
                       width={730}
                       style={{ objectFit: "cover", borderRadius: "3px" }}
                       src={item.src}
+                      alt="#"
                     />
                   </div>
                 );
@@ -176,7 +178,6 @@ const page = () => {
                 fontSize: "24px",
                 color: "#2C2C2C",
                 margin: "10px 0",
-                color: "#2C2C2C",
               }}
             >
               Chính chủ bán 2 lô đất cực đẹp giá đầu tư tại Sơn Mỹ, Hàm Tân -
@@ -321,6 +322,7 @@ const page = () => {
                 <Image
                   preview={false}
                   src={zaloIcon.src}
+                  alt="#"
                   style={{
                     width: "40px",
                     borderRadius: "2px",

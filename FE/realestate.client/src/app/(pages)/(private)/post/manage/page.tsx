@@ -682,4 +682,4 @@ const ManagePost = () => {
   );
 };
 
-export default isAuth(ManagePost, [UserType.ADMIN, UserType.CUSTOMER]);
+export default isAuth(ManagePost, [UserType.ADMIN]);
