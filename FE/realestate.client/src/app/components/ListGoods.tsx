@@ -127,7 +127,7 @@ const ListGoods = () => {
                                     <Card
                                     hoverable
                                     loading={loading}
-                                    style={{ width: 236, height: 361 }}
+                                    style={{ width: 236, height: 377 }}
                                     bodyStyle={{ padding: 14 }}
                                     
                                     cover={loading ? (
@@ -148,7 +148,7 @@ const ListGoods = () => {
                                     }}>{item.name}</h2>
                                     <span style={{ color: "#E03C31", fontSize: "17px", fontWeight: 600}}>Giá thỏa thuận <LineOutlined /> <span>56m²</span></span>
                                     <p style={{ marginTop: "4px", fontSize: "16px" }}><EnvironmentOutlined style={{ marginRight: "5px" }} />Liên Chiểu, Đà Nẵng</p>
-                                    <Flex justify="space-between" align="flex-end" >
+                                    <Flex justify="space-between" align="flex-end" style={{marginTop:"14px"}}>
                                         <Tooltip placement="bottom" title={"27/02/2024"} color={'#423e3e'}>
                                             <span style={{ color: "#999", fontSize: "13px", marginBottom: "4px" }}>Đăng 3 ngày trước</span>
                                         </Tooltip>
@@ -163,7 +163,7 @@ const ListGoods = () => {
                     })}
                 </Row>
                 <div style={{width:"100%" , textAlign: "center", margin:"40px 0"}}>
-                    <Button onClick={onLoadMore}>{statusLoadmore ? "Xem thêm" : <a href="/auth/register">Xem tiếp</a>}</Button>
+                    <Button onClick={onLoadMore}>{statusLoadmore ? "Xem thêm" : <a href="/list-post">Xem tiếp</a>}</Button>
                 </div>
 
             </div>
