@@ -3,19 +3,13 @@ import isAuth from "@/app/isAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import Cookies from "js-cookie";
+import { UserType } from "@/shared/consts/userType";
 
 const DashboardPage = () => {
   const router = useRouter();
-  useEffect(() => {
-    //const checkAuth = Cookies.get("access_token");
-    // console.log(checkAuth);
-    // if (!checkAuth) {
-    //   // router.replace("/auth/login");
-    // }
-  }, [router]);
+  useEffect(() => { }, [router]);
 
   return <div>Dashboard</div>;
 };
 
-// export default isAuth(DashboardPage);
-export default DashboardPage;
+export default isAuth(DashboardPage, [UserType.ADMIN, UserType.CUSTOMER]);

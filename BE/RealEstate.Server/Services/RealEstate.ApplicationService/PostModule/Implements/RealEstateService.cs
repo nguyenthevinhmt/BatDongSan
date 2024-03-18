@@ -12,9 +12,9 @@ using RealEstate.Utils.Linq;
 
 namespace RealEstate.ApplicationService.PostModule.Implements
 {
-    public class RealEstateService : ServiceBase,IRealEstateTypeService
+    public class RealEstateService : ServiceBase, IRealEstateTypeService
     {
-        public RealEstateService(ILogger logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
+        public RealEstateService(ILogger<RealEstateService> logger, IHttpContextAccessor httpContext) : base(logger, httpContext)
         {
         }
 
@@ -37,7 +37,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
 
         public PagingResult<RealEstateTypeDto> FindAll(PagingRequestBaseDto input)
         {
-            var query = _dbContext.RealEstateTypes.Where(c => !c.Deleted && (input.Keyword == null || c.Name.ToLower().Contains(input.Keyword)))
+            var query = _dbContext.RealEstateTypes.Where(c => !c.Deleted)
                                                   .Select(c => new RealEstateTypeDto
                                                     {
                                                       Id = c.Id,

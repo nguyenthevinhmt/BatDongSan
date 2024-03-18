@@ -13,32 +13,16 @@ import {
   SolutionOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  WalletOutlined,
+  WalletOutlined
 } from "@ant-design/icons";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
 import { CookieService } from "@/shared/services/cookies.service";
 import axiosInstance from "@/shared/configs/axiosInstance";
-import { environment } from "@/shared/environment/environment";
-import useSWR from "swr";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-
-const fetcher = async (url: string) => {
-  const token = CookieService.getAccessToken();
-  if (!token) {
-    console.log("Hết hạn đăng nhập! Vui lòng đăng nhập lại");
-  }
-  const res = await axiosInstance.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  const data = await res.data;
-  return data;
-};
 
 const HeaderComponent = () => {
   const [userInfo, setUserInfo] = useState();
@@ -59,12 +43,13 @@ const HeaderComponent = () => {
       lineHeight: "20px",
     },
   }));
+
+
   useEffect(() => {
     const repo = async () => {
       try {
         const res = await axiosInstance.get(
-          "http://localhost:5083/api/user/my-info",
-          {}
+          "http://localhost:5083/api/user/my-info"
         );
         const data = await res.data;
         return data;
@@ -76,14 +61,14 @@ const HeaderComponent = () => {
   }, []);
 
   const dispatch = useDispatch();
-  // const { data, error } = useSWR(`${environment.baseUrl}/api/user/my-info`, fetcher, {
-  //   shouldRetryOnError: false,
-  //   refreshInterval: 0,
-  // });
   const userSelector = useSelector((state: RootState) => {
     return state.auth.user.data;
   });
-  // console.log(userSelector);
+  useEffect(() => {
+    if (userInfo) {
+      dispatch(saveUserInfo(userInfo));
+    }
+  }, [userInfo, dispatch]);
   const fullname = (userSelector as any)?.fullname;
   const avatarUrl = (userSelector as any)?.avatarUrl;
   const router = useRouter();
@@ -100,16 +85,16 @@ const HeaderComponent = () => {
         }
       );
       if (response.status === HTTP_STATUS_CODE.OK) {
-        console.log("Đăng xuất thành công");
-        // localStorage.clear();
         CookieService.removeToken();
       }
       if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }
-    } catch (error) {
+    }
+    catch (error) {
       console.log("Có lỗi xảy ra khi đăng xuất", error);
     }
+    ;
   };
   const items: MenuProps["items"] = [
     {
@@ -118,6 +103,9 @@ const HeaderComponent = () => {
       icon: (
         <SolutionOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
       ),
+      onClick: () => {
+        router.push("/user");
+      },
     },
     {
       key: "2",
@@ -127,6 +115,9 @@ const HeaderComponent = () => {
           style={{ fontSize: " 16px", marginRight: "15px" }}
         />
       ),
+      onClick: () => {
+        router.push("/post");
+      },
     },
     {
       key: "3",
@@ -139,6 +130,9 @@ const HeaderComponent = () => {
           }}
         />
       ),
+      onClick: () => {
+        router.push("/wallet");
+      },
     },
     {
       key: "4",
@@ -151,6 +145,9 @@ const HeaderComponent = () => {
           }}
         />
       ),
+      onClick: () => {
+        router.push("/user");
+      },
     },
     {
       key: "5",
@@ -164,14 +161,7 @@ const HeaderComponent = () => {
       },
     },
   ];
-  useEffect(() => {
-    if (userInfo) {
-      // userInfo = data;
-      dispatch(saveUserInfo(userInfo));
-    } else {
-      dispatch(clearUserInfo());
-    }
-  }, [userInfo, dispatch]);
+
   return (
     <Header
       style={{
@@ -297,11 +287,11 @@ const HeaderComponent = () => {
                       }}
                       size={"large"}
                       src={
-                        <img
+                        <Image
                           src={avatarUrl}
                           alt="avatar"
-                          height={"100%"}
-                          width={"100%"}
+                          height={44}
+                          width={44}
                         />
                       }
                     ></Avatar>
@@ -329,7 +319,7 @@ const HeaderComponent = () => {
           ghost
           style={{ fontWeight: 500 }}
           onClick={() => {
-            router.push("/dashboard");
+            router.push("/post/create");
           }}
         >
           Đăng tin
@@ -337,7 +327,6 @@ const HeaderComponent = () => {
       </div>
     </Header>
   );
-};
-
+}
 // export default React.memo(HeaderComponent);
 export default HeaderComponent;

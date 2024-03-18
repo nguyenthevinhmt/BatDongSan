@@ -6,6 +6,9 @@ import { CookieService, saveToken } from "../services/cookies.service";
 import { CommonStatus } from "../consts/CommonStatus";
 import Cookies from "js-cookie";
 import { redirect } from "next/navigation";
+import { store } from "@/redux/store";
+import { clearUserInfo, clearUserToken, saveUserToken } from "@/redux/slices/authSlice";
+import { HTTP_STATUS_CODE } from "../consts/http";
 
 interface RefreshTokenType {
   grant_type: string;
@@ -49,7 +52,8 @@ axiosInstance.interceptors.response.use(
     const refreshToken = CookieService.getRefreshToken();
 
     if (!refreshToken) {
-      console.log("Không có refresh token trong cookies", refreshToken);
+      store.dispatch(clearUserToken());
+      store.dispatch(clearUserInfo());
       localStorage.clear();
       return Promise.reject(error);
     } else if (
@@ -76,20 +80,24 @@ axiosInstance.interceptors.response.use(
             },
           });
 
-          if (response.status === 200) {
+          if (response.status === HTTP_STATUS_CODE.OK) {
             const { access_token, refresh_token } = response?.data;
             Cookies.set("access_token", access_token);
             Cookies.set("refresh_token", refresh_token);
             axiosInstance.defaults.headers.common[
               "Authorization"
             ] = `Bearer ${access_token}`;
+            store.dispatch(saveUserToken(response?.data));
 
             return axiosInstance(error.config);
           } else {
             console.log("Error refreshing token");
+            store.dispatch(clearUserToken());
           }
         } catch (error) {
           CookieService.removeToken();
+          store.dispatch(clearUserToken());
+          store.dispatch(clearUserInfo());
           redirect("/auth/login");
         } finally {
           isRefreshing = false;

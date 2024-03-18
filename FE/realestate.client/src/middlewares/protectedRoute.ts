@@ -25,7 +25,6 @@ export const protectedRouteMiddleware: MiddlewareFactory = (
     let url = request.url;
     console.log(url);
     const privateRoute = ["/dashboard"];
-    console.log("chạy chưa", url.includes("/dashboard"));
     if (url.includes("/dashboard")) {
       console.log("throw private route");
     } else {

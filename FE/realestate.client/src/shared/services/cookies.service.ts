@@ -24,7 +24,6 @@ export class CookieService {
 
 export const saveToken = (params: any) => {
   try {
-    console.log("params", params);
     Cookies.set("access_token", params.access_token, {
       expires: Date.now() + params.expires_in,
       secure: true,
@@ -34,16 +33,15 @@ export const saveToken = (params: any) => {
       secure: true,
     });
   } catch (error) {
-    console.log("Có lỗi xảy ra khi lưu token vào cookies", error);
+    console.log(error);
   }
 };
 export const SaveTokenToLocalStorage = (params: any) => {
   try {
-    console.log("params", params);
     localStorage.setItem("access_token", params.access_token);
     localStorage.setItem("refresh_token", params.refresh_token);
   } catch (error) {
-    console.log("Có lỗi xảy ra khi lưu token vào local storage", error);
+    console.log(error);
   }
 };
 export const GetTokenFromLocalStorage = () => {

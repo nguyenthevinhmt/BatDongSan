@@ -22,11 +22,23 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <returns></returns>
         PostDetailDto FindById(int id);
         /// <summary>
+        /// Chi tiết bài viết trang chủ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        PostDetailInHome FindByIdInHome(int id);
+        /// <summary>
         /// Cập nhật bài viết
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         PostDetailDto Update(UpdatePostDto input);
+        /// <summary>
+        /// Cập nhật trạng thái thanh toán bài viết
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        void UpdatePaymentStatus(UpdatePaymentStatusDto input);
         /// <summary>
         /// Xóa bài viết
         /// </summary>
@@ -43,5 +55,24 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="input"></param>
         /// <returns></returns>
         PagingResult<PostDto> FindAllPostByUserId(PostPagingRequestDto input);
+        /// <summary>
+        /// Đăng bài
+        /// </summary>
+        void PublishPost(PublishPostDto input);
+        /// <summary>
+        /// Gỡ bài
+        /// </summary>
+        /// <param name="id"></param>
+        void ShowOffPost(int id);
+        /// <summary>
+        /// Duyệt bài
+        /// </summary>
+        /// <param name="id"></param>
+        void ApprovePost(int id);
+        /// <summary>
+        /// Yêu cầu phê duyệt
+        /// </summary>
+        /// <param name="id"></param>
+        void RequestApprovePost(int id);
     }
 }

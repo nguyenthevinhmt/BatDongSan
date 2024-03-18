@@ -1,6 +1,8 @@
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
 import crypto from "crypto";
+import axiosInstance from "@/shared/configs/axiosInstance";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
 const generateSHA1 = (data: any) => {
   const hash = crypto.createHash("sha1");
@@ -59,5 +61,120 @@ export const apiRemoveImage = async (publicId: string) => {
     });
   } catch (error) {
     console.error(error);
+  }
+};
+
+interface IPost {
+  title: string;
+  description: string;
+  province: string;
+  district: string;
+  ward: string;
+  street: string;
+  detailAddress?: string;
+  area: number;
+  price: number;
+  rentalObject?: number;
+  youtubeLink?: string;
+  postTypeId: number;
+  realEstateTypeId: number;
+  options: number;
+  lifeTime: number;
+  calculateType: number;
+  // walletNumber: string;
+  // transactionAmount: number;
+  // transactionNumber: string;
+  listMedia?: MediaType[];
+}
+
+interface MediaType {
+  name: string;
+  description: string;
+  mediaUrl: string;
+}
+
+export const addPost = async (info: IPost) => {
+  const {
+    title,
+    description,
+    province,
+    district,
+    ward,
+    street,
+    detailAddress,
+    area,
+    price,
+    rentalObject,
+    youtubeLink,
+    postTypeId,
+    realEstateTypeId,
+    options,
+    calculateType,
+    lifeTime,
+    listMedia,
+  } = info;
+
+  try {
+    const response = await axiosInstance.post(
+      `${environment.baseUrl}/api/post/add`,
+      {
+        title,
+        description,
+        province,
+        district,
+        ward,
+        street,
+        detailAddress,
+        area,
+        price,
+        rentalObject,
+        youtubeLink,
+        postTypeId,
+        realEstateTypeId,
+        options,
+        calculateType,
+        lifeTime,
+        listMedia,
+      },
+      {
+        headers: {
+          accept: "text/plain",
+        },
+      }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api đăng bài bị lỗi!!!");
+    return null;
+  }
+};
+
+export const getById = async (id: number) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/find-by-id?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api getbyid của post bị lỗi!!!");
+    return null;
+  }
+};
+
+export const getRealEstateType = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/real-estate-type/find-all?pageSize=-1`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api GET loại bất động sản");
+    return null;
   }
 };

@@ -7,6 +7,8 @@ import { Metadata, NextPage } from "next";
 import Head from 'next/head';
 import CommontLayout from "@/components/commonLayout/CommontLayout";
 import SpinComponent from "@/components/shareComponents/spinComponent";
+import { ToastContainer } from "react-toastify";
+import ToastProvider from "@/shared/provider/toast.provider";
 
 export const metadata: Metadata = {
   title: "Batdongsan.com",
@@ -19,7 +21,11 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => (
       <link rel="icon" href="../../favicon_io/favicon.ico" sizes="any" />
       <AntdRegistry>
         <StoreProvider>
-            <CommontLayout>{children}</CommontLayout>
+          <CommontLayout>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </CommontLayout>
         </StoreProvider>
       </AntdRegistry>
     </body>
