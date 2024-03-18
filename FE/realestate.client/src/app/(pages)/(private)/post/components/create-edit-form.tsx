@@ -159,12 +159,12 @@ const CreateEditForm = ({ type }: { type: number }) => {
       const res = await axios.get(
         `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
           location?.street +
-            " " +
-            location.wards +
-            " " +
-            location.districts +
-            " " +
-            location.provinces
+          " " +
+          location.wards +
+          " " +
+          location.districts +
+          " " +
+          location.provinces
         )}&key=${environment.BingMapsApiKey}`
       );
       const coordinates = {
@@ -602,7 +602,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
                       <div style={{ width: "100%" }}>
                         <strong>Tiêu đề nên có:</strong>
                         <p>Loại hình bất động sản, diện tích, địa chỉ.</p>
-                        <p>VD: bán nhà riêng 50m2 chính chủ tại Cầu Giấy</p>
+                        <p>VD: bán nhà riêng 50m² chính chủ tại Cầu Giấy</p>
                         <strong>Tiêu đề không nên có:</strong>
                         <p>Nội dung không liên quan đến bất động sản.</p>
                         <p>Số điện thoại chưa đăng ký.</p>

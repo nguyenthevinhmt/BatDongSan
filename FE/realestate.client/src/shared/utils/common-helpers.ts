@@ -29,3 +29,26 @@ export function formatVietnameseToString(str: string) {
   str = str.replace(/-+/g, "-");
   return str;
 }
+//get time ago
+export function formatDate(date: any) {
+  const today: any = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const postDate: any = new Date(date);
+  const elapsedDays = Math.floor((today - postDate) / (1000 * 60 * 60 * 24));
+  const elapsedWeeks = Math.floor(elapsedDays / 7);
+  const elapsedMonths = Math.floor(elapsedDays / 30);
+
+  if (postDate.toDateString() === today.toDateString()) {
+    return "Đăng hôm nay";
+  } else if (postDate.toDateString() === yesterday.toDateString()) {
+    return "Đăng hôm qua";
+  } else if (elapsedDays <= 7) {
+    return `Đăng ${elapsedDays} ngày trước`;
+  } else if (elapsedWeeks <= 4) {
+    return `Đăng ${elapsedWeeks} tuần trước`;
+  } else {
+    return `Đăng ${elapsedMonths} tháng trước`;
+  }
+}

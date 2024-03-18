@@ -6,6 +6,8 @@ import { Flex, Tabs, Input, Cascader, Layout, Card, Affix } from "antd";
 import SearchComponent from "@/components/public/search";
 import ListPost from "./components/ListPost";
 import Footer from "@/components/shareLayout/footer";
+import { Carousel } from "@/components/public/carousel/carousel";
+import PostHorizon from "@/components/public/PostHorizon/post";
 const App = () => {
   const hoverStyles = {
     transform: "scale(1,2)",
@@ -25,8 +27,9 @@ const App = () => {
           }}
         >
           <SearchComponent />
-
           <ListPost />
+          <PostHorizon option={1} />
+          <div style={{ marginBottom: '200px' }}></div>
         </Layout>
         <Footer />
       </div>

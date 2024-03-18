@@ -1,9 +1,8 @@
-import { getProvinces } from "@/services/post/address.service";
+import { getDistricts, getProvinces } from "@/services/post/address.service";
 import { getRealEstateType } from "@/services/post/post.service";
 import {
   Button,
   Cascader,
-  Divider,
   Flex,
   Form,
   Input,
@@ -11,37 +10,65 @@ import {
   Tabs,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { SlLocationPin } from "react-icons/sl";
 
 interface Option {
   value: string | number;
   label: string;
-  children?: Option[];
-  disableCheckbox?: boolean;
 }
 
 const SearchComponent = () => {
-  const [provinces, setProvinces] = useState<any>([]);
-  const [realEstateType, setRealEstateType] = useState([]);
-  const { Search } = Input;
-  const { TabPane } = Tabs;
+  const [formData, setFormData] = useState({
+    postType: 1,
+    inputSearch: "",
+    realEstateType: null,
+    region: null,
+    price: null,
+    area: null
+
+  });
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [realEstateType, setRealEstateType] = useState<any>();
 
   useEffect(() => {
     const fetchProvinces = async () => {
       const response = await getProvinces();
-      setProvinces(await response?.data);
-    };
-    const fetchRealEstateType = async () => {
-      const response = await getRealEstateType();
-      setRealEstateType(await response?.data);
+      await setProvinces(response?.data);
     };
     fetchProvinces();
+    const fetchRealEstateType = async () => {
+      const response = await getRealEstateType();
+      await setRealEstateType(response?.data?.items);
+    };
     fetchRealEstateType();
   }, []);
   const handleSubmit = () => {
-    console.log("submit");
+    console.log("submit", formData);
   };
 
+  let prices = [
+    {
+      value: 0,
+      label: "Thỏa thuận"
+    },
+    {
+      value: 1 * Math.pow(10, 9),
+      label: "<= 1 Tỷ"
+    },
+  ]
+  for (let i = 2; i < 20; i++) {
+    prices.push({
+      value: i * Math.pow(10, 9),
+      label: `${i} - ${i + 1} tỷ`
+    })
+  }
+  prices.push({
+    value: 21 * Math.pow(10, 9),
+    label: `>= 20 tỷ`
+  })
   const tabs = [
     {
       key: "1",
@@ -52,6 +79,79 @@ const SearchComponent = () => {
       label: "Cho thuê",
     },
   ];
+
+  const areas = [
+    {
+      value: 20,
+      label: "<= 20 m²"
+    },
+    {
+      value: 30,
+      label: "20 - 30 m²"
+    },
+    {
+      value: 40,
+      label: "30 - 40 m²"
+    },
+    {
+      value: 50,
+      label: "40 - 50 m²"
+    },
+    {
+      value: 60,
+      label: "50 - 60 m²"
+    },
+    {
+      value: 70,
+      label: "60 - 70 m²"
+    },
+    {
+      value: 80,
+      label: "70 - 80 m²"
+    },
+    {
+      value: 90,
+      label: "80 - 90 m²"
+    },
+    {
+      value: 100,
+      label: "90 - 100 m²"
+    },
+    {
+      value: 110,
+      label: "> 100 m²"
+    },
+  ]
+
+  const cascaderOptions = [
+    {
+      label: 'Tỉnh/Thành phố',
+      value: 'province',
+      children: provinces.map((province: any) => ({
+        label: province?.name,
+        value: province?.id,
+      })),
+    },
+    {
+      label: 'Quận/Huyện',
+      value: 'district',
+      children: districts?.map((district: any) => ({
+        label: district?.name,
+        value: district?.id,
+      })),
+      disabled: !selectedProvince,
+    },
+    {
+      label: 'Phường/Xã',
+      value: 'ward',
+      children: wards.map((ward: any) => ({
+        label: ward?.name,
+        value: ward?.id,
+      })),
+      disabled: !selectedDistrict,
+    },
+  ];
+
   return (
     <Form onFinish={handleSubmit}>
       <Flex
@@ -61,13 +161,20 @@ const SearchComponent = () => {
           padding: "16px",
           width: "100%",
           borderRadius: "10px",
-          backgroundColor: "#eee",
+          backgroundColor: "#ddd",
         }}
       >
         <Tabs
           tabBarGutter={20}
           style={{ marginBottom: "-20px", marginLeft: "20px" }}
-          onChange={() => {}}
+          onChange={(value) => {
+            setFormData((prev) => {
+              return {
+                ...prev,
+                postType: +value
+              }
+            })
+          }}
           tabBarStyle={{ border: "none" }}
           items={tabs.map((item) => {
             return {
@@ -93,6 +200,7 @@ const SearchComponent = () => {
             }}
           >
             <Input
+              allowClear={true}
               style={{
                 cursor: "pointer",
                 margin: "13px auto",
@@ -103,6 +211,15 @@ const SearchComponent = () => {
                 marginLeft: "20px",
                 backgroundColor: "#fafafa",
                 fontSize: "16",
+              }}
+              value={formData?.inputSearch || ""}
+              onChange={(e) => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    inputSearch: e.target.value ?? ""
+                  }
+                });
               }}
               placeholder="Nhập địa chỉ hoặc dự án ...."
               suffix={
@@ -123,29 +240,121 @@ const SearchComponent = () => {
               margin: "0 21px",
             }}
           >
-            <Cascader
+            <Select
               size="middle"
+              allowClear={true}
               style={{ flex: "1" }}
               placeholder={"Loại nhà đất"}
-              // options={options}
+              options={realEstateType?.map((item: any) => {
+                return {
+                  value: item?.id,
+                  label: item?.name
+                }
+              })}
+              value={formData?.realEstateType}
+              onChange={(e) => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    realEstateType: e
+                  }
+                })
+              }}
+              onClear={() => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    realEstateType: null
+                  }
+                })
+              }}
             />
-            <Cascader
+            <Select
               size="middle"
               style={{ flex: "1" }}
+              allowClear={true}
               placeholder={"Khu vực"}
-              onClick={() => {}}
+              options={provinces?.map((item: any) => {
+                return {
+                  value: item?.name,
+                  label: item?.name
+                }
+              })}
+              value={formData?.region}
+              onChange={(e) => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    region: e
+                  }
+                })
+              }}
+              onClear={() => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    region: null
+                  }
+                })
+              }}
             />
-            <Cascader
+            <Select
               size="middle"
+              allowClear={true}
               style={{ flex: "1" }}
               placeholder={"Mức giá"}
-              // options={options}
+              options={prices?.map((item: any) => {
+                return {
+                  value: item?.value,
+                  label: item?.label
+                }
+              })}
+              value={formData?.price}
+              onChange={(e) => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    price: e
+                  }
+                })
+              }}
+              onClear={() => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    price: null
+                  }
+                })
+              }}
             />
-            <Cascader
+            <Select
               size="middle"
+              allowClear={true}
               style={{ flex: "1" }}
               placeholder={"Diện tích"}
-              // options={options}
+              options={areas?.map((item: any) => {
+                return {
+                  value: item?.value,
+                  label: item?.label
+                }
+              })}
+              value={formData?.area}
+              onChange={(e) => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    area: e
+                  }
+                })
+              }}
+              onClear={() => {
+                setFormData((prev: any) => {
+                  return {
+                    ...prev,
+                    area: null
+                  }
+                })
+              }}
             />
           </Flex>
         </div>

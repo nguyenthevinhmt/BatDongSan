@@ -1,22 +1,13 @@
 import {
-  Skeleton,
   Card,
   Flex,
   Button,
   Row,
   Col,
-  Tooltip,
   Typography,
 } from "antd";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import React, { useState, useEffect } from "react";
-import {
-  LineOutlined,
-  EnvironmentOutlined,
-  HeartFilled,
-  HeartOutlined,
-} from "@ant-design/icons";
-import Image from "next/image";
 import PostCard from "@/components/public/post";
 
 const ListPost = () => {

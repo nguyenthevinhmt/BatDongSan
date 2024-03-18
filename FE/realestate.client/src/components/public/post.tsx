@@ -35,7 +35,7 @@ const PostCard = ({
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
               alt="#"
-              src="https://res.cloudinary.com/deurdoich/image/upload/v1709556631/DATN/zvgal8mkpcepdx2izzwv.jpg"
+              src="https://res.cloudinary.com/deurdoich/image/upload/v1710727579/DATN/l73ifg1hsmsdf8mx44xg.jpg"
             />
           )
         }
@@ -84,7 +84,7 @@ const PostCard = ({
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
-            //   title={heart ? "Bấm để lưu tin" : "Bấm để bỏ lưu tin"}
+          //   title={heart ? "Bấm để lưu tin" : "Bấm để bỏ lưu tin"}
           >
             <Button
               danger
@@ -113,7 +113,7 @@ const PostCard = ({
     <LabelCard text="VIP" color={color}>
       <Card
         hoverable
-        //   loading={loading}
+        loading={loading}
         style={{ width: 236, height: 361 }}
         bodyStyle={{ padding: 14 }}
         cover={
@@ -125,7 +125,7 @@ const PostCard = ({
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
               alt="#"
-              src="https://res.cloudinary.com/deurdoich/image/upload/v1709556631/DATN/zvgal8mkpcepdx2izzwv.jpg"
+              src="https://res.cloudinary.com/deurdoich/image/upload/v1710727579/DATN/l73ifg1hsmsdf8mx44xg.jpg"
             />
           )
         }
