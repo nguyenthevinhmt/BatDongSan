@@ -23,7 +23,7 @@ body {
   100% {
     background-position: -200% 0;
   }
-}
+}/* skeleton */
 
 .ellipsis-multiline {
   display: -webkit-box;
@@ -35,4 +35,14 @@ body {
 }
 .hide-copy-icon .ant-typography-copy {
   display: none !important;
+}
+
+.background-list-posts {
+  background-image: url('https://guru.batdongsan.com.vn/assets/cover.png');
+  background-position:50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.hide-border{
+  border:0px solid #fff;
 }
