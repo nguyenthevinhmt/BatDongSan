@@ -176,7 +176,7 @@ const ManagePost = () => {
     const fetchData = async () => {
       const res = await findAll({ pageSize: 10, pageNumber: 1 });
       const data = res?.data.items;
-      const posts: IPost[] = data.map((post: any) => ({
+      const posts: IPost[] = data?.map((post: any) => ({
         id: post.id,
         title: post.title,
         description: post.description,
@@ -367,7 +367,7 @@ const ManagePost = () => {
 
         const menu = (
           <Menu>
-            {items.map((item, index) => (
+            {items?.map((item, index) => (
               <Menu.Item key={index} onClick={() => item.onClick(record.id)}>
                 {item.label}
               </Menu.Item>
@@ -399,7 +399,7 @@ const ManagePost = () => {
       keyword: values.keyword,
     });
     const data = res?.data.items;
-    const posts: IPost[] = data.map((post: any) => ({
+    const posts: IPost[] = data?.map((post: any) => ({
       id: post.id,
       title: post.title,
       description: post.description,
@@ -420,6 +420,7 @@ const ManagePost = () => {
       <div
         style={{
           width: "100%",
+          height: "100vh",
           margin: "auto",
           padding: 20,
           backgroundColor: "#fff",
