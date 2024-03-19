@@ -149,6 +149,16 @@ namespace RealEstate.API.Controllers
             _postService.UpdateStatus(input);
             return new();
         }
+        /// <summary>
+        /// Danh sách tin dành cho bạn
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("public/find-all")]
+        public ApiResponse<PagingResult<PostDto>> FindAllPublic([FromQuery]PostPagingRequestDto input)
+        {
+            return new(_postService.FindAllPublic(input));
+        }
         [HttpDelete("delete-image")]
         public ApiResponse DeleteImage(int id)
         {

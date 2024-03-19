@@ -77,39 +77,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                     _dbContext.Medias.Add(imageMedia);
                 }
             }
-            //var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
-            //            ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
-            //var price = CalculatePrice(input.Options);
-            //var TotalAmount = input.LifeTime * price;
-            //if (wallet.Balance < TotalAmount)
-            //{
-            //    throw new UserFriendlyException(ErrorCode.InsufficientAccountBalance);
-            //}
-            //else
-            //{
-            //    wallet.Balance -= TotalAmount;
-            //}
-            //if (post.PostEndDate.Date >= DateTime.Now.Date)
-            //{
-            //    var jobId = BackgroundJob.Schedule<IPostService>(
-            //       x => x.ShowOffPost(post.Id),
-            //       post.PostEndDate
-            //   );
-            //    post.BackgroundJobOffShowPostId = jobId;
-            //}
-
-            //var payloadToTransaction = new Transaction()
-            //{
-            //    Amount = TotalAmount,
-            //    Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
-            //    TransactionFrom = input.WalletNumber,
-            //    TransactionType = TransactionType.OUTPUT,
-            //    TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
-            //    TransactionTo = "Tai khoan he thong",
-            //    WalletID = wallet.Id,
-            //    CreateDate = DateTime.Now,
-            //};
-            //_dbContext.Transactions.Add(payloadToTransaction);
             _dbContext.SaveChanges();
             transaction.Commit();
             return post.Id;
@@ -321,6 +288,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                                             && (p.Status == PostStatuses.POSTED)
                                                             && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.REMOVED;
+            post.IsPayment = false;
             _dbContext.SaveChanges();
         }
 
@@ -366,7 +334,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             findPost.RealEstateTypeId = input.RealEstateTypeId;
             //findPost.Medias = input.ListMedia;
 
-            _dbContext.SaveChanges();
             foreach (var media in input.ListMedia)
             {
                 var checkMedia = findPost.Medias.FirstOrDefault(c => c.Id == media.Id && !c.Deleted);
@@ -473,7 +440,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             }
             else
             {
-                wallet.Balance -= TotalAmount;
+                wallet.Balance = wallet.Balance - TotalAmount;
             }
 
             if (post.PostStartDate >= DateTime.Now.Date)
@@ -505,6 +472,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 CreateDate = DateTime.Now,
             };
             _dbContext.Transactions.Add(payloadToTransaction);
+            transactions.Commit();
 
         }
 
@@ -515,6 +483,60 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                                            && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.POSTED;
             _dbContext.SaveChanges();
+        }
+
+        public PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input)
+        {
+            _logger.LogInformation($"{nameof(FindAllPublic)}: input: {JsonSerializer.Serialize(input)}");
+            var query = from post in _dbContext.Posts
+                        join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
+                        where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                && (input.PostType == null || post.PostTypeId == input.PostType)
+                                && (input.PostStatus == null || post.Status == input.PostStatus)
+                                && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
+                                && !post.Deleted
+                                && post.Status == PostStatuses.POSTED && post.IsPayment
+                        select new PostDto
+                        {
+                            Title = post.Title,
+                            ApproveAt = DateTime.Now,
+                            ApproveBy = post.ApproveBy,
+                            Area = post.Area,
+                            Description = post.Description,
+                            DetailAddress = post.DetailAddress,
+                            District = post.District,
+                            Id = post.Id,
+                            PostTypeId = post.PostTypeId,
+                            Price = post.Price,
+                            Province = post.Province,
+                            RealEstateTypeId = post.RealEstateTypeId,
+                            RentalObject = post.RentalObject,
+                            Status = post.Status,
+                            Street = post.Street,
+                            UserId = post.UserId,
+                            Ward = post.Ward,
+                            YoutubeLink = post.YoutubeLink,
+                            PostEndDate = post.PostEndDate,
+                            CreatedBy = post.CreatedBy,
+                            CreatedDate = post.CreatedDate,
+                            ModifiedBy = post.ModifiedBy,
+                            ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl,
+                            Options = post.Options,
+                            PostStartDate = post.PostStartDate
+                        };
+            var result = new PagingResult<PostDto>()
+            {
+                TotalItems = query.Count(),
+            };
+            query = query.OrderByDescending(c => c.PostStartDate).ThenByDescending(c => c.CreatedDate);
+            if (input.PageSize != -1)
+            {
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
+            }
+            result.Items = query;
+            return result;
         }
 
         public void deleteImage(int id)

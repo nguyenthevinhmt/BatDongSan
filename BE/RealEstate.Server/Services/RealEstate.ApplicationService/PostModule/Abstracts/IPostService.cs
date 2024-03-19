@@ -16,6 +16,12 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <returns></returns>
         PagingResult<PostDto> FindAllPost(PostPagingRequestDto input);
         /// <summary>
+        /// Danh sách bài viết dành cho bạn
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input);
+        /// <summary>
         /// Chi tiết bài viết
         /// </summary>
         /// <param name="id"></param>

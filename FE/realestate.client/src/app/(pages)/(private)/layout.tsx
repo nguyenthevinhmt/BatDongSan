@@ -48,7 +48,10 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     getItem("Quản lý tin đăng", "post", <DesktopOutlined />, [
       getItem(<Link href={"/post/create"}>Đăng mới</Link>, "/post/create"),
       getItem(<Link href={"/post/manage"}>Danh sách tin</Link>, "/post/manage"),
-      getItem(<Link href={"post/draft"}>Danh sách tin nháp</Link>,"post/draft"),
+      getItem(
+        <Link href={"post/draft"}>Danh sách tin nháp</Link>,
+        "post/draft"
+      ),
     ]),
     getItem(
       <Link href={"/user"}>Thông tin cá nhân</Link>,
@@ -78,14 +81,13 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   };
 
   useEffect(() => {
-    console.log(pathname);
     setActiveKey((prev) => [pathname]);
   }, [pathname]);
 
   return (
     <ConfigProvider theme={theme}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <HeaderComponent />
+        <div style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)' }}><HeaderComponent /></div>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
           <Layout hasSider style={{ position: "relative" }}>
             <Sider

@@ -162,6 +162,7 @@ const Status = [
 ];
 
 const ManagePost = () => {
+  const timerRef = React.useRef<any>(null);
   const [form] = Form.useForm<any>();
   const [listPost, setListPost] = React.useState<IPost[]>([]);
   const [totalItems, setTotalItems] = useState(0);
@@ -431,7 +432,17 @@ const ManagePost = () => {
               label={<strong>Từ khóa</strong>}
               style={{ marginRight: 10 }}
             >
-              <Input placeholder="Tìm theo tiêu đề" onChange={() => setChange(!change)}/>
+              <Input placeholder="Tìm theo tiêu đề"
+              onChange={(e) => {
+                if (timerRef.current) {
+                  clearTimeout(timerRef.current);
+                }
+
+                timerRef.current = setTimeout(() => {
+                  setChange(!change);
+                  }
+                , 1000);
+              }}/>
             </Form.Item>
 
             <Form.Item

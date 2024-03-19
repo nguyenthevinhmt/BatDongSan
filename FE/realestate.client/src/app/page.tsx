@@ -3,206 +3,68 @@ import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
 import React, { useState } from "react";
 import { Flex, Tabs, Input, Cascader, Layout, Card, Affix } from "antd";
-import { options, listTabs, listText } from "./utils";
-import Image from "next/image";
-import danang from "../assets/image/danang.jpg";
-import hue from "../assets/image/hue.jpg";
-import hanoi from "../assets/image/hanoi.png";
-import HCM from "../assets/image/HCM.jpg";
-import FisrtSplitComponent from "./components/FisrtSplitComponent";
-import ListGoods from "./components/ListGoods";
+import SearchComponent from "@/components/public/search";
+import ListPost from "./components/ListPost";
+import Footer from "@/components/shareLayout/footer";
+import { Carousel } from "@/components/public/carousel/carousel";
+import PostHorizon from "@/components/public/PostHorizon/post";
+import RealEstateByLocation from "@/components/public/realEstateByLocation";
+import { CarouselAds } from "@/components/public/carousel/carouselAds";
 const App = () => {
-  const { Search } = Input;
-  const { Meta } = Card;
-  const [location, setLocation] = useState("Trên toàn quốc"); // search
-
-  const [selectText, setSelectText] = useState(listText[1]);
-
   const hoverStyles = {
     transform: "scale(1,2)",
-  };
-  const j = {
-    transition: "0.3s",
-    ...hoverStyles,
-  };
-  const onChange = (key: any) => {
-    setSelectText(listText[key]);
-  };
-  const onSearch = (key: string) => {
-    console.log(key);
-  };
-  const onChangeCateHome = (value: string[]): void => {
-    console.log(value);
-  };
-  const onChangePrice = (value: string[]): void => {
-    console.log(value);
-  };
-  const onChangeAcreage = (value: string[]): void => {
-    console.log(value);
   };
 
   return (
     <>
-      <div
-        style={{ width: "100%", height: "100%", backgroundColor: "#F4F4F4" }}
-      >
+      <div style={{ width: "100%", height: "100vh", backgroundColor: "#fff" }}>
         <HeaderComponent />
+        <div>
+          <Flex style={{
+            position: 'relative',
+            textAlign: 'center',
+            justifyItems: 'center',
+            width: '100%'
+          }}>
+            <CarouselAds height={500} width={2000} data={[
+              {
+                src: "https://res.cloudinary.com/deurdoich/image/upload/v1710824264/DATN/dkrtgkwjquagqgyzuoiw.png",
+                alt: "#"
+              },
+              {
+                src: "https://res.cloudinary.com/deurdoich/image/upload/v1710824265/DATN/e43jwl7z9bunorpqcc5h.png",
+                alt: "#"
+              }
+            ]} />
+            <div style={{ position: 'absolute', width: '50%', top: '30%', left: '50%', transform: 'translate(-50%, -50%)' }}><SearchComponent /></div>
+          </Flex>
+
+        </div >
         <Layout
           style={{
             margin: "0 auto",
             maxWidth: "1340px",
             minWidth: "1340px",
-            backgroundColor: "#F4F4F4",
             padding: "0 167px",
+            backgroundColor: "#fff",
           }}
         >
-          <Flex
-            vertical
-            style={{
-              margin: "20px auto",
-              padding: "4px",
-              width: "100%",
-              borderRadius: "10px",
-            }}
-          >
-            <Tabs
-              tabBarGutter={20}
-              style={{ marginBottom: "-20px" }}
-              onChange={onChange}
-              type="card"
-              tabBarStyle={{ border: "none" }}
-              items={listTabs.map((item, i) => {
-                const id = String(i + 1);
-                return {
-                  label: `${item}`,
-                  key: id,
-                };
-              })}
-            />
-            <div
-              style={{
-                background: "#FEBB02",
-                marginTop: "5px",
-                height: "112px",
-                borderRadius: "0 10px 10px 10px",
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <Search
-                  style={{
-                    cursor: "pointer",
-                    margin: "13px auto",
-                    width: "956px",
-                  }}
-                  placeholder={location}
-                  allowClear
-                  enterButton="Tìm kiếm"
-                  size="large"
-                  onSearch={onSearch}
-                />
-              </div>
-              <Flex justify="space-between" style={{ margin: "0 21px" }}>
-                <Cascader
-                  className="custom-cascader"
-                  placeholder={selectText?.text1}
-                  options={options}
-                />
-                <Cascader placeholder={selectText?.text2} options={options} />
-                <Cascader placeholder={selectText?.text3} options={options} />
-              </Flex>
-            </div>
-          </Flex>
-          <div>
-            <p
-              style={{
-                fontFamily: "Arial,Helvetica,sans-serif",
-                fontSize: "24px",
-                fontWeight: "600",
-                textAlign: "center",
-                color: "#333",
-              }}
-            >
-              Tìm kiếm nơi đầu tư hợp lý
-            </p>
-            <Flex justify="space-between" style={{ margin: "20px 0" }}>
-              <Card
-                hoverable
-                style={{ width: 240, height: "auto", overflow: "hidden" }}
-                cover={
-                  <Image alt="example" width={350} height={200} src={hanoi} />
-                }
-              >
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#1266DD",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Thủ đô Hà Nội
-                </p>
-              </Card>
-              <Card
-                hoverable
-                style={{ width: 240 }}
-                cover={
-                  <Image alt="example" width={350} height={200} src={hue} />
-                }
-              >
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#1266DD",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Thành phố Huế
-                </p>
-              </Card>
-              <Card
-                hoverable
-                style={{ width: 240 }}
-                cover={
-                  <Image alt="example" width={350} height={200} src={danang} />
-                }
-              >
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#1266DD",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Thành phố Đà Nẵng
-                </p>
-              </Card>
-              <Card
-                hoverable
-                style={{ width: 240 }}
-                cover={
-                  <Image alt="example" width={350} height={200} src={HCM} />
-                }
-              >
-                <p
-                  style={{
-                    textAlign: "center",
-                    color: "#1266DD",
-                    fontSize: "15px",
-                    fontWeight: "700",
-                  }}
-                >
-                  Thành phố Hồ Chí Minh
-                </p>
-              </Card>
-            </Flex>
+          <ListPost />
+          <div style={{ margin: '50px 0px' }}>
+            <h2 style={{ fontSize: '24px', marginBottom: '30px', fontWeight: '500' }}>Bất động sản nổi bật</h2>
+            <PostHorizon option={1} />
+            <PostHorizon option={2} />
+            <PostHorizon option={3} />
+            <PostHorizon option={4} />
+
           </div>
-          <FisrtSplitComponent />
-          <ListGoods />
+
+          <div style={{ margin: '60px 0px' }}>
+            <RealEstateByLocation />
+          </div>
         </Layout>
-      </div>
+        <Footer />
+      </div >
     </>
   );
 };

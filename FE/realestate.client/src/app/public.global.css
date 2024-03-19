@@ -3,11 +3,13 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 body {
   height: 100%;
   width: 100%;
   background-color: #fff;
 }
+
 .custom-skeleton-image {
   width: 100%;
   height: 240px;
@@ -20,19 +22,34 @@ body {
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }
 }
 
+/* skeleton */
+
 .ellipsis-multiline {
   display: -webkit-box;
-  -webkit-line-clamp: 2; 
-  -webkit-box-orient: vertical;  
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
 }
+
 .hide-copy-icon .ant-typography-copy {
   display: none !important;
+}
+
+.background-list-posts {
+  background-image: url('https://guru.batdongsan.com.vn/assets/cover.png');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hide-border {
+  border: 0px solid #fff;
 }

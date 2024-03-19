@@ -9,11 +9,6 @@ import {
     getRealEstateType,
     updatePost,
 } from "@/services/post/post.service";
-import {
-    getDistricts,
-    getProvinces,
-    getWards,
-} from "@/services/post/vnAddress.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import { ConsoleSqlOutlined, DeleteOutlined, PlusOutlined, ZoomInOutlined } from "@ant-design/icons";
 import {
@@ -41,6 +36,7 @@ import { useRouter } from "next/navigation";
 import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
 import Item from "antd/es/list/Item";
+import { getDistricts, getProvinces, getWards } from "@/services/post/address.service";
 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];

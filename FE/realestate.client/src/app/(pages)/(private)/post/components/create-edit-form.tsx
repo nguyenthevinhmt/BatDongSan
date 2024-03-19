@@ -10,7 +10,7 @@ import {
   getDistricts,
   getProvinces,
   getWards,
-} from "@/services/post/vnAddress.service";
+} from "@/services/post/address.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import { PlusOutlined } from "@ant-design/icons";
 import {
@@ -27,7 +27,7 @@ import {
   UploadProps,
   message,
 } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import BingMapsReact from "bingmaps-react";
@@ -36,6 +36,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
+import MapComponent from "@/components/Map/MapComponent";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -79,7 +80,6 @@ const CreateEditForm = ({ type }: { type: number }) => {
 
   const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
   const [postId, setpostId] = useState(0);
-  const [bingMapReady, setBingMapReady] = useState(false);
   const [postType, setPostType] = useState<number>(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -89,6 +89,8 @@ const CreateEditForm = ({ type }: { type: number }) => {
   const [provinces, setProvinces] = useState<any>();
   const [districts, setDistricts] = useState<any>();
   const [wards, setWards] = useState<any>();
+  const timerRef = useRef<any>();
+
   const [isDisableSelect, setIsDisableSelect] = useState({
     districtDisable: true,
     wardDisable: true,
@@ -151,17 +153,18 @@ const CreateEditForm = ({ type }: { type: number }) => {
     };
     fetchRealEstateType();
   }, []);
+
   useEffect(() => {
     const fetchLocation = async () => {
       const res = await axios.get(
         `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
           location?.street +
-            " " +
-            location.wards +
-            " " +
-            location.districts +
-            " " +
-            location.provinces
+          " " +
+          location.wards +
+          " " +
+          location.districts +
+          " " +
+          location.provinces
         )}&key=${environment.BingMapsApiKey}`
       );
       const coordinates = {
@@ -175,7 +178,6 @@ const CreateEditForm = ({ type }: { type: number }) => {
     if (location.districts && location.provinces && location.wards) {
       setShowMap(true);
       fetchLocation();
-    } else {
     }
   }, [location]);
 
@@ -196,9 +198,9 @@ const CreateEditForm = ({ type }: { type: number }) => {
       return {
         ...prev,
         provinces: option?.label,
+        detailAddress: option?.label,
       };
     });
-    console.log("object", option?.label);
     const districtsResponse = await getDistricts(provinceId);
     await setDistricts(districtsResponse?.data);
     setIsDisableSelect((prev) => {
@@ -216,8 +218,10 @@ const CreateEditForm = ({ type }: { type: number }) => {
       return {
         ...prev,
         districts: option?.label,
+        detailAddress: option?.label + ", " + prev?.detailAddress,
       };
     });
+
     const wardsResponse = await getWards(districtId); // Gọi API lấy danh sách quận/huyện
     await setWards(wardsResponse?.data);
     setIsDisableSelect((prev) => {
@@ -233,10 +237,10 @@ const CreateEditForm = ({ type }: { type: number }) => {
       return {
         ...prev,
         wards: option?.label,
+        detailAddress: option?.label + ", " + prev?.detailAddress,
       };
     });
   };
-
   const handleCancel = () => setPreviewOpen(false);
 
   const handlePreview = async (file: UploadFile) => {
@@ -325,15 +329,11 @@ const CreateEditForm = ({ type }: { type: number }) => {
       listMedia: listMedia,
     };
 
-    console.log("object form", form.getFieldValue("calculateType"));
-
     const response = await addPost(postInfo);
     if (response?.code === HTTP_STATUS_CODE.OK) {
-      console.log("đã đăng tin!", response?.data);
       toast.done("Thêm mới thành công");
       setIsShowPaymentForm(true);
       setpostId(response?.data);
-      console.log(isShowPaymentForm);
     }
   };
 
@@ -467,9 +467,9 @@ const CreateEditForm = ({ type }: { type: number }) => {
                   >
                     <Select
                       placeholder="Chọn tỉnh/thành phố"
-                      onChange={(value, option) =>
-                        handleProvinceChange(value, option)
-                      }
+                      onChange={(value, option) => {
+                        handleProvinceChange(value, option);
+                      }}
                       options={provinces?.map((item: any) => {
                         return {
                           value: item?.id,
@@ -545,12 +545,18 @@ const CreateEditForm = ({ type }: { type: number }) => {
                     <Input
                       value={location.street}
                       onChange={(e) => {
-                        setLocation((prev: any) => {
-                          return {
-                            ...prev,
-                            street: e.target.value,
-                          };
-                        });
+                        if (timerRef.current) {
+                          clearTimeout(timerRef.current);
+                        }
+
+                        timerRef.current = setTimeout(() => {
+                          setLocation((prev: any) => {
+                            return {
+                              ...prev,
+                              street: e.target.value,
+                            };
+                          });
+                        }, 1000);
                       }}
                     />
                   </Form.Item>
@@ -558,46 +564,19 @@ const CreateEditForm = ({ type }: { type: number }) => {
 
                 <Form.Item
                   name="detailAddress"
-                  label={<strong>Địa chỉ chi tiết</strong>}
+                  label={<strong>Địa chỉ hiển thị trên tin đăng</strong>}
                   rules={[
                     {
                       required: true,
-                      message: "Địa chỉ chi tiết không được bỏ trống",
+                      message: "Địa chỉ không được bỏ trống",
                     },
                   ]}
                 >
-                  <Input />
+                  <Input value={location?.wards} />
                 </Form.Item>
                 {showMap && (
                   <Flex justify="center">
-                    <BingMapsReact
-                      bingMapsKey={environment.BingMapsApiKey}
-                      height={270}
-                      width={850}
-                      pushPins={
-                        bingMapReady
-                          ? [
-                              {
-                                center: {
-                                  latitude: coordinates.latitude,
-                                  longitude: coordinates.longitude,
-                                },
-                              },
-                            ]
-                          : null
-                      }
-                      viewOptions={{
-                        center: {
-                          latitude: coordinates.latitude,
-                          longitude: coordinates.longitude,
-                        },
-                        mapTypeId: "road",
-                        zoom: 16,
-                      }}
-                      onMapReady={() => {
-                        setBingMapReady(true);
-                      }}
-                    />
+                    <MapComponent prop={coordinates} />
                   </Flex>
                 )}
                 <div
@@ -623,7 +602,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
                       <div style={{ width: "100%" }}>
                         <strong>Tiêu đề nên có:</strong>
                         <p>Loại hình bất động sản, diện tích, địa chỉ.</p>
-                        <p>VD: bán nhà riêng 50m2 chính chủ tại Cầu Giấy</p>
+                        <p>VD: bán nhà riêng 50m² chính chủ tại Cầu Giấy</p>
                         <strong>Tiêu đề không nên có:</strong>
                         <p>Nội dung không liên quan đến bất động sản.</p>
                         <p>Số điện thoại chưa đăng ký.</p>
@@ -723,7 +702,6 @@ const CreateEditForm = ({ type }: { type: number }) => {
                         optionFilterProp="children"
                         options={calculateType}
                         onChange={(value: string, option) => {
-                          // console.log("object", value, option)
                           setCurrentCalculateType(+value);
                         }}
                       />
