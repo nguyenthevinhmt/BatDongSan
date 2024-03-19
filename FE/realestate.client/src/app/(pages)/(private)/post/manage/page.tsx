@@ -2,44 +2,43 @@
 import isAuth from "@/app/isAuth";
 import { UserType } from "@/shared/consts/userType";
 import {
-    Button,
-    Dropdown,
-    Flex,
-    Form,
-    Input,
-    List,
-    Menu,
-    Modal,
-    Select,
-    Space,
-    Switch,
-    Table,
-    Tag,
+  Button,
+  Dropdown,
+  Flex,
+  Form,
+  Input,
+  List,
+  Menu,
+  Modal,
+  Select,
+  Space,
+  Switch,
+  Table,
+  Tag,
 } from "antd";
 import React, { use, useEffect, useState } from "react";
 import { postStatus } from "@/shared/consts/postStatus";
 import {
-    DownOutlined,
-    EllipsisOutlined,
-    CheckCircleOutlined,
-    ClockCircleOutlined,
-    CloseCircleOutlined,
-    ExclamationCircleOutlined,
-    MinusCircleOutlined,
-    SyncOutlined,
+  DownOutlined,
+  EllipsisOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import {
-    findAll,
-    approvedPost,
-    updateStatus,
-    getById,
+  findAll,
+  approvedPost,
+  updateStatus,
+  getById,
 } from "@/services/post/post.service";
 import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
-
 
 interface IPost {
   id: number;
@@ -273,7 +272,7 @@ const ManagePost = () => {
         return record.description.length > 20
           ? record.description.substring(0, 20) + "..."
           : record.description;
-      }
+      },
     },
     {
       title: "Loại bất động sản",
@@ -305,23 +304,41 @@ const ManagePost = () => {
       fixed: "right",
       render: (statusId: number) => {
         const statusItem = Status.find((item) => item.value === statusId);
-          if (statusItem) {
-              if (statusItem.value === postStatus.INIT) {
-                  return <Tag icon={<ClockCircleOutlined />} color="default">khởi tạo</Tag>;
-              } else if (statusItem.value === postStatus.PENDING) {
-                  return <Tag icon={<SyncOutlined spin />} color="processing">chờ xử lý/ yêu cầu duyệt</Tag>;
-              } else if (statusItem.value === postStatus.POSTED) {
-                  return <Tag icon={<CheckCircleOutlined />} color="success">đã đăng</Tag>;
-              } else if (statusItem.value === postStatus.CANCEL) {
-                  return <Tag icon={<ExclamationCircleOutlined />} color="warning">hủy duyệt</Tag>;
-              } else {
-                  return <Tag icon={<MinusCircleOutlined />} color="error">đã gỡ</Tag>;
-              }
+        if (statusItem) {
+          if (statusItem.value === postStatus.INIT) {
+            return (
+              <Tag icon={<ClockCircleOutlined />} color="default">
+                khởi tạo
+              </Tag>
+            );
+          } else if (statusItem.value === postStatus.PENDING) {
+            return (
+              <Tag icon={<SyncOutlined spin />} color="processing">
+                chờ xử lý/ yêu cầu duyệt
+              </Tag>
+            );
+          } else if (statusItem.value === postStatus.POSTED) {
+            return (
+              <Tag icon={<CheckCircleOutlined />} color="success">
+                đã đăng
+              </Tag>
+            );
+          } else if (statusItem.value === postStatus.CANCEL) {
+            return (
+              <Tag icon={<ExclamationCircleOutlined />} color="warning">
+                hủy duyệt
+              </Tag>
+            );
+          } else {
+            return (
+              <Tag icon={<MinusCircleOutlined />} color="error">
+                đã gỡ
+              </Tag>
+            );
+          }
+        } else {
+          return "";
         }
-        else {
-            return "";
-        }
-        
       },
     },
     {
@@ -432,17 +449,18 @@ const ManagePost = () => {
               label={<strong>Từ khóa</strong>}
               style={{ marginRight: 10 }}
             >
-              <Input placeholder="Tìm theo tiêu đề"
-              onChange={(e) => {
-                if (timerRef.current) {
-                  clearTimeout(timerRef.current);
-                }
-
-                timerRef.current = setTimeout(() => {
-                  setChange(!change);
+              <Input
+                placeholder="Tìm theo tiêu đề"
+                onChange={(e) => {
+                  if (timerRef.current) {
+                    clearTimeout(timerRef.current);
                   }
-                , 1000);
-              }}/>
+
+                  timerRef.current = setTimeout(() => {
+                    setChange(!change);
+                  }, 1000);
+                }}
+              />
             </Form.Item>
 
             <Form.Item
@@ -537,4 +555,4 @@ const ManagePost = () => {
   );
 };
 
-export default isAuth(ManagePost, [UserType.ADMIN]);
+export default isAuth(ManagePost, [UserType.ADMIN, UserType.CUSTOMER]);

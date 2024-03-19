@@ -73,6 +73,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
             Utils.ConstantVariables.Post.CalculateType.Agree
         })]
         public int CalculateType { get; set; }
-        public List<Media> Medias { get; set; } = new();
+        public List<MediaDto> Medias { get; set; } = new();
     }
 }
