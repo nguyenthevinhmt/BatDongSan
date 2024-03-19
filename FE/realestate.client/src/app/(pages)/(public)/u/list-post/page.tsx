@@ -123,7 +123,7 @@ const ListPostsAuthor = () => {
                 <Row gutter={[24, 24]}>
                     {quantityPost.slice(0, visibleProducts).map((item, index) => {
                         return (
-                            <Col span={6}>
+                            <Col span={6} key={index}>
                                 <a href={`posts/detail/${index}`}>
                                     <Card
                                         hoverable

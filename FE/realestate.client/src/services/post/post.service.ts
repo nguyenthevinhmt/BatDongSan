@@ -283,3 +283,18 @@ export const updateStatus = async (info: IUpdateStatus) => {
     return null;
   }
 };
+
+export const recommendPost = async ({ pageSize, pageNumber }: { pageSize: number, pageNumber: number }) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/public/find-all`, {
+      params: {
+        pageSize: pageSize || -1,
+        pageNumber: pageNumber
+      },
+    })
+    return response?.data;
+  } catch (error) {
+    console.log("Error: Gọi api get public của post bị lỗi!!!");
+    return null;
+  }
+}

@@ -9,7 +9,6 @@ import {
   Avatar,
   Flex,
   Button,
-  Image,
   Typography,
   Divider,
   Tooltip,
@@ -27,37 +26,39 @@ import { IoShareSocialOutline, IoWarningOutline, IoHomeOutline } from "react-ico
 import { IoIosHeartEmpty } from "react-icons/io";
 import { CiLink } from "react-icons/ci";
 import type { MenuProps } from 'antd';
-import SlideSecond from '@/app/components/detailComponent/SlideSecond'
-
+import Image from "next/image";
+import MapComponent from "@/components/Map/MapComponent";
 const { Paragraph } = Typography;
 
 const page = () => {
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.toString())
-  }
-  const onScroll = () => {
-    const isStartPage = window.scrollY + window.innerHeight >= document.body.offsetHeight;
-    return isStartPage
-  }
-  console.log(onScroll())
   const items: MenuProps['items'] = [
     {
-      label: <Link href="https://www.facebook.com/">Facebook</Link>,
+      label: <Link href="https://www.facebook.com">
+        <Image alt="#" width={40}
+          height={23} src={zaloIcon.src} style={{
+            marginBottom: "2px",
+          }} />Facebook</Link>,
+      key: '0',
+    },
+    {
+      label: <Link href="https://zalo.me/0972808703">
+        <Image alt="#" width={40}
+          height={23} src={zaloIcon.src} style={{
+            borderRadius: "2px",
+            marginBottom: "2px",
+          }} />Zalo</Link>,
       key: '1',
-      icon: <TiSocialFacebookCircular style={{ fontSize: "28px", color: "#444444" }} />
     },
     {
-      label: <Link href="https://zalo.me/0972808703">Zalo</Link>,
+      label: <Link href="https://zalo.me/0972808703">Sao chép liên kết</Link>,
       key: '2',
-      icon: <SiZalo style={{ fontSize: "28px", color: "#444444" }} />
-    },
-    {
-      label: <p onClick={copyToClipboard}>Sao chép liên kết</p>,
-      key: '3',
-      icon: <CiLink onClick={copyToClipboard} style={{ fontSize: "28px", color: "#444444" }} />
+      icon: <CiLink style={{ fontSize: "30px" }} />
     }
 
   ]
+
+  // const encodedNumber = '097763637'.slice(0, -3) + '***';    
+  // const [copy,setCopy] = useState(`${encodedNumber}<LuDot />Hiện số`)
 
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
@@ -67,45 +68,50 @@ const page = () => {
       window.location.href = 'https://zalo.me/0972808703'
     }
   };
+  const handleClickCopy = () => {
+    // const decodedString = encodedString.slice(0, -3) + encodedString.slice(-3)
+    // const decodedNumber = '097763637'.slice(0, -3)  
+    // setCopy(`${encodedNumber}<LuDot />Đã sao chép`)
+  };
 
   const dataImage = [
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1531843024904-83fb5d1c9b52?q=80&w=1430&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
     {
-      src: 'https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
       title: 'Ảnh 1',
       description: 'Mô tả ảnh 1',
     },
@@ -114,7 +120,6 @@ const page = () => {
   return (
     <>
       <HeaderComponent />
-
       <div
         style={{
           background: "#fff",
@@ -124,33 +129,13 @@ const page = () => {
           maxWidth: "1024px"
         }}
       >
-        <Anchor targetOffset={45} style={{ color: "pink", background: "#fff", borderBottom: "#fff" }} direction="horizontal"
-          items={[
-            {
-              key: 'part-1',
-              href: '#part-1',
-              title: 'Thông tin mô tả',
-            },
-            {
-              key: 'part-2',
-              href: '#part-2',
-              title: 'Đặc điểm bất động sản',
-            },
-            {
-              key: 'part-3',
-              href: '#part-3',
-              title: 'Khác',
-            },
-          ]}
-        />
-
         <Flex justify="space-between">
           <div className="box_left" style={{ width: '730px' }}>
             <Carousel style={{ width: '730px', marginRight: "30px", background: "#4C5655", borderRadius: "3px" }} afterChange={onChange}>
               {dataImage.map((item, index) => {
                 return (
-                  <div>
-                    <img height={400} width={730} style={{ objectFit: "cover", borderRadius: "3px" }} src={item.src} />
+                  <div key={index}>
+                    <Image height={400} width={730} style={{ objectFit: "cover", borderRadius: "3px" }} alt="#" src={item.src} />
                   </div>
                 )
               })}
@@ -185,12 +170,12 @@ const page = () => {
 
             </Flex>
             <Divider style={{ margin: "18px 0" }} />
-            <h1 id="part-1" style={{
+            <h1 style={{
               fontSize: "18px",
               color: "#2C2C2C",
               marginBottom: "10px"
-            }} >Thông tin mô tả chi tiết</h1>
-            <p>
+            }}>Thông tin mô tả chi tiết</h1>
+            <p style={{ marginBottom: '50px' }}>
               Bán 2 lô đất giá đầu tư liền nhau tại thôn 4, xã Sơn Mỹ, Hàm Tân, Bình Thuận.
               Diện tích bao gồm: Lô 1: 3023m²; lô 2: 2582,3m².
               Tổng DT 2 lô: 5875,3m² (có 200m² ONT) - Đang làm sổ lên thổ cư (mỗi lô sẽ lên 400m² ONT/lô).
@@ -206,73 +191,23 @@ const page = () => {
               Đất đẹp bằng phẳng không vướng quy hoạch, phủ hồng (ONT) 100%...
               Giá bán: 12,5 tỷ (có thương lượng).
             </p>
-            <h1 id="part-2" style={{
-              fontSize: "18px",
-              margin: "40px 0 10px 0",
-              color: "#2C2C2C"
-            }}>Đặc điểm bất động sản</h1>
-            <Flex justify="space-between">
-              <div style={{ width: "45%" }}>
-                <Divider style={{ margin: "0 0 10px 0" }} />
-                <Flex>
-                  <CgSize style={{ fontSize: "34px", fontWeight: "300" }} />
-                  <p style={styleIcon}>
-                    Diện tích<span style={{ marginLeft: "100px", fontWeight: "400" }}>8.200 m²</span>
-                  </p>
-                </Flex>
-                <Divider style={{ margin: "10px 0" }} />
-                <Flex>
-                  <IoHomeOutline style={{ fontSize: "34px" }} />
-                  <p style={styleIcon}>
-                    Mặt tiền<span style={{ marginLeft: "103px", fontWeight: "400" }}>885 m</span>
-                  </p>
-                </Flex>
-                <Divider style={{ margin: "10px 0" }} />
-              </div>
-              <div style={{ width: "45%" }}>
-                <Divider style={{ margin: "0 0 10px 0" }} />
-                <Flex>
-                  <TbCurrencyDong style={{ fontSize: "34px" }} />
-                  <p style={styleIcon}>
-                    Mức giá<span style={{ marginLeft: "122px", fontWeight: "400" }}>2,3 tỷ</span>
-                  </p>
-                </Flex>
-                <Divider style={{ margin: "10px 0" }} />
-                <Flex>
-                  <TfiDirectionAlt style={{ fontSize: "34px" }} />
-                  <p style={styleIcon}>
-                    Hướng nhà<span style={{ marginLeft: "100px", fontWeight: "400" }}>Đông</span>
-                  </p>
-                </Flex>
-                <Divider style={{ margin: "10px 0" }} />
-              </div>
-            </Flex>
-
-            <h1 style={{
-              fontSize: "18px",
-              margin: "40px 0 10px 0",
-              color: "#2C2C2C"
-            }}>Xem ví trị trên bản đồ</h1>
-            <div id="part-3">
-              <SlideSecond />
-            </div>
+            <MapComponent style={{ marginTop: '50px' }} prop={{ latitude: 21.21312, longitude: 102.123123 }} />
           </div>
 
           <div className="box_right">
             <Flex vertical align='center' style={{ width: "250px", height: "335px", border: "1px solid #F2F2F2", borderRadius: "6px" }}>
               <Avatar size={54} style={{ margin: "20px 0 10px 0" }} icon={<UserOutlined />} />
               <p style={{ color: '#ACACAC', fontSize: "12px", marginBottom: "2px" }}>Được đăng bởi</p>
-              <Link href="/"><p style={contentStyle}>Công ty Cổ phần Đặc cầu ổ phần Đặc cầu</p></Link>
+              <Link href="/u/list-post"><p style={contentStyle}>Công ty Cổ phần Đặc cầu ổ phần Đặc cầu</p></Link>
               <Button style={firstButtonStyle}>
                 <Paragraph style={{ color: "#fff" }} copyable={{ text: "0965115792" }}>0965115***<LuDot />Hiện số</Paragraph>
               </Button>
               <Button style={styleButtonGroup} onClick={handleClick}>
-                <Image preview={false} src={zaloIcon.src} style={{
-                  width: "40px",
-                  borderRadius: "2px",
-                  marginBottom: "2px",
-                  height: "23px"
-                }} />Chat qua Zalo
+                <Image width={40}
+                  height={23} alt="#" src={zaloIcon.src} style={{
+                    borderRadius: "2px",
+                    marginBottom: "2px",
+                  }} />Chat qua Zalo
               </Button>
               <Button href="mailto:" target="_self" style={styleButtonGroup}>Gửi email</Button>
             </Flex >

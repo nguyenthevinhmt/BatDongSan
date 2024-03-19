@@ -7,6 +7,7 @@ const theme: ThemeConfig = {
     colorPrimary: "#FF4D4F",
     colorBgLayout: "#fafafa",
     colorBgTextActive: "#ccc",
+    fontFamily: ""
   },
   components: {
     Menu: {

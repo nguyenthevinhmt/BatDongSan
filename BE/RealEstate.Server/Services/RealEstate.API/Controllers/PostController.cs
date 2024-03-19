@@ -90,7 +90,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public ApiResponse<PostDetailDto> Update([FromForm]UpdatePostDto input)
+        public ApiResponse<PostDetailDto> Update([FromBody]UpdatePostDto input)
         {
             return new(_postService.Update(input));
         }

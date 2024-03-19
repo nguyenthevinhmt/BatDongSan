@@ -133,29 +133,27 @@ const PostCard = ({
         <h2
           className="ellipsis-multiline"
           style={{
-            fontFamily: "Roboto,Arial",
             height: "40px",
-            fontSize: "15px",
+            fontSize: "14px",
             lineHeight: "20px",
             fontWeight: "500",
             color: "#2C2C2C",
             marginBottom: "4px",
-            letterSpacing: "1px",
           }}
         >
           {/* {item.name} */}
-          tên
+          Bán nhà lấy tiền trả lợi, giá từ 8 tỷ
         </h2>
         <span
           style={{
             color: "#E03C31",
-            fontSize: "17px",
-            fontWeight: 600,
+            fontSize: "16px",
+            fontWeight: '500',
           }}
         >
           Giá thỏa thuận <LineOutlined /> <span>56m²</span>
         </span>
-        <p style={{ marginTop: "4px", fontSize: "16px" }}>
+        <p style={{ marginTop: "4px", fontSize: "14px" }}>
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           Liên Chiểu, Đà Nẵng
         </p>
@@ -176,7 +174,7 @@ const PostCard = ({
             color={"#423e3e"}
             title={"Bấm để lưu tin"}
           >
-            <Button
+            {/* <Button
               danger
               // onClick={onChange}
               icon={
@@ -187,7 +185,10 @@ const PostCard = ({
                 //     <HeartFilled />
                 //   )
               }
-            ></Button>
+            ></Button> */}
+            <FaRegHeart onClick={() => {
+              console.log("click")
+            }} />
           </Tooltip>
         </Flex>
       </Card>

@@ -1,8 +1,9 @@
 import LogoGray from "@/assets/image/LogoGray";
-import { Flex } from "antd";
+import { Button, Flex, Input } from "antd";
 import React from "react";
 import { BiSupport } from "react-icons/bi";
-import { MdOutlinePhoneInTalk } from "react-icons/md";
+import { IoSend } from "react-icons/io5";
+import { MdOutlineHeadphones, MdOutlinePhoneInTalk } from "react-icons/md";
 import { TbUserQuestion } from "react-icons/tb";
 
 const Footer = () => {
@@ -11,7 +12,7 @@ const Footer = () => {
       <div
         style={{
           backgroundColor: "#f2f2f2",
-          height: "746px",
+          height: "auto",
           padding: "68px 196px",
         }}
       >
@@ -47,7 +48,7 @@ const Footer = () => {
           </Flex>
 
           <Flex align="center">
-            <BiSupport
+            <MdOutlineHeadphones
               style={{
                 fontSize: "32px",
                 color: "#505050",
@@ -55,10 +56,24 @@ const Footer = () => {
               }}
             />
             <div style={{ color: "#828282" }}>
-              <span>Hotline</span>
-              <div style={{ fontSize: "16px", color: "#505050" }}>19001000</div>
+              <span>Chăm sóc khách hàng</span>
+              <div style={{ fontSize: "16px", color: "#505050" }}>hotro@batdongsan.com.vn</div>
             </div>
           </Flex>
+        </Flex>
+        <Flex align="center" justify="space-between">
+          <Flex vertical style={{ marginTop: '30px', alignItems: 'start', marginLeft: '90px' }}>
+            <div style={{ maxWidth: "500px" }}>
+              <div style={{ fontSize: "30px", fontWeight: '600' }}>Về chúng tôi</div>
+              <p style={{ fontSize: "14px", textAlign: 'start' }}>Công ty cổ phần BatDongSan.com</p>
+              <p style={{ fontSize: "14px", textAlign: 'start' }}>Địa chỉ: 55 Giải Phóng, Phường Đồng Tâm, Quận Hai Bà Trưng, Hà Nội</p>
+              <p style={{ fontSize: "14px", textAlign: 'start' }}>Mã số thuế : 0106713191. ( Đăng ký lần đầu : ngày 15 tháng 12 năm 2014. Đăng kí thay đổi ngày 24/11/2022)</p>
+            </div>
+          </Flex>
+          <div style={{ width: '600px', marginLeft: '-200px' }}>
+            <h3 style={{ marginBottom: '10px', fontWeight: '500' }}>Liên hệ với chúng tôi</h3>
+            <Input placeholder="Nhập email của bạn" suffix={<Button style={{ backgroundColor: '#FF4D4F' }} icon={<IoSend color="#fff" />}></Button>} />
+          </div>
         </Flex>
       </div>
     </div>

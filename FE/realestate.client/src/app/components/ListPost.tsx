@@ -9,9 +9,10 @@ import {
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import React, { useState, useEffect } from "react";
 import PostCard from "@/components/public/post";
+import Link from "next/link";
+import { recommendPost } from "@/services/post/post.service";
 
 const ListPost = () => {
-  const { Meta } = Card;
   const [loading, setLoading] = useState(true);
   const [heart, setHeart] = useState(true);
   const [quantity, setQuantity] = useState([
@@ -103,6 +104,18 @@ const ListPost = () => {
   useEffect(() => {
     visibleProducts === 16 && setStatusLoadmore(false);
   }, [visibleProducts]);
+  useEffect(() => {
+    const fetchPublicPost = async () => {
+      const params = {
+        pageSize: 8,
+        pageNumber: 1
+      }
+      const response = await recommendPost(params);
+      return response
+    }
+    const response = fetchPublicPost()
+    console.log("object", response)
+  });
 
   const onLoadMore = () => {
     visibleProducts < 16 &&
@@ -119,15 +132,15 @@ const ListPost = () => {
 
   return (
     <>
-      <div style={{ margin: "50px 0" }}>
-        <h2 style={{ marginBottom: "20px" }}>Bất động sản dành cho bạn</h2>
+      <div style={{ margin: "50px 20px 0px 0px" }}>
+        <h2 style={{ marginBottom: "30px", fontSize: '24px', fontWeight: '500' }} className="">Bất động sản dành cho bạn</h2>
         <Row gutter={[24, 24]}>
           {quantity.slice(0, visibleProducts).map((item, index) => {
             return (
               <Col span={6} key={Math.random()}>
-                <a href={`posts/detail/${index}`}>
+                <Link href={`posts/detail/${index}`}>
                   <PostCard option={3} loading={loading} />
-                </a>
+                </Link>
               </Col>
             );
           })}
@@ -139,7 +152,7 @@ const ListPost = () => {
                 <span>Mở rộng</span> <IoIosArrowDown />
               </Flex>
             ) : (
-              <a href="/auth/register">
+              <a href="/list-post">
                 <Flex align="center" justify="space-between">
                   <span>Xem tiếp</span>
                   <IoIosArrowForward />

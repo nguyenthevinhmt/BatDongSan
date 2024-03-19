@@ -2,7 +2,6 @@ import { getDistricts, getProvinces } from "@/services/post/address.service";
 import { getRealEstateType } from "@/services/post/post.service";
 import {
   Button,
-  Cascader,
   Flex,
   Form,
   Input,
@@ -10,6 +9,8 @@ import {
   Tabs,
 } from "antd";
 import React, { useEffect, useState } from "react";
+import { FaSearch } from "react-icons/fa";
+import { IoSearch } from "react-icons/io5";
 
 interface Option {
   value: string | number;
@@ -123,35 +124,6 @@ const SearchComponent = () => {
     },
   ]
 
-  const cascaderOptions = [
-    {
-      label: 'Tỉnh/Thành phố',
-      value: 'province',
-      children: provinces.map((province: any) => ({
-        label: province?.name,
-        value: province?.id,
-      })),
-    },
-    {
-      label: 'Quận/Huyện',
-      value: 'district',
-      children: districts?.map((district: any) => ({
-        label: district?.name,
-        value: district?.id,
-      })),
-      disabled: !selectedProvince,
-    },
-    {
-      label: 'Phường/Xã',
-      value: 'ward',
-      children: wards.map((ward: any) => ({
-        label: ward?.name,
-        value: ward?.id,
-      })),
-      disabled: !selectedDistrict,
-    },
-  ];
-
   return (
     <Form onFinish={handleSubmit}>
       <Flex
@@ -161,12 +133,16 @@ const SearchComponent = () => {
           padding: "16px",
           width: "100%",
           borderRadius: "10px",
-          backgroundColor: "#ddd",
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
         }}
       >
         <Tabs
-          tabBarGutter={20}
-          style={{ marginBottom: "-20px", marginLeft: "20px" }}
+          activeKey={formData.postType.toString()}
+          tabBarGutter={10}
+          type="card"
+          style={{
+            marginBottom: "-20px", marginLeft: "20px",
+          }}
           onChange={(value) => {
             setFormData((prev) => {
               return {
@@ -175,14 +151,12 @@ const SearchComponent = () => {
               }
             })
           }}
-          tabBarStyle={{ border: "none" }}
           items={tabs.map((item) => {
             return {
-              label: item.label,
               key: item.key,
+              label: <div style={{ color: '#aaa' }} onChange={() => { }}>{item.label}</div>,
             };
           })}
-          indicator={{ size: (origin) => origin - 20, align: "center" }}
         />
         <div
           style={{
@@ -221,11 +195,12 @@ const SearchComponent = () => {
                   }
                 });
               }}
+              prefix={<FaSearch style={{ marginRight: '10px' }} />}
               placeholder="Nhập địa chỉ hoặc dự án ...."
               suffix={
                 <Button
                   size="large"
-                  style={{ backgroundColor: "#FF4D4F", color: "#fff" }}
+                  style={{ backgroundColor: "#FF4D4F", color: "#fff", fontWeight: 500 }}
                   htmlType="submit"
                 >
                   Tìm kiếm
@@ -243,7 +218,7 @@ const SearchComponent = () => {
             <Select
               size="middle"
               allowClear={true}
-              style={{ flex: "1" }}
+              style={{ flex: "1", backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               placeholder={"Loại nhà đất"}
               options={realEstateType?.map((item: any) => {
                 return {

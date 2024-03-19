@@ -95,7 +95,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _logger.LogInformation($"{nameof(FindAllPost)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
-                        from postmedia in pm.DefaultIfEmpty()
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
                                 && (input.PostType == null || post.PostTypeId == input.PostType)
                                 && (input.PostStatus == null || post.Status == input.PostStatus)
@@ -147,7 +147,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _logger.LogInformation($"{nameof(FindAllPostByUserId)}: input: {JsonSerializer.Serialize(input)}, currentUserId = {currentUserId}");
             var query = from post in _dbContext.Posts
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
-                        from postmedia in pm.DefaultIfEmpty()
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
                         where !post.Deleted && post.CreatedBy == currentUserId
                                 && (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
                                 && (input.PostType == null || post.PostTypeId == input.PostType)
@@ -461,7 +461,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _logger.LogInformation($"{nameof(FindAllPublic)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
-                        from postmedia in pm.DefaultIfEmpty()
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
                                 && (input.PostType == null || post.PostTypeId == input.PostType)
                                 && (input.PostStatus == null || post.Status == input.PostStatus)

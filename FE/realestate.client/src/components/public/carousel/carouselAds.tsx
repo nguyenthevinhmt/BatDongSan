@@ -1,15 +1,13 @@
-import React, { useState } from "react";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-
-import "./carousel.css";
-import Image from "next/image";
+import React, { useEffect, useState } from 'react'
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import Image from 'next/image';
 
 interface ICarousel {
     src: string,
     alt: string
 }
 
-export const Carousel = ({ data, width, height }: { data?: any, width: number, height: number }) => {
+export const CarouselAds = ({ data, width, height }: { data?: any, width: number, height: number }) => {
     const [slide, setSlide] = useState(0);
 
     const nextSlide = () => {
@@ -19,10 +17,13 @@ export const Carousel = ({ data, width, height }: { data?: any, width: number, h
     const prevSlide = () => {
         setSlide(slide === 0 ? data.length - 1 : slide - 1);
     };
+
+
     return (
         <div style={{
-            width: `${width}px`,
-            height: `${height}px`,
+            width: `100%`,
+            height: `auto`,
+            transition: 'transform 0.5s ease'
         }} className="carousel">
             <IoIosArrowBack onClick={prevSlide} className="arrow arrow-left" />
             {data.map((item: ICarousel, idx: any) => {
@@ -33,7 +34,7 @@ export const Carousel = ({ data, width, height }: { data?: any, width: number, h
                         src={item.src}
                         alt={item.alt}
                         key={idx}
-                        className={slide === idx ? "slide" : "slide slide-hidden"}
+                        className={slide === idx ? "slide_ads" : "slide_ads slide-hidden"}
                         priority
                     />
                 );
