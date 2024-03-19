@@ -248,7 +248,10 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 Street = post.Street,
                                 Ward = post.Ward,
                                 YoutubeLink = post.YoutubeLink,
-                                Medias = post.Medias ?? new List<Media>(),
+                                LifeTime = post.LifeTime,
+                                CalculateType = post.CalculateType,
+                                Options = post.Options,
+                                Medias = post.Medias.Where(m => !m.Deleted).ToList() ?? new List<Media>(),
                             }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             return findPost;
         }
@@ -326,7 +329,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _logger.LogInformation($"{nameof(Update)}: input: {JsonSerializer.Serialize(input)}");
             var findPost = (from post in _dbContext.Posts
                             join image in _dbContext.Medias on post.Id equals image.PostId
-                            where post.Id == input.Id && !post.Deleted && image.Deleted
+                            where post.Id == input.Id && !post.Deleted && !image.Deleted
                             select new PostDetailDto
                             {
                                 Id = post.Id,
@@ -344,12 +347,15 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 Street = post.Street,
                                 Ward = post.Ward,
                                 YoutubeLink = post.YoutubeLink,
+                                LifeTime = input.LifeTime,
+                                CalculateType = input.CalculateType,
+                                Options = input.Options,
                                 Medias = post.Medias ?? new List<Media>(),
                             }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             findPost.Title = input.Title;
             findPost.Area = input.Area;
             findPost.Ward = input.Ward;
-            findPost.District = input.Distinct;
+            findPost.District = input.District;
             findPost.Province = input.Province;
             findPost.Street = input.Street;
             findPost.Description = input.Description;
@@ -484,6 +490,13 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                                            && (p.Status != PostStatuses.POSTED)
                                                            && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.POSTED;
+            _dbContext.SaveChanges();
+        }
+
+        public void deleteImage(int id)
+        {
+            var image = _dbContext.Medias.FirstOrDefault(c => c.Id == id && !c.Deleted) ?? throw new UserFriendlyException(ErrorCode.FileNotFound);
+            image.Deleted = true;
             _dbContext.SaveChanges();
         }
     }

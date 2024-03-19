@@ -37,15 +37,15 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
             get => _province;
             set => _province = value.Trim();
         }
-        private string _distinct = null!;
+        private string _district = null!;
         /// <summary>
         /// Quận/huyện
         /// </summary>
         [CustomMaxLength(50)]
-        public string Distinct
+        public string District
         {
-            get => _distinct;
-            set => _distinct = value.Trim();
+            get => _district;
+            set => _district = value.Trim();
         }
         private string _ward = null!;
         /// <summary>
@@ -103,6 +103,23 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// </summary>
         public int RealEstateTypeId { get; set; }
 
+        [IntegerRange(AllowableValues = new int[] { PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
+        public int Options { get; set; }
+        /// <summary>
+        /// Số ngày đăng bài 
+        /// </summary>
+        public int LifeTime { get; set; }
+        /// <summary>
+        /// Đơn vị
+        /// <see cref="RealEstate.Utils.ConstantVariables.Post.CalculateType"/>
+        /// </summary>
+        [IntegerRange(AllowableValues = new int[]
+        {
+            Utils.ConstantVariables.Post.CalculateType.VND,
+            Utils.ConstantVariables.Post.CalculateType.PriceOfSquareMeter,
+            Utils.ConstantVariables.Post.CalculateType.Agree
+        })]
+        public int CalculateType { get; set; }
         public List<Media> ListMedia { get; set; } = new();
     }
 }

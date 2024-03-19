@@ -2,32 +2,44 @@
 import isAuth from "@/app/isAuth";
 import { UserType } from "@/shared/consts/userType";
 import {
-  Button,
-  Dropdown,
-  Flex,
-  Form,
-  Input,
-  List,
-  Menu,
-  Modal,
-  Select,
-  Space,
-  Switch,
-  Table,
+    Button,
+    Dropdown,
+    Flex,
+    Form,
+    Input,
+    List,
+    Menu,
+    Modal,
+    Select,
+    Space,
+    Switch,
+    Table,
+    Tag,
 } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { postStatus } from "@/shared/consts/postStatus";
-import { DownOutlined, EllipsisOutlined } from "@ant-design/icons";
+import {
+    DownOutlined,
+    EllipsisOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
+    CloseCircleOutlined,
+    ExclamationCircleOutlined,
+    MinusCircleOutlined,
+    SyncOutlined,
+} from "@ant-design/icons";
 import type { TableColumnsType } from "antd";
 import {
-  findAll,
-  approvedPost,
-  updateStatus,
-  getById,
+    findAll,
+    approvedPost,
+    updateStatus,
+    getById,
 } from "@/services/post/post.service";
 import Image from "next/image";
-import type { PaginationProps } from "antd";
-import { Pagination } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
+
 
 interface IPost {
   id: number;
@@ -39,30 +51,6 @@ interface IPost {
   realEstateTypeId: number;
   status: number;
   mediaUrl?: string;
-}
-
-interface IDetailPost {
-  id: number;
-  title: string;
-  description: string;
-  province: string;
-  district: string;
-  ward: string;
-  street: string;
-  detailAddress: string;
-  area: number;
-  price: number;
-  youtubeLink: string;
-  status: number;
-  postTypeId: number;
-  realEstateTypeId: number;
-  listMedia: MediaType[];
-}
-
-interface MediaType {
-  name: string;
-  description: string;
-  mediaUrl: string;
 }
 
 interface FormValues {
@@ -179,20 +167,10 @@ const ManagePost = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [pageNumber, setPageNumber] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [detailPost, setDetailPost] = useState<IDetailPost>({} as IDetailPost);
+  const [change, setChange] = useState(false);
+  const router = useRouter();
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const authStore = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -217,6 +195,10 @@ const ManagePost = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [change]);
+
   const actions = [
     {
       key: 1,
@@ -239,42 +221,16 @@ const ManagePost = () => {
     {
       key: 3,
       label: "xem chi tiết",
-      onClick: async (id: number) => {
-        const res = await getById(id);
-        const data = res?.data.data;
-        const post: IDetailPost = {
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          province: data.province,
-          district: data.district,
-          ward: data.ward,
-          street: data.street,
-          detailAddress: data.detailAddress,
-          area: data.area,
-          price: data.price,
-          youtubeLink: data.youtubeLink,
-          status: data.status,
-          postTypeId: data.postTypeId,
-          realEstateTypeId: data.realEstateTypeId,
-          listMedia: data.medias
-            ? data.medias.map((media: any) => ({
-                name: media.name,
-                description: media.description,
-                mediaUrl: media.mediaUrl,
-              }))
-            : [],
-        };
-
-        setDetailPost(post);
-        showModal();
+      onClick: (id: number) => {
+        const role = authStore?.user?.data?.userType;
+        return router.push(`/post/edit/?role=${role}&postId=${id}`);
       },
     },
   ];
 
   const columns: TableColumnsType<IPost> = [
     {
-      title: "ID",
+      title: "#ID",
       width: 3,
       dataIndex: "id",
       key: "id",
@@ -312,6 +268,11 @@ const ManagePost = () => {
       width: 100,
       dataIndex: "description",
       key: "description",
+      render: (text, record) => {
+        return record.description.length > 20
+          ? record.description.substring(0, 20) + "..."
+          : record.description;
+      }
     },
     {
       title: "Loại bất động sản",
@@ -343,7 +304,23 @@ const ManagePost = () => {
       fixed: "right",
       render: (statusId: number) => {
         const statusItem = Status.find((item) => item.value === statusId);
-        return statusItem ? statusItem.label : "";
+          if (statusItem) {
+              if (statusItem.value === postStatus.INIT) {
+                  return <Tag icon={<ClockCircleOutlined />} color="default">khởi tạo</Tag>;
+              } else if (statusItem.value === postStatus.PENDING) {
+                  return <Tag icon={<SyncOutlined spin />} color="processing">chờ xử lý/ yêu cầu duyệt</Tag>;
+              } else if (statusItem.value === postStatus.POSTED) {
+                  return <Tag icon={<CheckCircleOutlined />} color="success">đã đăng</Tag>;
+              } else if (statusItem.value === postStatus.CANCEL) {
+                  return <Tag icon={<ExclamationCircleOutlined />} color="warning">hủy duyệt</Tag>;
+              } else {
+                  return <Tag icon={<MinusCircleOutlined />} color="error">đã gỡ</Tag>;
+              }
+        }
+        else {
+            return "";
+        }
+        
       },
     },
     {
@@ -454,7 +431,7 @@ const ManagePost = () => {
               label={<strong>Từ khóa</strong>}
               style={{ marginRight: 10 }}
             >
-              <Input placeholder="Tìm theo tiêu đề" />
+              <Input placeholder="Tìm theo tiêu đề" onChange={() => setChange(!change)}/>
             </Form.Item>
 
             <Form.Item
@@ -466,6 +443,7 @@ const ManagePost = () => {
                 defaultValue={realEstateType[0].value}
                 placeholder="Chọn loại bất động sản"
                 options={realEstateType}
+                onChange={() => setChange(!change)}
               />
             </Form.Item>
 
@@ -478,6 +456,7 @@ const ManagePost = () => {
                 defaultValue={postType[0].value}
                 placeholder="Chọn loại bài đăng"
                 options={postType}
+                onChange={() => setChange(!change)}
               />
             </Form.Item>
 
@@ -491,6 +470,7 @@ const ManagePost = () => {
                 showSearch
                 placeholder="Chọn loại trạng thái bài đăng"
                 options={Status}
+                onChange={() => setChange(!change)}
               />
             </Form.Item>
 
@@ -541,145 +521,9 @@ const ManagePost = () => {
             scroll={{ x: "max-content" }}
           />
         </div>
-
-        <div>
-          <Modal
-            title="Thông tin chi tiết bài đăng"
-            open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
-          >
-            <List
-              itemLayout="vertical"
-              dataSource={[detailPost]}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta title={"Tiêu đề:"} description={item.title} />
-                  <List.Item.Meta
-                    title={"Mô tả:"}
-                    description={item.description}
-                  />
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={[detailPost]}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title={"Tỉnh/Thành phố:"}
-                          description={item.province}
-                        />
-                        <List.Item.Meta
-                          title={"Quận/Huyện:"}
-                          description={item.district}
-                        />
-                      </List.Item>
-                    )}
-                  />
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={[detailPost]}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title={"Phường/Xã:"}
-                          description={item.ward}
-                        />
-                        <List.Item.Meta
-                          title={"Đường:"}
-                          description={item.street}
-                        />
-                      </List.Item>
-                    )}
-                  />
-                  <List.Item.Meta
-                    title={"Địa chỉ chi tiết:"}
-                    description={item.detailAddress}
-                  />
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={[detailPost]}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title={"Diện tích:"}
-                          description={item.area + " m2"}
-                        />
-                        <List.Item.Meta
-                          title={"Giá:"}
-                          description={item.price}
-                        />
-                      </List.Item>
-                    )}
-                  />
-                  <List.Item.Meta
-                    title={"Link youtube:"}
-                    description={
-                      <a href={item.youtubeLink}>item.youtubeLink</a>
-                    }
-                  />
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={[detailPost]}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title={"Loại bài đăng:"}
-                          description={(() => {
-                            const postTypeItem = postType.find(
-                              (i) => i.value === item.postTypeId
-                            );
-                            return postTypeItem ? postTypeItem.label : "";
-                          })()}
-                        />
-                        <List.Item.Meta
-                          title={"Loại bất động sản:"}
-                          description={(() => {
-                            const realEstateItem = realEstateType.find(
-                              (i) => i.value === item.realEstateTypeId
-                            );
-                            return realEstateItem ? realEstateItem.label : "";
-                          })()}
-                        />
-                      </List.Item>
-                    )}
-                  />
-                  <List.Item.Meta
-                    title={"Trạng thái:"}
-                    description={(() => {
-                      const statusItem = Status.find(
-                        (i) => i.value === item.status
-                      );
-                      return statusItem ? statusItem.label : "";
-                    })()}
-                  />
-                  <List.Item.Meta
-                    title={"Danh sách hình ảnh:"}
-                    description={
-                      <List
-                        grid={{ gutter: 16, column: 4 }}
-                        dataSource={item.listMedia}
-                        renderItem={(media) => (
-                          <List.Item>
-                            <Image
-                              src={media.mediaUrl}
-                              alt={media.description}
-                              width={100}
-                              height={80}
-                              style={{ objectFit: "cover" }}
-                            />
-                          </List.Item>
-                        )}
-                      />
-                    }
-                  />
-                </List.Item>
-              )}
-            />
-          </Modal>
-        </div>
       </div>
     </Flex>
   );
 };
 
-export default isAuth(ManagePost, [UserType.ADMIN, UserType.CUSTOMER]);
+export default isAuth(ManagePost, [UserType.ADMIN]);

@@ -66,6 +66,21 @@ export const apiRemoveImage = async (publicId: string) => {
   }
 };
 
+export const deleteImage = async (id: number, publicId: string) => {
+  try {
+    const DbResponse = await axiosInstance.delete(
+      `${environment.baseUrl}/api/post/delete-image?id=${id}`
+    );
+    if (DbResponse.status === HTTP_STATUS_CODE.OK) {
+      const CloudResponse = await apiRemoveImage(publicId);
+      return DbResponse;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api delete của image bị lỗi!!!");
+    return null;
+  }
+}
+
 interface IPost {
   title: string;
   description: string;
@@ -283,3 +298,42 @@ export const updateStatus = async (info: IUpdateStatus) => {
     return null;
   }
 };
+
+export const updatePost = async (info: IPost & {id: number, status: number }) => { 
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/update`,
+      {
+        Status: info.status,
+        Id: info.id,
+        Title: info.title,
+        Description: info.description,
+        Province: info.province,
+        District: info.district,
+        Ward: info.ward,
+        Street: info.street,
+        DetailAddress: info.detailAddress,
+        Area: info.area,
+        Price: info.price,
+        RentalObject: info.rentalObject,
+        YoutubeLink: info.youtubeLink,
+        PostTypeId: info.postTypeId,
+        RealEstateTypeId: info.realEstateTypeId,
+        Options: info.options,
+        CalculateType: info.calculateType,
+        LifeTime: info.lifeTime,
+        Medias: info.listMedia,
+      }, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api update của post bị lỗi!!!");
+    return null;
+  }
+}

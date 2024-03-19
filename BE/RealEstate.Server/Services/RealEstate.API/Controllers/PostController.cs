@@ -149,5 +149,11 @@ namespace RealEstate.API.Controllers
             _postService.UpdateStatus(input);
             return new();
         }
+        [HttpDelete("delete-image")]
+        public ApiResponse DeleteImage(int id)
+        {
+            _postService.deleteImage(id);
+            return new();
+        }
     }
 }

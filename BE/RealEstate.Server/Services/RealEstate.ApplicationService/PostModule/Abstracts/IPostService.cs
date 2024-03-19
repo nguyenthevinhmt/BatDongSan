@@ -79,5 +79,10 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="id"></param>
         void RequestApprovePost(int id);
+        /// <summary>
+        /// Xóa ảnh
+        /// </summary>
+        /// <param name="id"></param>
+        void deleteImage(int id);
     }
 }
