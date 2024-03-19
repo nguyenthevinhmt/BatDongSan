@@ -66,6 +66,7 @@ interface IPost {
 }
 
 interface MediaType {
+    id: any;
     name: string;
     description: string;
     mediaUrl: string;
@@ -85,11 +86,6 @@ const getBase64 = (file: FileType): Promise<string> =>
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = (error) => reject(error);
     });
-
-const gridStyle: React.CSSProperties = {
-    width: '25%',
-    textAlign: 'center',
-};
 
 //type = [watch: 1, edit: 2]
 const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
@@ -153,7 +149,6 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     const [status, setStatus] = useState<number>(1);
     const [modalDeleteImg, setModalDeleteImg] = useState(false);
     const [curentFile, setCurrentFile] = useState<UploadFile>();
-
     useEffect(() => {
         const fetchDetailPost = async () => {
             const response = await getById(postId);
@@ -175,6 +170,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 lifeTime: data?.lifeTime,
                 options: data?.options,
                 listMedia: data.medias ? data.medias.map((item: any) => ({
+                        id: item.id,
                         name: item.name,
                         description: item.description,
                         mediaUrl: item.mediaUrl, 
@@ -344,13 +340,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
 
     const handleRemove = async (file: any) => {
         const originName = file.name.replace(/\.\w+$/, "");
-        const selectFile = listMedia.filter((item) => item.name === originName)[0]
-            .description;
+        const selectFile = listMedia.filter((item) => item.name === originName)[0].description;
         const publicId = getPublicIdFromUrl(selectFile)?.replace(/\.\w+$/, "");
-        console.log("originName: ", originName);
-        console.log("selectFile: ", selectFile);
-        console.log("publicId: ", publicId);
-        console.log("file.uid: ", file.uid);
         console.log(listMediaId);
         if (publicId) {
             if (listMediaId.includes(file.uid)) {
@@ -363,7 +354,6 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 );
                 setListMediaId((prevIds) => prevIds.filter((id) => id !== file.uid));
             } else {
-                console.log("jump here");
                 await apiRemoveImage(publicId);
                 setFileList((prevList) =>
                     prevList.filter((item) => item.uid !== file.uid)
@@ -416,6 +406,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
         setListMedia((prevUrls) => [
             ...prevUrls,
             {
+                id: response.uid,
                 mediaUrl: response.url,
                 name: response.original_filename,
                 description: response.secure_url,
@@ -906,7 +897,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     onPreview={handlePreview}
                                     onRemove={(item) => {
                                         setCurrentFile(item);
-                                        setModalDeleteImg(true);
+                                        showModalDeleteImg();
                                         return false;
                                     }}
                                     onChange={handleChange}

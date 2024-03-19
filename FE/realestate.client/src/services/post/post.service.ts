@@ -299,34 +299,59 @@ export const updateStatus = async (info: IUpdateStatus) => {
   }
 };
 
+interface IUpdatePost {
+  id: number;
+  status: number;
+  title: string;
+  description: string;
+  province: string;
+  district: string;
+  ward: string;
+  street: string;
+  detailAddress?: string;
+  area: number;
+  price: number;
+  rentalObject?: number;
+  youtubeLink?: string;
+  postTypeId: number;
+  realEstateTypeId: number;
+  options: number;
+  calculateType: number;
+  lifeTime: number;
+  listMedia?: UpdateMediaType[];
+};
+
+interface UpdateMediaType {
+  id: any;
+  name: string;
+  description: string;
+  mediaUrl: string;
+}
+
 export const updatePost = async (info: IPost & {id: number, status: number }) => { 
   try {
     const response = await axiosInstance.put(
       `${environment.baseUrl}/api/post/update`,
       {
-        Status: info.status,
-        Id: info.id,
-        Title: info.title,
-        Description: info.description,
-        Province: info.province,
-        District: info.district,
-        Ward: info.ward,
-        Street: info.street,
-        DetailAddress: info.detailAddress,
-        Area: info.area,
-        Price: info.price,
-        RentalObject: info.rentalObject,
-        YoutubeLink: info.youtubeLink,
-        PostTypeId: info.postTypeId,
-        RealEstateTypeId: info.realEstateTypeId,
-        Options: info.options,
-        CalculateType: info.calculateType,
-        LifeTime: info.lifeTime,
-        Medias: info.listMedia,
-      }, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        status: info.status,
+        id: info.id,
+        title: info.title,
+        description: info.description,
+        province: info.province,
+        district: info.district,
+        ward: info.ward,
+        street: info.street,
+        detailAddress: info.detailAddress,
+        area: info.area,
+        price: info.price,
+        rentalObject: info.rentalObject,
+        youtubeLink: info.youtubeLink,
+        postTypeId: info.postTypeId,
+        realEstateTypeId: info.realEstateTypeId,
+        options: info.options,
+        calculateType: info.calculateType,
+        lifeTime: info.lifeTime,
+        medias: info.listMedia,
       }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
