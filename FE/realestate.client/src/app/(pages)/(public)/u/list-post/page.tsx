@@ -18,7 +18,9 @@ import {
     LineOutlined,
     EnvironmentOutlined,
     HeartFilled,
-    HeartOutlined
+    HeartOutlined,
+    ShareAltOutlined,
+    PhoneOutlined
 } from "@ant-design/icons";
 import { TiSocialFacebookCircular } from "react-icons/ti";
 import { SiZalo } from "react-icons/si";
@@ -110,11 +112,11 @@ const ListPostsAuthor = () => {
                     <Flex style={{ marginTop: "30px" }}>
                         <Dropdown menu={{ items }} trigger={['click']}>
                             <Tooltip placement="top" title={'Chia sẻ'}>
-                                <Button style={{ height: "44px" }}><IoShareSocialOutline style={{ fontSize: "30px", textAlign: "center" }} /></Button>
+                                <Button style={{height:"44px",display: "flex", justifyContent: "center", alignItems: "center",fontSize:"16px",fontWeight:"600"}}><ShareAltOutlined style={{fontSize:"27px"}}/>Chia sẻ</Button>
                             </Tooltip>
                         </Dropdown>
-                        <Button style={{ background: "#009BA1", height: "44px", margin: "0 20px" }}>
-                            <Paragraph style={styleButton} copyable={{ text: `${label}` }}>0965115***<LuDot />Hiện số</Paragraph>
+                        <Button style={{ background: "#009BA1", height: "44px", margin: "0 20px 0 10px" }}>
+                            <Paragraph style={styleButton} copyable={{ text: `${label}` }}><PhoneOutlined style={{fontSize:"25px"}}/> 0965115***<LuDot />Hiện số</Paragraph>
                         </Button>
                     </Flex>
                 </Flex>
@@ -176,5 +178,5 @@ var styleButton: any = {
     fontFamily: "Lexend Medium, Roboto, Arial",
     background: '#009BA1',
     color: '#fff',
-    marginTop: "8px"
+    marginTop: "1px"
 }
