@@ -70,7 +70,7 @@ const PaymentForm = ({ prop }: any) => {
     if (response?.code === HTTP_STATUS_CODE.OK) {
       message.success("Bạn đã thanh toán thành công");
       setTimeout(() => {
-        router.replace("/post");
+        router.replace("/post/manage");
       }, 1000);
     }
   };
@@ -150,12 +150,12 @@ const PaymentForm = ({ prop }: any) => {
                         <span style={{ color: "#E03C31" }}>VIP bạc</span>
                       )}
                     </p>
-                    <span style={{ fontSize: "12px" }}>
+                    <div style={{ fontSize: "12px" }}>
                       {item.option === 1 && "từ 2.000đ/ngày"}
                       {item.option === 2 && "từ 50.000đ/ngày"}
                       {item.option === 3 && "từ 100.000đ/ngày"}
                       {item.option === 4 && "từ 200.000đ/ngày"}
-                    </span>
+                    </div>
                     <Button
                       style={{
                         marginTop: "30px",

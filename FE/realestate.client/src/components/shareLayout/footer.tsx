@@ -70,7 +70,7 @@ const Footer = () => {
               <p style={{ fontSize: "14px", textAlign: 'start' }}>Mã số thuế : 0106713191. ( Đăng ký lần đầu : ngày 15 tháng 12 năm 2014. Đăng kí thay đổi ngày 24/11/2022)</p>
             </div>
           </Flex>
-          <div style={{ width: '600px', marginLeft: '-200px' }}>
+          <div style={{ width: '500px', marginLeft: '-200px' }}>
             <h3 style={{ marginBottom: '10px', fontWeight: '500' }}>Liên hệ với chúng tôi</h3>
             <Input placeholder="Nhập email của bạn" suffix={<Button style={{ backgroundColor: '#FF4D4F' }} icon={<IoSend color="#fff" />}></Button>} />
           </div>

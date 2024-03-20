@@ -8,10 +8,12 @@ const MapComponent = ({ prop }: any) => {
     setBingMapReady(true);
   };
   useEffect(() => {
-    console.log("MapComp", prop);
-    if (prop?.latitude !== 0 && prop?.longitude !== 0) {
-      onMapReady();
-    }
+    let timeoutId = setTimeout(() => {
+      if (prop?.latitude !== 0 && prop?.longitude !== 0) {
+        onMapReady();
+      }
+    }, 500);
+    return () => { clearTimeout(timeoutId) }
   }, [prop]);
   return (
     <>

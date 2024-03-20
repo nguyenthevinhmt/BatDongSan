@@ -117,7 +117,7 @@ const HeaderComponent = () => {
         />
       ),
       onClick: () => {
-        router.push("/post");
+        router.push("/post/manage");
       },
     },
     {

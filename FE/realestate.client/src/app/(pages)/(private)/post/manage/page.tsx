@@ -19,12 +19,10 @@ import {
 import React, { use, useEffect, useState } from "react";
 import { postStatus } from "@/shared/consts/postStatus";
 import {
-  DownOutlined,
   EllipsisOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-  ExclamationCircleOutlined,
   MinusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
@@ -33,7 +31,6 @@ import {
   findAll,
   approvedPost,
   updateStatus,
-  getById,
 } from "@/services/post/post.service";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -52,18 +49,7 @@ interface IPost {
   mediaUrl?: string;
 }
 
-interface FormValues {
-  status?: number;
-  postTypeId?: number;
-  realEstateTypeId?: number;
-  keyword?: string;
-}
-
 const realEstateType = [
-  {
-    value: null,
-    label: "Tất cả",
-  },
   {
     value: 1,
     label: "Căn hộ chung cư",
@@ -120,10 +106,6 @@ const realEstateType = [
 
 const postType = [
   {
-    value: null,
-    label: "Tất cả",
-  },
-  {
     value: 1,
     label: "Bán",
   },
@@ -134,10 +116,6 @@ const postType = [
 ];
 
 const Status = [
-  {
-    value: null,
-    label: "Tất cả",
-  },
   {
     value: postStatus.INIT,
     label: "Khởi tạo",
@@ -231,14 +209,14 @@ const ManagePost = () => {
   const columns: TableColumnsType<IPost> = [
     {
       title: "#ID",
-      width: 3,
+      width: 20,
       dataIndex: "id",
       key: "id",
       fixed: "left",
     },
     {
       title: "Danh sách hình ảnh",
-      width: 100,
+      width: 50,
       dataIndex: "listMedia",
       key: "listMedia",
       render: (index, record) => {
@@ -259,7 +237,7 @@ const ManagePost = () => {
     },
     {
       title: "Tiêu đề",
-      width: 40,
+      width: 80,
       dataIndex: "title",
       key: "title",
     },
@@ -269,14 +247,14 @@ const ManagePost = () => {
       dataIndex: "description",
       key: "description",
       render: (text, record) => {
-        return record.description.length > 20
-          ? record.description.substring(0, 20) + "..."
+        return record.description.length > 40
+          ? record.description.substring(0, 40) + "..."
           : record.description;
       },
     },
     {
       title: "Loại bất động sản",
-      width: 170,
+      width: 50,
       dataIndex: "realEstateTypeId",
       key: "realEstateTypeId",
       render: (realEstateTypeId: number) => {
@@ -298,7 +276,7 @@ const ManagePost = () => {
     },
     {
       title: "Trạng thái",
-      width: 100,
+      width: 70,
       dataIndex: "status",
       key: "status",
       fixed: "right",
@@ -307,32 +285,32 @@ const ManagePost = () => {
         if (statusItem) {
           if (statusItem.value === postStatus.INIT) {
             return (
-              <Tag icon={<ClockCircleOutlined />} color="default">
-                khởi tạo
+              <Tag icon={<ClockCircleOutlined />} color="processing">
+                Khởi tạo
               </Tag>
             );
           } else if (statusItem.value === postStatus.PENDING) {
             return (
-              <Tag icon={<SyncOutlined spin />} color="processing">
-                chờ xử lý/ yêu cầu duyệt
+              <Tag icon={<SyncOutlined spin />} color="warning">
+                Chờ xử lý/ yêu cầu duyệt
               </Tag>
             );
           } else if (statusItem.value === postStatus.POSTED) {
             return (
               <Tag icon={<CheckCircleOutlined />} color="success">
-                đã đăng
+                Đã đăng
               </Tag>
             );
           } else if (statusItem.value === postStatus.CANCEL) {
             return (
-              <Tag icon={<ExclamationCircleOutlined />} color="warning">
-                hủy duyệt
+              <Tag icon={< CloseCircleOutlined />} color="error">
+                Hủy duyệt
               </Tag>
             );
           } else {
             return (
-              <Tag icon={<MinusCircleOutlined />} color="error">
-                đã gỡ
+              <Tag icon={<MinusCircleOutlined />} color="#ccc">
+                Đã gỡ
               </Tag>
             );
           }
@@ -420,7 +398,7 @@ const ManagePost = () => {
       <div
         style={{
           width: "100%",
-          height: "100vh",
+          height: "95vh",
           margin: "auto",
           padding: 20,
           backgroundColor: "#fff",
@@ -451,6 +429,7 @@ const ManagePost = () => {
               style={{ marginRight: 10 }}
             >
               <Input
+                allowClear={true}
                 placeholder="Tìm theo tiêu đề"
                 onChange={(e) => {
                   if (timerRef.current) {
@@ -470,8 +449,8 @@ const ManagePost = () => {
               style={{ marginRight: 10 }}
             >
               <Select
-                defaultValue={realEstateType[0].value}
-                placeholder="Chọn loại bất động sản"
+                allowClear={true}
+                placeholder="Tất cả"
                 options={realEstateType}
                 onChange={() => setChange(!change)}
               />
@@ -483,8 +462,8 @@ const ManagePost = () => {
               style={{ marginRight: 10 }}
             >
               <Select
-                defaultValue={postType[0].value}
-                placeholder="Chọn loại bài đăng"
+                allowClear={true}
+                placeholder="Tất cả"
                 options={postType}
                 onChange={() => setChange(!change)}
               />
@@ -496,32 +475,16 @@ const ManagePost = () => {
               style={{ marginRight: 10 }}
             >
               <Select
-                defaultValue={Status[0].value}
-                showSearch
-                placeholder="Chọn loại trạng thái bài đăng"
+                allowClear={true}
+                placeholder="Tất cả"
                 options={Status}
                 onChange={() => setChange(!change)}
               />
             </Form.Item>
-
-            <Form.Item style={{}}>
-              <Button
-                style={{
-                  padding: "0 15px",
-                  color: "white",
-                  backgroundColor: "rgb(224, 60, 49)",
-                  border: "none",
-                }}
-                type="primary"
-                htmlType="submit"
-              >
-                Tìm kiếm
-              </Button>
-            </Form.Item>
           </Flex>
         </Form>
 
-        <div>
+        <div style={{ height: '9s0%' }}>
           <Table
             columns={columns}
             pagination={{
@@ -548,7 +511,7 @@ const ManagePost = () => {
               },
             }}
             dataSource={listPost}
-            scroll={{ x: "max-content" }}
+            scroll={{ x: 1500, y: 600 }}
           />
         </div>
       </div>

@@ -30,7 +30,6 @@ import {
 import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import BingMapsReact from "bingmaps-react";
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -117,8 +116,8 @@ const CreateEditForm = ({ type }: { type: number }) => {
     street: "",
   });
   const [coordinates, setCoordinates] = useState({
-    latitude: 0,
-    longitude: 0,
+    latitude: null,
+    longitude: null,
   });
 
   const [showMap, setShowMap] = useState(false);
@@ -645,7 +644,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
                       { required: true, message: "* Mô tả bắt buộc nhập" },
                     ]}
                   >
-                    <Input.TextArea style={{ height: 150 }} />
+                    <Input.TextArea style={{ height: 150, fontFamily: "sans-serif" }} />
                   </Form.Item>
                 </div>
 
@@ -866,7 +865,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
                             okText: "Đồng ý",
                             cancelText: "Hủy",
                             onOk() {
-                              router.replace("/post");
+                              router.back();
                             },
                             onCancel() {
                               console.log("cancel");
