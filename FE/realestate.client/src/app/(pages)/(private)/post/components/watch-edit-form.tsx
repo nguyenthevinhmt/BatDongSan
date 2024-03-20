@@ -166,10 +166,10 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 lifeTime: data?.lifeTime,
                 options: data?.options,
                 listMedia: data.medias ? data.medias.map((item: any) => ({
-                        id: item.id,
-                        name: item.name,
-                        description: item.description,
-                        mediaUrl: item.mediaUrl, 
+                    id: item.id,
+                    name: item.name,
+                    description: item.description,
+                    mediaUrl: item.mediaUrl,
                 })) : [],
             };
             setListMediaId(data.medias.map((item: any) => item.id) || []);
@@ -254,7 +254,6 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
         if (location.districts && location.provinces && location.wards) {
             setShowMap(true);
             fetchLocation();
-        } else {
         }
     }, [location]);
 
@@ -277,7 +276,6 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 provinces: option?.label,
             };
         });
-        console.log("object", option?.label);
         const districtsResponse = await getDistricts(provinceId);
         await setDistricts(districtsResponse?.data);
         setIsDisableSelect((prev) => {
@@ -429,13 +427,10 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
             options: 1,
             listMedia: listMedia,
         };
-        console.log("listMedia: ", listMedia);
-        console.log("listFile: ", fileList);
 
         const response = await updatePost({ ...postInfo, id: postId, status: status });
         if (response?.code === HTTP_STATUS_CODE.OK) {
-            console.log("đã sửa tin!", response?.data);
-            toast.done("Sửa thành công");
+            message.success("Cập nhật thành công");
         }
         else {
             console.log("error: ", response);
@@ -577,6 +572,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                             >
                                 <Select
                                     placeholder="Chọn tỉnh/thành phố"
+                                    value={location?.provinces}
                                     disabled={!edit}
                                     onChange={(value, option) =>
                                         handleProvinceChange(value, option)
@@ -605,6 +601,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     onChange={(value, option) =>
                                         handleDistrictChange(value, option)
                                     }
+                                    value={location?.districts}
                                     disabled={isDisableSelect.districtDisable || !edit}
                                     options={districts?.map((item: any) => {
                                         return {
@@ -631,6 +628,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 <Select
                                     placeholder="Chọn phường/xã"
                                     disabled={isDisableSelect.wardDisable || !edit}
+                                    value={location?.wards}
                                     options={wards?.map((item: any) => {
                                         return {
                                             value: item?.id,
@@ -678,7 +676,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 },
                             ]}
                         >
-                            <Input disabled={!edit}/>
+                            <Input disabled={!edit} />
                         </Form.Item>
                         {showMap && (
                             <Flex justify="center">
@@ -761,7 +759,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         { required: true, message: "* Tiêu đề bắt buộc nhập" },
                                     ]}
                                 >
-                                    <Input style={{ height: 50 }} disabled={!edit}/>
+                                    <Input style={{ height: 50 }} disabled={!edit} />
                                 </Form.Item>
                             </Tooltip>
                             <Form.Item
@@ -778,7 +776,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     { required: true, message: "* Mô tả bắt buộc nhập" },
                                 ]}
                             >
-                                <Input.TextArea style={{ height: 150 }} disabled={!edit}/>
+                                <Input.TextArea style={{ height: 150 }} disabled={!edit} />
                             </Form.Item>
                         </div>
 
@@ -805,7 +803,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     { required: true, message: "Trường bắt buộc nhập" },
                                 ]}
                             >
-                                <Input type="number" placeholder="m²" disabled={!edit}/>
+                                <Input type="number" placeholder="m²" disabled={!edit} />
                             </Form.Item>
                             <Flex justify="center" gap={"small"}>
                                 <Form.Item
@@ -818,7 +816,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     style={{ width: "70%" }}
                                     rules={[{ validator: validatePrice }]}
                                 >
-                                    <Input disabled={currentCalculateType === 3 || !edit}/>
+                                    <Input disabled={currentCalculateType === 3 || !edit} />
                                 </Form.Item>
 
                                 <Form.Item
@@ -874,7 +872,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 </li>
                                 <li>Mô tả ảnh tối đa 45 ký tự</li>
                             </ul>
-                            
+
                             <Form.Item
                                 style={{
                                     display: "flex",
@@ -942,10 +940,10 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 name={"youtubeLink"}
                                 label={<strong>Link youtube</strong>}
                             >
-                                <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!edit}/>
+                                <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!edit} />
                             </Form.Item>
                         </div>
-                        
+
                         {edit ?
                             <div
                                 style={{
@@ -999,7 +997,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     />
                                 </Form.Item>
                             </div> : <></>
-                        }  
+                        }
 
                         {
                             edit ?
@@ -1033,7 +1031,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                                         okText: "Đồng ý",
                                                         cancelText: "Hủy",
                                                         onOk() {
-                                                            router.replace("/post");
+                                                            router.back();
                                                         },
                                                         onCancel() {
                                                             console.log("cancel");
@@ -1059,36 +1057,36 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             </Button>
                                         </Form.Item>
                                     </div>
-                                </div> : 
-                                <div
-                                style={{
-                                    // height: 70,
-                                    width: "100%",
-                                    margin: "auto",
-                                    backgroundColor: "#fff",
-                                }}
-                            >
+                                </div> :
                                 <div
                                     style={{
-                                        display: "flex",
-                                        justifyContent: "flex-end",
+                                        // height: 70,
+                                        width: "100%",
+                                        margin: "auto",
+                                        backgroundColor: "#fff",
                                     }}
                                 >
-                                    <Form.Item>
-                                        <Button
-                                            style={{
-                                                padding: "0 15px",
-                                                color: "white",
-                                                backgroundColor: "rgb(224, 60, 49)",
-                                                border: "none",
-                                            }}
-                                            onClick={goBack}
-                                        >
-                                            Quay lại
-                                        </Button>
-                                    </Form.Item>
+                                    <div
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                        }}
+                                    >
+                                        <Form.Item>
+                                            <Button
+                                                style={{
+                                                    padding: "0 15px",
+                                                    color: "white",
+                                                    backgroundColor: "rgb(224, 60, 49)",
+                                                    border: "none",
+                                                }}
+                                                onClick={goBack}
+                                            >
+                                                Quay lại
+                                            </Button>
+                                        </Form.Item>
+                                    </div>
                                 </div>
-                            </div>
                         }
                     </Form>
                 </div>

@@ -19,12 +19,10 @@ import {
 import React, { use, useEffect, useState } from "react";
 import { postStatus } from "@/shared/consts/postStatus";
 import {
-  DownOutlined,
   EllipsisOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-  ExclamationCircleOutlined,
   MinusCircleOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
@@ -33,7 +31,6 @@ import {
   findAll,
   approvedPost,
   updateStatus,
-  getById,
 } from "@/services/post/post.service";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -50,13 +47,6 @@ interface IPost {
   realEstateTypeId: number;
   status: number;
   mediaUrl?: string;
-}
-
-interface FormValues {
-  status?: number;
-  postTypeId?: number;
-  realEstateTypeId?: number;
-  keyword?: string;
 }
 
 const realEstateType = [
@@ -295,32 +285,32 @@ const ManagePost = () => {
         if (statusItem) {
           if (statusItem.value === postStatus.INIT) {
             return (
-              <Tag icon={<ClockCircleOutlined />} color="default">
-                khởi tạo
+              <Tag icon={<ClockCircleOutlined />} color="processing">
+                Khởi tạo
               </Tag>
             );
           } else if (statusItem.value === postStatus.PENDING) {
             return (
-              <Tag icon={<SyncOutlined spin />} color="processing">
-                chờ xử lý/ yêu cầu duyệt
+              <Tag icon={<SyncOutlined spin />} color="warning">
+                Chờ xử lý/ yêu cầu duyệt
               </Tag>
             );
           } else if (statusItem.value === postStatus.POSTED) {
             return (
               <Tag icon={<CheckCircleOutlined />} color="success">
-                đã đăng
+                Đã đăng
               </Tag>
             );
           } else if (statusItem.value === postStatus.CANCEL) {
             return (
-              <Tag icon={<ExclamationCircleOutlined />} color="warning">
-                hủy duyệt
+              <Tag icon={< CloseCircleOutlined />} color="error">
+                Hủy duyệt
               </Tag>
             );
           } else {
             return (
-              <Tag icon={<MinusCircleOutlined />} color="error">
-                đã gỡ
+              <Tag icon={<MinusCircleOutlined />} color="#ccc">
+                Đã gỡ
               </Tag>
             );
           }
