@@ -90,5 +90,17 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="id"></param>
         void deleteImage(int id);
+        /// <summary>
+        /// Danh sách bài viết mới nhất
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllPostNewest(PagingRequestBaseDto input);
+        /// <summary>
+        /// Danh sách bài viết theo tỉnh thành
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllPostByProvince(PagingRequestBaseDto input);
     }
 }

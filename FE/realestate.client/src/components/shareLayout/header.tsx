@@ -171,8 +171,9 @@ const HeaderComponent = () => {
         backgroundColor: "#fff",
         alignItems: "center",
         padding: "46px 30px",
-        borderBottom: "none",
-        borderBottomColor: "#111",
+        // borderBottom: "none",
+        // borderBottomColor: "#111",
+        border: "1px solid #f1f1f1",
         zIndex: 99,
         marginBottom: "10px",
       }}

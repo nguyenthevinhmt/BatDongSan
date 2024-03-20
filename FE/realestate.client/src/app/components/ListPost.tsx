@@ -1,11 +1,4 @@
-import {
-  Card,
-  Flex,
-  Button,
-  Row,
-  Col,
-  Typography,
-} from "antd";
+import { Card, Flex, Button, Row, Col, Typography } from "antd";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import React, { useState, useEffect } from "react";
 import PostCard from "@/components/public/post";
@@ -108,13 +101,13 @@ const ListPost = () => {
     const fetchPublicPost = async () => {
       const params = {
         pageSize: 8,
-        pageNumber: 1
-      }
+        pageNumber: 1,
+      };
       const response = await recommendPost(params);
-      return response
-    }
-    const response = fetchPublicPost()
-    console.log("object", response)
+      return response;
+    };
+    const response = fetchPublicPost();
+    console.log("object", response);
   });
 
   const onLoadMore = () => {
@@ -133,7 +126,12 @@ const ListPost = () => {
   return (
     <>
       <div style={{ margin: "50px 20px 0px 0px" }}>
-        <h2 style={{ marginBottom: "30px", fontSize: '24px', fontWeight: '500' }} className="">Bất động sản dành cho bạn</h2>
+        <h2
+          style={{ marginBottom: "30px", fontSize: "24px", fontWeight: "500" }}
+          className=""
+        >
+          Bất động sản dành cho bạn
+        </h2>
         <Row gutter={[24, 24]}>
           {quantity.slice(0, visibleProducts).map((item, index) => {
             return (
@@ -152,12 +150,12 @@ const ListPost = () => {
                 <span>Mở rộng</span> <IoIosArrowDown />
               </Flex>
             ) : (
-              <a href="/list-post">
+              <Link href="/list-post">
                 <Flex align="center" justify="space-between">
                   <span>Xem tiếp</span>
                   <IoIosArrowForward />
                 </Flex>
-              </a>
+              </Link>
             )}
           </Button>
         </div>
