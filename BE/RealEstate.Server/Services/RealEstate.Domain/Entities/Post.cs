@@ -85,6 +85,15 @@ namespace RealEstate.Domain.Entities
         [MaxLength(256)]
         public string? BackgroundJobOffShowPostId {  get; set; }
         /// <summary>
+        /// Id show on bgj
+        /// </summary>
+        [MaxLength(256)]
+        public string? BackgroundJobOnShowPostId {  get; set; }
+        /// <summary>
+        /// Ngày bắt đầu đăng bài
+        /// </summary>
+        public DateTime PostStartDate { get; set; }
+        /// <summary>
         /// Ngày kết thúc đăng bài
         /// </summary>
         public DateTime PostEndDate { get; set; }

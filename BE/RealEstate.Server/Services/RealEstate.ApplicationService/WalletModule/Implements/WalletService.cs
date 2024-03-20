@@ -77,7 +77,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
                 Balance = wallet.Balance,
                 Id = wallet.Id,
                 UserId = userId,
-                UserName = _dbContext.Users.Where(c => c.Id == userId).Select(x => x.Username).ToString() ?? "",
+                UserName = _dbContext.Users.Where(c => c.Id == userId).Select(x => x.Username).FirstOrDefault() ?? "",
                 WalletNumber = wallet.WalletNumber,
             };
             return result;

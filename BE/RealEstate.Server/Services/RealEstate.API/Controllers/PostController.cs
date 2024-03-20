@@ -69,8 +69,7 @@ namespace RealEstate.API.Controllers
         [HttpPost("add")]
         public ApiResponse CreatePost([FromBody]CreatePostDto input)
         {
-            _postService.CreatePost(input);
-            return new();
+            return new(_postService.CreatePost(input));
         }
 
         /// <summary>
@@ -91,7 +90,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public ApiResponse<PostDetailDto> Update([FromForm]UpdatePostDto input)
+        public ApiResponse<PostDetailDto> Update([FromBody]UpdatePostDto input)
         {
             return new(_postService.Update(input));
         }
@@ -137,6 +136,33 @@ namespace RealEstate.API.Controllers
         public ApiResponse UpdatePaymentStatus(UpdatePaymentStatusDto input)
         {
             _postService.UpdatePaymentStatus(input);
+            return new();
+        }
+        /// <summary>
+        /// cập nhật trạng thái bài đăng
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPut("update-status")]
+        public ApiResponse UpdateStatus(UpdatePostStatusDto input)
+        {
+            _postService.UpdateStatus(input);
+            return new();
+        }
+        /// <summary>
+        /// Danh sách tin dành cho bạn
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("public/find-all")]
+        public ApiResponse<PagingResult<PostDto>> FindAllPublic([FromQuery]PostPagingRequestDto input)
+        {
+            return new(_postService.FindAllPublic(input));
+        }
+        [HttpDelete("delete-image")]
+        public ApiResponse DeleteImage(int id)
+        {
+            _postService.deleteImage(id);
             return new();
         }
     }

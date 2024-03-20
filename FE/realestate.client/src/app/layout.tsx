@@ -1,23 +1,26 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./public.global.css";
 
 import StoreProvider from "./StoreProvider";
-import { Metadata, NextPage } from "next";
-import Head from 'next/head';
+import { Metadata } from "next";
 import CommontLayout from "@/components/commonLayout/CommontLayout";
-import SpinComponent from "@/components/shareComponents/spinComponent";
-import { ToastContainer } from "react-toastify";
 import ToastProvider from "@/shared/provider/toast.provider";
+import { Lexend } from 'next/font/google'
 
 export const metadata: Metadata = {
   title: "Batdongsan.com",
   description: "Trang tin uy tín hàng đầu về bất động sản",
 };
 
+const lexend = Lexend({
+  subsets: ['latin'],
+  weight: ["200", "300", "400", "500", '600', "700", "800", "900"]
+})
+
 const RootLayout = ({ children }: { children: React.ReactElement }) => (
   <html lang="en">
-    <body>
+    <body className={lexend.className}>
       <link rel="icon" href="../../favicon_io/favicon.ico" sizes="any" />
       <AntdRegistry>
         <StoreProvider>

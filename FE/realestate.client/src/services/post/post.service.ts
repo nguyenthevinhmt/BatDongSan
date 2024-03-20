@@ -1,3 +1,5 @@
+import { postStatus } from "@/shared/consts/postStatus";
+
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
 import crypto from "crypto";
@@ -64,6 +66,21 @@ export const apiRemoveImage = async (publicId: string) => {
   }
 };
 
+export const deleteImage = async (id: number, publicId: string) => {
+  try {
+    const DbResponse = await axiosInstance.delete(
+      `${environment.baseUrl}/api/post/delete-image?id=${id}`
+    );
+    if (DbResponse.status === HTTP_STATUS_CODE.OK) {
+      const CloudResponse = await apiRemoveImage(publicId);
+      return DbResponse;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api delete của image bị lỗi!!!");
+    return null;
+  }
+}
+
 interface IPost {
   title: string;
   description: string;
@@ -81,9 +98,6 @@ interface IPost {
   options: number;
   lifeTime: number;
   calculateType: number;
-  // walletNumber: string;
-  // transactionAmount: number;
-  // transactionNumber: string;
   listMedia?: MediaType[];
 }
 
@@ -151,6 +165,39 @@ export const addPost = async (info: IPost) => {
   }
 };
 
+interface IFindAllPost {
+  status?: number;
+  postType?: number;
+  realEstateType?: number;
+  pageSize?: number;
+  pageNumber?: number;
+  keyword?: string;
+}
+
+export const findAll = async (info: IFindAllPost) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/find-all`,
+      {
+        params: {
+          status: info.status || null,
+          postType: info.postType || null,
+          realEstateType: info.realEstateType || null,
+          pageSize: info.pageSize || -1,
+          pageNumber: info.pageNumber || 1,
+          keyword: info.keyword || null,
+        },
+      }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api findAll của post bị lỗi!!!");
+    return null;
+  }
+};
+
 export const getById = async (id: number) => {
   try {
     const response = await axiosInstance.get(
@@ -178,3 +225,155 @@ export const getRealEstateType = async () => {
     return null;
   }
 };
+
+interface IPayment {
+  options: number;
+  lifeTime: number;
+  postStartDate?: Date;
+  postEndDate?: Date;
+}
+export const updatePaymentStatus = async (payload: IPayment) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/update-payment-status`,
+      payload
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch {
+    console.log("Error: Gọi api GET loại bất động sản");
+    return null;
+  }
+};
+
+//status pending mới phê duyệt dc
+export const approvedPost = async (id: number) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/approve?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api approved của post bị lỗi!!!");
+    return null;
+  }
+};
+
+export const removePost = async (id: number) => {
+  try {
+    const response = await axiosInstance.delete(
+      `${environment.baseUrl}/api/post/remove?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api remove của post bị lỗi!!!");
+    return null;
+  }
+};
+
+interface IUpdateStatus {
+  id: number;
+  status: number;
+}
+
+export const updateStatus = async (info: IUpdateStatus) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/update-status`,
+      {
+        id: info.id,
+        postStatus: info.status,
+      }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api updateStatus của post bị lỗi!!!");
+    return null;
+  }
+};
+
+export const recommendPost = async ({ pageSize, pageNumber }: { pageSize: number, pageNumber: number }) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/public/find-all`, {
+      params: {
+        pageSize: pageSize || -1,
+        pageNumber: pageNumber
+      },
+    })
+    return response?.data;
+  } catch (error) {
+    console.log("Error: Gọi api get public của post bị lỗi!!!");
+    return null;
+  }
+}
+
+interface IUpdatePost {
+  id: number;
+  status: number;
+  title: string;
+  description: string;
+  province: string;
+  district: string;
+  ward: string;
+  street: string;
+  detailAddress?: string;
+  area: number;
+  price: number;
+  rentalObject?: number;
+  youtubeLink?: string;
+  postTypeId: number;
+  realEstateTypeId: number;
+  options: number;
+  calculateType: number;
+  lifeTime: number;
+  listMedia?: UpdateMediaType[];
+};
+
+interface UpdateMediaType {
+  id: any;
+  name: string;
+  description: string;
+  mediaUrl: string;
+}
+
+export const updatePost = async (info: IPost & { id: number, status: number }) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/update`,
+      {
+        status: info.status,
+        id: info.id,
+        title: info.title,
+        description: info.description,
+        province: info.province,
+        district: info.district,
+        ward: info.ward,
+        street: info.street,
+        detailAddress: info.detailAddress,
+        area: info.area,
+        price: info.price,
+        rentalObject: info.rentalObject,
+        youtubeLink: info.youtubeLink,
+        postTypeId: info.postTypeId,
+        realEstateTypeId: info.realEstateTypeId,
+        options: info.options,
+        calculateType: info.calculateType,
+        lifeTime: info.lifeTime,
+        medias: info.listMedia,
+      }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api update của post bị lỗi!!!");
+    return null;
+  }
+}

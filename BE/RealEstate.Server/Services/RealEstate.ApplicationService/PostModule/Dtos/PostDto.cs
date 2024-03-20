@@ -61,6 +61,14 @@
         /// </summary>
         public int PostTypeId { get; set; }
         /// <summary>
+        /// Option bài viết
+        /// </summary>
+        public int Options {  get; set; }
+        /// <summary>
+        /// Ngày đăng bài
+        /// </summary>
+        public DateTime PostStartDate {  get; set; }
+        /// <summary>
         /// Loại bất động sản
         /// </summary>
         public int RealEstateTypeId { get; set; }
@@ -68,6 +76,8 @@
         public int? CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public int? ModifiedBy { get; set; }
+        public string? FirstImageUrl { get;set; }
+
 
     }
 }
