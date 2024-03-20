@@ -37,6 +37,7 @@ import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
 import Item from "antd/es/list/Item";
 import { getDistricts, getProvinces, getWards } from "@/services/post/address.service";
+import MapComponent from "@/components/Map/MapComponent";
 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -680,34 +681,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                         </Form.Item>
                         {showMap && (
                             <Flex justify="center">
-                                <BingMapsReact
-                                    bingMapsKey={environment.BingMapsApiKey}
-                                    height={270}
-                                    width={850}
-                                    pushPins={
-                                        bingMapReady
-                                            ? [
-                                                {
-                                                    center: {
-                                                        latitude: coordinates.latitude,
-                                                        longitude: coordinates.longitude,
-                                                    },
-                                                },
-                                            ]
-                                            : null
-                                    }
-                                    viewOptions={{
-                                        center: {
-                                            latitude: coordinates.latitude,
-                                            longitude: coordinates.longitude,
-                                        },
-                                        mapTypeId: "road",
-                                        zoom: 16,
-                                    }}
-                                    onMapReady={() => {
-                                        setBingMapReady(true);
-                                    }}
-                                />
+                                <MapComponent prop={coordinates} height={270} width={850} />
                             </Flex>
                         )}
                         <div

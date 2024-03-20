@@ -2,7 +2,7 @@ import { environment } from "@/shared/environment/environment";
 import React, { useEffect, useState } from "react";
 import BingMapsReact from "bingmaps-react";
 
-const MapComponent = ({ prop }: any) => {
+const MapComponent = ({ prop, width, height }: { prop: any, width: number, height: number }) => {
   const [bingMapReady, setBingMapReady] = useState(false);
   const onMapReady = () => {
     setBingMapReady(true);
@@ -20,8 +20,8 @@ const MapComponent = ({ prop }: any) => {
       {bingMapReady && (
         <BingMapsReact
           bingMapsKey={environment.BingMapsApiKey}
-          height={270}
-          width={850}
+          height={height}
+          width={width}
           pushPins={[
             {
               center: {

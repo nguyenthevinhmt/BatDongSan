@@ -575,7 +575,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
                 </Form.Item>
                 {showMap && (
                   <Flex justify="center">
-                    <MapComponent prop={coordinates} />
+                    <MapComponent prop={coordinates} height={270} width={850} />
                   </Flex>
                 )}
                 <div
