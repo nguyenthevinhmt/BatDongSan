@@ -343,7 +343,7 @@ interface UpdateMediaType {
   mediaUrl: string;
 }
 
-export const updatePost = async (info: IPost & {id: number, status: number }) => { 
+export const updatePost = async (info: IPost & { id: number, status: number }) => {
   try {
     const response = await axiosInstance.put(
       `${environment.baseUrl}/api/post/update`,

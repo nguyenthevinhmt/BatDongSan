@@ -644,7 +644,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
                       { required: true, message: "* Mô tả bắt buộc nhập" },
                     ]}
                   >
-                    <Input.TextArea style={{ height: 150 }} />
+                    <Input.TextArea style={{ height: 150, fontFamily: "sans-serif" }} />
                   </Form.Item>
                 </div>
 

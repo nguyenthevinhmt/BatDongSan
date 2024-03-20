@@ -776,7 +776,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     { required: true, message: "* Mô tả bắt buộc nhập" },
                                 ]}
                             >
-                                <Input.TextArea style={{ height: 150 }} disabled={!edit} />
+                                <Input.TextArea style={{ height: 150, fontFamily: 'sans-serif' }} disabled={!edit} />
                             </Form.Item>
                         </div>
 

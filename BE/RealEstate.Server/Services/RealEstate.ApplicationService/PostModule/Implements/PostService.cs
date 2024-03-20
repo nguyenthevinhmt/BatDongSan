@@ -97,7 +97,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         public PagingResult<PostDto> FindAllPost(PostPagingRequestDto input)
         {
             _logger.LogInformation($"{nameof(FindAllPost)}: input: {JsonSerializer.Serialize(input)}");
-            var query = from post in _dbContext.Posts//.Where(c => c.Status != PostStatuses.INIT)
+            var query = from post in _dbContext.Posts.Where(c => c.Status != PostStatuses.INIT)
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
