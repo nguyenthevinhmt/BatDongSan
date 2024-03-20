@@ -18,6 +18,7 @@ import theme from "@/theme/themeConfig";
 import MenuItem from "antd/es/menu/MenuItem";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ToastProvider from "@/shared/provider/toast.provider";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -44,19 +45,23 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
       "/dashboard",
       <PieChartOutlined />
     ),
-    getItem("Quản lý tin đăng", "post/manager", <DesktopOutlined />, [
+    getItem("Quản lý tin đăng", "post", <DesktopOutlined />, [
       getItem(<Link href={"/post/create"}>Đăng mới</Link>, "/post/create"),
-      getItem(<Link href={"/post"}>Danh sách tin</Link>, "/post"),
+      getItem(<Link href={"/post/manage"}>Danh sách tin</Link>, "/post/manage"),
       getItem(
         <Link href={"post/draft"}>Danh sách tin nháp</Link>,
         "post/draft"
       ),
     ]),
-    getItem(<Link href={"/user"}>Thông tin cá nhân</Link>, "/user", <ContainerOutlined />),
+    getItem(
+      <Link href={"/user"}>Thông tin cá nhân</Link>,
+      "/user",
+      <ContainerOutlined />
+    ),
 
     getItem("Quản lý tài chính", "wallet/manager", <MailOutlined />, [
       getItem("Thông tin số dư", "5"),
-      getItem("Lịch sử giao dịch", "6"),
+      getItem(<Link href={"/wallet/history"}>Lịch sử giao dịch</Link>, "wallet/history"),
       getItem("Nạp tiền", "7"),
     ]),
 
@@ -76,14 +81,13 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   };
 
   useEffect(() => {
-    console.log(pathname)
     setActiveKey((prev) => [pathname]);
   }, [pathname]);
 
   return (
     <ConfigProvider theme={theme}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <HeaderComponent />
+        <div style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)' }}><HeaderComponent /></div>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
           <Layout hasSider style={{ position: "relative" }}>
             <Sider
@@ -145,7 +149,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                   borderRadius: "8px",
                 }}
               >
-                {children}
+                <ToastProvider>{children}</ToastProvider>
               </Content>
             </Layout>
           </Layout>
@@ -155,4 +159,3 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   );
 };
 export default PrivateLayout;
-

@@ -9,16 +9,16 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// Trạng thái bài đăng
         /// </summary>
         [FromQuery(Name = "status")]
-        public int PostStatus {  get; set; }
+        public int? PostStatus {  get; set; }
         /// <summary>
         /// Loại bài viết
         /// </summary>
         [FromQuery(Name = "postType")]
-        public int PostType {  get; set; }
+        public int? PostType {  get; set; }
         /// <summary>
         /// Loại bất động sản
         /// </summary>
         [FromQuery(Name = "realEstateType")]
-        public int RealEstateType {  get; set; }
+        public int? RealEstateType {  get; set; }
     }
 }

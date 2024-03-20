@@ -50,7 +50,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 TotalItems = query.Count(),
             };
-            query = query.OrderDynamic(input.Sort);
             if (input.PageSize != -1)
             {
                 query = query.Skip(input.PageSize).Take(input.PageSize);

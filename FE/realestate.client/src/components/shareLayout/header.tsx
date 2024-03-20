@@ -13,9 +13,9 @@ import {
   SolutionOutlined,
   UnorderedListOutlined,
   UserOutlined,
-  WalletOutlined
+  WalletOutlined,
 } from "@ant-design/icons";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
 import { CookieService } from "@/shared/services/cookies.service";
 import axiosInstance from "@/shared/configs/axiosInstance";
@@ -23,8 +23,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
+import { formatVietnameseToString } from "@/shared/utils/common-helpers";
 
 const HeaderComponent = () => {
+  const router = useRouter();
   const [userInfo, setUserInfo] = useState();
   const pathname = usePathname();
   const headerItems: MenuProps["items"] = [
@@ -34,7 +36,7 @@ const HeaderComponent = () => {
     "Tin tức",
     "Liên hệ",
   ].map((key) => ({
-    key,
+    key: Math.random(),
     label: `${key}`,
     title: `${key}`,
     style: {
@@ -42,8 +44,10 @@ const HeaderComponent = () => {
       fontWeight: 500,
       lineHeight: "20px",
     },
+    onClick: () => {
+      router.push(`/${formatVietnameseToString(key)}`);
+    },
   }));
-
 
   useEffect(() => {
     const repo = async () => {
@@ -71,7 +75,6 @@ const HeaderComponent = () => {
   }, [userInfo, dispatch]);
   const fullname = (userSelector as any)?.fullname;
   const avatarUrl = (userSelector as any)?.avatarUrl;
-  const router = useRouter();
   const handleLogout = async () => {
     dispatch(clearUserInfo());
     try {
@@ -90,11 +93,9 @@ const HeaderComponent = () => {
       if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.log("Có lỗi xảy ra khi đăng xuất", error);
     }
-    ;
   };
   const items: MenuProps["items"] = [
     {
@@ -116,7 +117,7 @@ const HeaderComponent = () => {
         />
       ),
       onClick: () => {
-        router.push("/post");
+        router.push("/post/manage");
       },
     },
     {
@@ -172,10 +173,8 @@ const HeaderComponent = () => {
         padding: "46px 30px",
         borderBottom: "none",
         borderBottomColor: "#111",
-        boxShadow: "0px 2px 10px #ccc",
         zIndex: 99,
         marginBottom: "10px",
-        position: "sticky",
       }}
     >
       <div
@@ -327,6 +326,6 @@ const HeaderComponent = () => {
       </div>
     </Header>
   );
-}
+};
 // export default React.memo(HeaderComponent);
 export default HeaderComponent;

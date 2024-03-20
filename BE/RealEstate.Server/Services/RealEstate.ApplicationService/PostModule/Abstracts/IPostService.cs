@@ -9,12 +9,18 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// Thêm mới bài đăng
         /// </summary>
         /// <param name="input"></param>
-        void CreatePost(CreatePostDto input);
+        int CreatePost(CreatePostDto input);
         /// <summary>
         /// Danh sách bài viết
         /// </summary>
         /// <returns></returns>
         PagingResult<PostDto> FindAllPost(PostPagingRequestDto input);
+        /// <summary>
+        /// Danh sách bài viết dành cho bạn
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input);
         /// <summary>
         /// Chi tiết bài viết
         /// </summary>
@@ -65,6 +71,11 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="id"></param>
         void ShowOffPost(int id);
         /// <summary>
+        /// Kích hoạt đăng bài
+        /// </summary>
+        /// <param name="id"></param>
+        void ShowOnPost(int id);
+        /// <summary>
         /// Duyệt bài
         /// </summary>
         /// <param name="id"></param>
@@ -74,5 +85,10 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="id"></param>
         void RequestApprovePost(int id);
+        /// <summary>
+        /// Xóa ảnh
+        /// </summary>
+        /// <param name="id"></param>
+        void deleteImage(int id);
     }
 }
