@@ -316,6 +316,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             findPost.PostTypeId = input.PostTypeId;
             findPost.RealEstateTypeId = input.RealEstateTypeId;
 
+            findPost.BackgroundJobOffShowPostId = findPost.BackgroundJobOffShowPostId;
+            findPost.PostEndDate = findPost.PostEndDate;
+
             foreach (var media in input.ListMedia)
             {
                 var checkMedia = findPost.Medias?.FirstOrDefault(c => c.Id == media.Id && !c.Deleted);

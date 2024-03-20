@@ -337,13 +337,13 @@ interface IUpdatePost {
 };
 
 interface UpdateMediaType {
-  id: any;
+  id: number;
   name: string;
   description: string;
   mediaUrl: string;
 }
 
-export const updatePost = async (info: IPost & {id: number, status: number }) => { 
+export const updatePost = async (info: IUpdatePost) => { 
   try {
     const response = await axiosInstance.put(
       `${environment.baseUrl}/api/post/update`,
@@ -366,7 +366,7 @@ export const updatePost = async (info: IPost & {id: number, status: number }) =>
         options: info.options,
         calculateType: info.calculateType,
         lifeTime: info.lifeTime,
-        medias: info.listMedia,
+        listMedia: info.listMedia,
       }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {

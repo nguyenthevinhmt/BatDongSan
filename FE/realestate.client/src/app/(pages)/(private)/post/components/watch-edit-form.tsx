@@ -62,7 +62,7 @@ interface IPost {
 }
 
 interface MediaType {
-    id: any;
+    id: number;
     name: string;
     description: string;
     mediaUrl: string;
@@ -189,6 +189,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 wards: post.ward,
                 street: post.street,
             });
+            setPostType(post.postTypeId);
             form.setFieldsValue({
                 title: post.title,
                 description: post.description,
@@ -355,7 +356,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                     prevList.filter((item) => item.uid !== file.uid)
                 );
                 setListMedia((prevUrls) =>
-                    prevUrls.filter((url) => url.name !== file.name.replace(/\.\w+$/, ""))
+                    prevUrls.filter((url) => url.name !== file.name.replace(/\.\w+$/, "") && url.description !== file.secure_url)
                 );
             }
         }
@@ -402,7 +403,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
         setListMedia((prevUrls) => [
             ...prevUrls,
             {
-                id: response.uid,
+                id: -1,
                 mediaUrl: response.url,
                 name: response.original_filename,
                 description: response.secure_url,

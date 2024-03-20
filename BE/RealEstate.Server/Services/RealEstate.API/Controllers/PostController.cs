@@ -159,6 +159,11 @@ namespace RealEstate.API.Controllers
         {
             return new(_postService.FindAllPublic(input));
         }
+        /// <summary>
+        /// xóa ảnh
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("delete-image")]
         public ApiResponse DeleteImage(int id)
         {
