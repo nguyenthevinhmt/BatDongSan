@@ -186,5 +186,15 @@ namespace RealEstate.API.Controllers
         {
             return new(_postService.FindAllPostByProvince(input));
         }
+        /// <summary>
+        /// Tìm kiếm bài viết trang chủ
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("search-post")]
+        public ApiResponse<PagingResult<PostDto>> SearchPost([FromQuery] SearchPostRequestDto input)
+        {
+            return new(_postService.SearchPost(input));
+        }
     }
 }

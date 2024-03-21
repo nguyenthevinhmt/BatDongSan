@@ -1,10 +1,8 @@
 import {
   EnvironmentOutlined,
-  HeartFilled,
-  HeartOutlined,
   LineOutlined,
 } from "@ant-design/icons";
-import { Badge, Button, Card, Flex, Tooltip } from "antd";
+import { Card, Flex, Tooltip } from "antd";
 import React from "react";
 import LabelCard from "./HOC/labelCard";
 import { OptionConst } from "@/shared/consts/PostOption.const";
@@ -84,20 +82,11 @@ const PostCard = ({
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
-          //   title={heart ? "Bấm để lưu tin" : "Bấm để bỏ lưu tin"}
+            title={"Bấm để lưu tin"}
           >
-            <Button
-              danger
-              // onClick={onChange}
-              icon={
-                <HeartFilled />
-                //   heart ? (
-                //     <HeartOutlined style={{ color: "black" }} />
-                //   ) : (
-                //     <HeartFilled />
-                //   )
-              }
-            />
+            <FaRegHeart onClick={() => {
+              console.log("click")
+            }} />
           </Tooltip>
         </Flex>
       </Card>
@@ -174,18 +163,6 @@ const PostCard = ({
             color={"#423e3e"}
             title={"Bấm để lưu tin"}
           >
-            {/* <Button
-              danger
-              // onClick={onChange}
-              icon={
-                <FaRegHeart />
-                //   heart ? (
-                //     <HeartOutlined style={{ color: "black" }} />
-                //   ) : (
-                //     <HeartFilled />
-                //   )
-              }
-            ></Button> */}
             <FaRegHeart onClick={() => {
               console.log("click")
             }} />

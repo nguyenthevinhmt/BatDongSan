@@ -102,5 +102,11 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="input"></param>
         /// <returns></returns>
         PagingResult<PostDto> FindAllPostByProvince(PagingRequestBaseDto input);
+        /// <summary>
+        /// Tìm kiếm post trang chủ
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> SearchPost(SearchPostRequestDto input);
     }
 }

@@ -204,7 +204,7 @@ export const getById = async (id: number) => {
       `${environment.baseUrl}/api/post/find-by-id?id=${id}`
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
-      return response;
+      return response?.data;
     }
   } catch (error) {
     console.log("Error: Gọi api getbyid của post bị lỗi!!!");
@@ -374,6 +374,26 @@ export const updatePost = async (info: IPost & { id: number, status: number }) =
     }
   } catch (error) {
     console.log("Error: Gọi api update của post bị lỗi!!!");
+    return null;
+  }
+}
+
+export const SearchPost = async (param: any) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/search-post`, {
+      params: {
+        ...param,
+        pageSize: 25,
+        pageNumber: 1
+      }
+    }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api searh post bị lỗi!!!");
     return null;
   }
 }

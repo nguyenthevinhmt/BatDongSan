@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 import "./carousel.css";
@@ -25,7 +25,7 @@ export const Carousel = ({ data, width, height }: { data?: any, width: number, h
             height: `${height}px`,
         }} className="carousel">
             <IoIosArrowBack onClick={prevSlide} className="arrow arrow-left" />
-            {data.map((item: ICarousel, idx: any) => {
+            {data?.map((item: any, idx: any) => {
                 return (
                     <Image
                         width={width}

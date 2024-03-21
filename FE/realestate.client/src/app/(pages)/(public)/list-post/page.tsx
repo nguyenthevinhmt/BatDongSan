@@ -1,5 +1,5 @@
 'use client';
-import React,{ useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import HeaderComponent from "@/components/shareLayout/header";
 import {
     Avatar,
@@ -11,7 +11,7 @@ import {
     Flex
 } from 'antd';
 import Link from 'next/link';
-import { HeartOutlined,LineOutlined,EnvironmentOutlined } from '@ant-design/icons';
+import { HeartOutlined, LineOutlined, EnvironmentOutlined } from '@ant-design/icons';
 
 const ListPost = () => {
 
@@ -21,79 +21,79 @@ const ListPost = () => {
             {
                 id: 1,
                 name: "Nhà bán mặt tiền view sông đắc địa, trung tâm quận Phú Nhuận, TPHCM GIAM GIA 12TY8 Mặt tiền kinh doanh - Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5m Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5mv Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5m Nhà bán mặt tiền view sông đắc địa, trung tâm quận Phú Nhuận, TPHCM GIAM GIA 12TY8 Mặt tiền kinh doanh - Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5m Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5mv Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5mNhà bán mặt tiền view sông đắc địa, trung tâm quận Phú Nhuận, TPHCM GIAM GIA 12TY8 Mặt tiền kinh doanh - Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5m Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5mv Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5mvvv",
-                price:"2 tỷ",
-                acreage:"20m",
-                location:"Đà Nẵng",
-                date:"Đăng hôm nay"
+                price: "2 tỷ",
+                acreage: "20m",
+                location: "Đà Nẵng",
+                date: "Đăng hôm nay"
             },
             {
                 id: 1,
                 name: "GIAM GIA 12TY8 Mặt tiền kinh doanh - Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5m",
-                price:"2 tỷ",
-                acreage:"20m",
-                location:"Đà Nẵng",
-                date:"Đăng hôm nay"
+                price: "2 tỷ",
+                acreage: "20m",
+                location: "Đà Nẵng",
+                date: "Đăng hôm nay"
             },
-             {
+            {
                 id: 1,
                 name: "GIAM GIA 12TY8 Mặt tiền kinh doanh - Dương Thị Mười khu vip Q12 - DT 102m2 4 tầng - lề đường 5m",
-                price:"2 tỷ",
-                acreage:"20m",
-                location:"Đà Nẵng",
-                date:"Đăng hôm nay"
+                price: "2 tỷ",
+                acreage: "20m",
+                location: "Đà Nẵng",
+                date: "Đăng hôm nay"
             },
-                {
-                name: "ok"
-            },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
                 name: "ok"
             },
             {
                 name: "ok"
             },
-              {
+            {
+                name: "ok"
+            },
+            {
                 name: "ok"
             },
             {
@@ -110,11 +110,11 @@ const ListPost = () => {
         href: `posts/detail/${i}`,
         name: item.name,
         avatar: `https://api.dicebear.com/7.x/miniavs/svg?seed=${i}`,
-        image:"https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png",
-        price:item.price,
-        acreage:item.acreage,
-        location:item.location,
-        date:item.date
+        image: "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png",
+        price: item.price,
+        acreage: item.acreage,
+        location: item.location,
+        date: item.date
     }));
     const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
         <Space>
@@ -128,8 +128,6 @@ const ListPost = () => {
     }, 3000);
     return (
         <>
-            <HeaderComponent />
-            <div style={{ height: "270px", marginBottom: "-90px" }} className="background-list-posts"></div>
             <div
                 style={{
                     background: "#fff",
@@ -139,16 +137,17 @@ const ListPost = () => {
                     maxWidth: "1224px"
                 }}
             >
-                <h1 style={{ 
-                    fontSize: "24px", 
-                    paddingTop: "20px", 
-                    fontWeight: 700, 
-                    fontFamily: "Nunito, sans-serif", 
-                    color: "#000000", 
-                    margin: "25px 13px" }}>Danh sách tin</h1>
+                <h1 style={{
+                    fontSize: "24px",
+                    paddingTop: "20px",
+                    fontWeight: 700,
+                    fontFamily: "Nunito, sans-serif",
+                    color: "#000000",
+                    margin: "25px 13px"
+                }}>Danh sách tin</h1>
                 <Divider />
                 <List
-                
+
                     // loading={loading}
                     itemLayout="vertical"
                     size="large"
@@ -165,17 +164,17 @@ const ListPost = () => {
                             <b>dm</b> batdongsan
                         </div>
                     }
-                    renderItem={(item,i) => (
+                    renderItem={(item, i) => (
                         <a href={`posts/detail/${i}`} key={i}>
                             <List.Item
-                                 className="hover-card"
-                                style={{ 
-                                   
-                                    border:"1px solid #F2F2F2",
-                                    margin:"10px 0",
+                                className="hover-card"
+                                style={{
+
+                                    border: "1px solid #F2F2F2",
+                                    margin: "10px 0",
                                     transition: "box-shadow 0.3s, border-color 0.3s",
-                                 }}     
-                                                      
+                                }}
+
                                 extra={
                                     <img
                                         width={272}
@@ -184,8 +183,8 @@ const ListPost = () => {
                                     />
                                 }
                             >
-                                <List.Item.Meta 
-                                    
+                                <List.Item.Meta
+
                                     avatar={<Avatar size={40} src={item.avatar} />}
                                     title={<h2 className="ellipsis-multiline2" style={{
                                         fontFamily: "Lexend Medium, Roboto, Arial",
@@ -238,5 +237,5 @@ var styleButton: any = {
     fontFamily: "Lexend Medium, Roboto, Arial",
     background: '#009BA1',
     color: '#fff',
-    marginTop:  "8px"
+    marginTop: "8px"
 }

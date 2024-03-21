@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react'
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Image from 'next/image';

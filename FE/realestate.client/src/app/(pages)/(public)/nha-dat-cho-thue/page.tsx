@@ -1,13 +1,14 @@
-"use client"
-import RecommendPost from "@/components/public/LayoutComponent/HighlightPost";
-import ResultSearch from "@/components/public/result";
+'use client'
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { SearchPost } from "@/services/post/post.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
+import HighlightPost from "@/components/public/LayoutComponent/HighlightPost";
 import { Flex } from "antd";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import ResultSearch from "@/components/public/result";
+import RecommendPost from "@/components/public/LayoutComponent/HighlightPost";
 
-const Page = () => {
+const Pages = () => {
   const searchParam = useSearchParams();
   const [data, setData] = useState();
   useEffect(() => {
@@ -26,6 +27,7 @@ const Page = () => {
       const res = await SearchPost(filteredParams);
       if (res.code === HTTP_STATUS_CODE.OK) {
         await setData(res?.data)
+        console.log("data", res?.data)
       }
     }
     searchPost(params)
@@ -38,4 +40,4 @@ const Page = () => {
   </Flex>;
 };
 
-export default Page;
+export default Pages;

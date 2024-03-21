@@ -1,39 +1,39 @@
 "use client";
 import { useParams } from "next/navigation";
-import HeaderComponent from "@/components/shareLayout/header";
 import { CgSize } from "react-icons/cg";
 import { TbCurrencyDong } from "react-icons/tb";
-import { TfiDirectionAlt } from "react-icons/tfi";
+import dayjs from 'dayjs';
 import {
-  Carousel,
   Avatar,
   Flex,
   Button,
   Typography,
   Divider,
   Tooltip,
-  Anchor,
   Dropdown,
+  Card,
 } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
-import { LuDot } from "react-icons/lu";
+import ZaloIcon from '@/assets/image/zalo_icon.png'
 import Link from "next/link";
-import zaloIcon from "@/assets/image/zaloIcon.png";
 import { TiSocialFacebookCircular } from "react-icons/ti";
 import { SiZalo } from "react-icons/si";
-import { IoShareSocialOutline, IoWarningOutline, IoHomeOutline } from "react-icons/io5";
+import { IoShareSocialOutline } from "react-icons/io5";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { CiLink } from "react-icons/ci";
 import type { MenuProps } from 'antd';
-import SlideSecond from '@/app/components/detailComponent/SlideSecond'
 
-import Image from "next/image";
 import MapComponent from "@/components/Map/MapComponent";
+import { getById } from "@/services/post/post.service";
+import { Carousel } from "@/components/public/carousel/carousel";
+import { environment } from "@/shared/environment/environment";
+import axios from "axios";
+import { classificationPostType } from "@/shared/utils/common-helpers";
+import Image from "next/image";
 const { Paragraph } = Typography;
 
-const page = () => {
-
+const Page = () => {
 
   const items: MenuProps['items'] = [
     {
@@ -53,70 +53,49 @@ const page = () => {
     }
 
   ]
+  const [data, setData] = useState<any>();
+  const [location, setLocation] = useState({
+    latitude: 0,
+    longitude: 0
+  });
 
-  // const encodedNumber = '097763637'.slice(0, -3) + '***';    
-  // const [copy,setCopy] = useState(`${encodedNumber}<LuDot />Hiện số`)
+
+  const param = useParams();
+  useEffect(() => {
+    const fetchDetailPost = async () => {
+      const response = await getById(+param?.id[0]);
+      console.log("data", response?.data?.medias)
+      await setData(response?.data);
+      const coordinatesRes = await axios.get(
+        `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
+          response?.data?.street +
+          " " +
+          response?.data?.ward +
+          " " +
+          response?.data?.district +
+          " " +
+          response?.data?.province
+        )}&key=${environment.BingMapsApiKey}`
+      );
+      const coordinates = {
+        latitude: coordinatesRes.data.resourceSets[0].resources[0].point.coordinates[0],
+        longitude: coordinatesRes.data.resourceSets[0].resources[0].point.coordinates[1],
+      };
+      await setLocation(coordinates);
+    }
+    fetchDetailPost();
+  }, []);
 
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
   };
-  const handleClick = () => {
+  const handleContactZalo = () => {
     if (window.confirm("This site is trying to open this application. Do you want to proceed?")) {
-      window.location.href = 'https://zalo.me/0972808703'
+      window.location.href = `https://zalo.me/${data?.userPhoneNumber}`
     }
   };
-  const handleClickCopy = () => {
-    // const decodedString = encodedString.slice(0, -3) + encodedString.slice(-3)
-    // const decodedNumber = '097763637'.slice(0, -3)  
-    // setCopy(`${encodedNumber}<LuDot />Đã sao chép`)
-  };
-
-  const dataImage = [
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-    {
-      src: 'https://res.cloudinary.com/deurdoich/image/upload/v1710754535/DATN/kzx8bdkewrhe1mm9ouej.jpg',
-      title: 'Ảnh 1',
-      description: 'Mô tả ảnh 1',
-    },
-
-  ]
   return (
     <>
-      <HeaderComponent />
       <div
         style={{
           background: "#fff",
@@ -128,30 +107,29 @@ const page = () => {
       >
         <Flex justify="space-between">
           <div className="box_left" style={{ width: '730px' }}>
-            <Carousel style={{ width: '730px', marginRight: "30px", background: "#4C5655", borderRadius: "3px" }} afterChange={onChange}>
-              {dataImage.map((item, index) => {
-                return (
-                  <div key={index}>
-                    <Image height={400} width={730} style={{ objectFit: "cover", borderRadius: "3px" }} alt="#" src={item.src} />
-                  </div>
-                )
+            <Carousel
+              width={730}
+              height={400}
+              data={data?.medias?.map((item: any) => {
+                return {
+                  src: item.mediaUrl,
+                  alt: item.name
+                }
               })}
+            />
 
-            </Carousel>
-
-            <h1 style={{ fontSize: "24px", color: "#2C2C2C", margin: "10px 0" }}>Chính chủ bán 2 lô đất cực đẹp giá đầu tư tại Sơn Mỹ, Hàm Tân - chỉ hơn 2tr/m2, sổ hồng đầy đủ</h1>
-            <span style={{ color: "#2C2C2C", fontSize: "15px" }}>Liên Chiểu, Đà Nẵng</span>
+            <h1 style={{ fontSize: "24px", color: "#2C2C2C", margin: "10px 0" }}>{data?.title}</h1>
+            <span style={{ color: "#2C2C2C", fontSize: "15px" }}>{data?.detailAddress}</span>
             <Divider style={{ margin: "18px 0" }} />
             <Flex justify='space-between'>
               <Flex gap='100px'>
                 <div>
                   <span style={{ color: '#999', fontSize: '15px', marginTop: "10px" }}>Mức giá</span>
-                  <p style={{ color: '#2C2C2C', fontSize: '17px', fontWeight: "610", marginTop: "5px" }}>12,5 tỷ</p>
-                  <p style={{ color: '#2C2C2C', fontSize: '13px' }}>~2,13 triệu/m²</p>
+                  <p style={{ color: '#2C2C2C', fontSize: '17px', fontWeight: "610", marginTop: "5px" }}>{data?.price}</p>
                 </div>
                 <div>
                   <span style={{ color: '#999', fontSize: '15px', marginTop: "10px" }}>Diện tích</span>
-                  <p style={{ color: '#2C2C2C', fontSize: '17px', fontWeight: "610", marginTop: "5px" }}>5.875,3 m²</p>
+                  <p style={{ color: '#2C2C2C', fontSize: '17px', fontWeight: "610", marginTop: "5px" }}>{data?.area} m²</p>
                 </div>
               </Flex>
               <div style={{ marginTop: '13px' }}>
@@ -173,20 +151,7 @@ const page = () => {
               marginBottom: "10px"
             }}>Thông tin mô tả chi tiết</h1>
             <p style={{ marginBottom: '50px' }}>
-              Bán 2 lô đất giá đầu tư liền nhau tại thôn 4, xã Sơn Mỹ, Hàm Tân, Bình Thuận.
-              Diện tích bao gồm: Lô 1: 3023m²; lô 2: 2582,3m².
-              Tổng DT 2 lô: 5875,3m² (có 200m² ONT) - Đang làm sổ lên thổ cư (mỗi lô sẽ lên 400m² ONT/lô).
-
-              Có thể bán tổng 1 lô lớn hoặc bán riêng từng lô.
-              Vị trí:
-              - Lô góc 2 mặt tiền theo quy hoạch, cách QL 55 khoảng 200m.
-              - Cạnh Khu công nghiệp Becamex Sơn Mỹ 1 - 2.
-              - Gần ngay Trường Học, Chợ, Trạm y tế, Bưu điện, UBND xã, cây xăng - bán kính chỉ 500m.
-              - Gần dự án sân golf, cách thị xã Lagi 7km, cách cảng Cái Mép 70km.
-              - Cách biển Cam Bình 4km.
-              - Cách khu du lịch Phan Thiết 70km chạy cao tốc.
-              Đất đẹp bằng phẳng không vướng quy hoạch, phủ hồng (ONT) 100%...
-              Giá bán: 12,5 tỷ (có thương lượng).
+              {data?.description}
             </p>
             <h1 id="part-2" style={{
               fontSize: "18px",
@@ -199,36 +164,42 @@ const page = () => {
                 <Flex>
                   <CgSize style={{ fontSize: "34px", fontWeight: "300" }} />
                   <p style={styleIcon}>
-                    Diện tích<span style={{ marginLeft: "100px", fontWeight: "400" }}>8.200 m²</span>
+                    Diện tích<span style={{ marginLeft: "100px", fontWeight: "400" }}>{data?.area} m²</span>
                   </p>
                 </Flex>
                 <Divider style={{ margin: "10px 0" }} />
-                <Flex>
-                  <IoHomeOutline style={{ fontSize: "34px" }} />
-                  <p style={styleIcon}>
-                    Mặt tiền<span style={{ marginLeft: "103px", fontWeight: "400" }}>885 m</span>
-                  </p>
-                </Flex>
-                <Divider style={{ margin: "10px 0" }} />
+
               </div>
               <div style={{ width: "45%" }}>
                 <Divider style={{ margin: "0 0 10px 0" }} />
                 <Flex>
                   <TbCurrencyDong style={{ fontSize: "34px" }} />
                   <p style={styleIcon}>
-                    Mức giá<span style={{ marginLeft: "122px", fontWeight: "400" }}>2,3 tỷ</span>
-                  </p>
-                </Flex>
-                <Divider style={{ margin: "10px 0" }} />
-                <Flex>
-                  <TfiDirectionAlt style={{ fontSize: "34px" }} />
-                  <p style={styleIcon}>
-                    Hướng nhà<span style={{ marginLeft: "100px", fontWeight: "400" }}>Đông</span>
+                    Mức giá<span style={{ marginLeft: "122px", fontWeight: "400" }}>{data?.price}</span>
                   </p>
                 </Flex>
                 <Divider style={{ margin: "10px 0" }} />
               </div>
             </Flex>
+            <Flex justify="space-between">
+              <div>
+                <span style={{ color: "#B5B5B5", fontWeight: "450" }}>Ngày đăng</span>
+                <p style={{ color: "#2C2C2C", fontWeight: "500", marginTop: "5px" }}>{dayjs(data?.createDate).format('DD/MM/YYYY')}</p>
+              </div>
+              <div>
+                <span style={{ color: "#B5B5B5", fontWeight: "450" }}>Ngày hết hạn</span>
+                <p style={{ color: "#2C2C2C", fontWeight: "500", marginTop: "5px" }}>{dayjs(data?.postEndDate).format('DD/MM/YYYY')}</p>
+              </div>
+              <div>
+                <span style={{ color: "#B5B5B5", fontWeight: "450" }}>Loại tin</span>
+                <p style={{ color: "#2C2C2C", fontWeight: "500", marginTop: "5px" }}>{classificationPostType(data?.options)}</p>
+              </div>
+              <div>
+                <span style={{ color: "#B5B5B5", fontWeight: "450" }}>Mã tin</span>
+                <p style={{ color: "#2C2C2C", fontWeight: "500", marginTop: "5px" }}>{data?.id}</p>
+              </div>
+            </Flex>
+            <Divider />
 
             <h1 id="part-3" style={{
               fontSize: "18px",
@@ -236,27 +207,26 @@ const page = () => {
               color: "#2C2C2C"
             }}>Xem ví trị trên bản đồ</h1>
 
-            <MapComponent prop={{ latitude: 21.21312, longitude: 102.123123 }} width={730} height={270} />
-            <SlideSecond />
+            <MapComponent prop={location} width={730} height={270} />
+            <Divider style={{ margin: "35px 0" }} />
 
           </div>
 
           <div className="box_right">
-            <Flex vertical align='center' style={{ width: "250px", height: "335px", border: "1px solid #F2F2F2", borderRadius: "6px" }}>
+            <Flex justify="center" vertical align='center' style={{ width: "250px", height: "300px", border: "1px solid #F2F2F2", borderRadius: "6px" }}>
               <Avatar size={54} style={{ margin: "20px 0 10px 0" }} icon={<UserOutlined />} />
               <p style={{ color: '#ACACAC', fontSize: "12px", marginBottom: "2px" }}>Được đăng bởi</p>
-              <Link href="/u/list-post"><p style={contentStyle}>Công ty Cổ phần Đặc cầu ổ phần Đặc cầu</p></Link>
+              <Link href="/u/list-post"><p style={contentStyle}>{data?.userName}</p></Link>
               <Button style={firstButtonStyle}>
-                <Paragraph style={{ color: "#fff" }} copyable={{ text: "0965115792" }}>0965115***<LuDot />Hiện số</Paragraph>
+                <Paragraph style={{ color: "#fff" }} copyable={{ text: `${data?.userPhoneNumber}` }}>{data?.userPhoneNumber}</Paragraph>
               </Button>
-              <Button style={styleButtonGroup} onClick={handleClick}>
-                <Image width={40}
-                  height={23} alt="#" src={zaloIcon.src} style={{
+              <Button style={styleButtonGroup} onClick={handleContactZalo}>
+                <Image width={20}
+                  height={20} alt="#" src={ZaloIcon.src} style={{
                     borderRadius: "2px",
                     marginBottom: "2px",
                   }} />Chat qua Zalo
               </Button>
-              <Button href="mailto:" target="_self" style={styleButtonGroup}>Gửi email</Button>
             </Flex >
             <img width="250px" height="600px" style={{ margin: "20px 0", objectFit: "contain" }} src="https://tpc.googlesyndication.com/simgad/13978607217291355544" />
           </div>
@@ -266,7 +236,7 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
 var contentStyle: any = {
   display: '-webkit-box',
   WebkitLineClamp: 1,
@@ -278,6 +248,7 @@ var contentStyle: any = {
   marginBottom: "20px",
   fontSize: "17px",
   color: "#2C2C2C",
+  textAlign: 'center'
 };
 var styleButtonGroup: any = {
   height: "50px",
@@ -287,7 +258,10 @@ var styleButtonGroup: any = {
   margin: "5px 20px",
   width: "220px",
   fontWeight: "600",
-  fontFamily: "Lexend Medium, Roboto, Arial"
+  fontFamily: "Lexend Medium, Roboto, Arial",
+  alignItem: 'center',
+  justifyContent: 'center',
+  display: 'flex'
 }
 const firstButtonStyle = {
   background: '#009BA1',
@@ -300,17 +274,3 @@ const styleIcon = {
   fontWeight: "500",
 
 }
-const data = [
-  {
-    title: 'Diện tích',
-  },
-  {
-    title: 'Mặt tiền',
-  },
-  {
-    title: 'Mức giá',
-  },
-  {
-    title: 'Hướng nhà',
-  },
-];

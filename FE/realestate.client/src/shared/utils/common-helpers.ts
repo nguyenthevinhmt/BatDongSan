@@ -52,3 +52,16 @@ export function formatDate(date: any) {
     return `Đăng ${elapsedMonths} tháng trước`;
   }
 }
+
+export function classificationPostType(type: any) {
+  switch (type) {
+    case type = 1 || '1':
+      return "Tin thường"
+    case type = 2 || '2':
+      return "Tin VIP bạc"
+    case type = 3 || '3':
+      return "Tin VIP vàng"
+    case type = 4 || '4':
+      return "Tin VIP Kim cương"
+  }
+} 

@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react'
 import { Button, Divider, Flex, Tooltip } from 'antd'
 import { Carousel } from '../carousel/carousel'
@@ -11,7 +12,7 @@ const PostHorizon = ({ data, option, loading }: { data?: any, option?: number, l
     let labelText = '';
     let color = ''
     if (option === OptionConst.NORMAL) {
-        return <div style={{ width: "720px", height: '162px', marginBottom: '20px' }}>
+        return <div style={{ width: "720px", height: '162px', marginBottom: '60px' }}>
             <Flex>
                 <div style={{ flex: 3 }}>
                     <Carousel width={200} height={150} data={[
@@ -81,7 +82,7 @@ const PostHorizon = ({ data, option, loading }: { data?: any, option?: number, l
     }
     return (
         <LabelCardHorizon text={labelText} color={color}>
-            <div style={{ width: "720px", height: '162px' }}>
+            <div style={{ width: "720px", height: '162px', marginBottom: "60px" }}>
                 <Flex>
                     <div style={{ flex: 3 }}>
                         <Carousel width={200} height={150} data={[

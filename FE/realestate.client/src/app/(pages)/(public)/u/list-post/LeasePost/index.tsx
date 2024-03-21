@@ -1,3 +1,4 @@
+"use client"
 import { useState } from 'react'
 import { Col, Card, Flex, Tooltip, Row, Empty } from 'antd'
 import {
@@ -47,7 +48,7 @@ const LeasePost = () => {
                 ? <Row gutter={[24, 24]}>
                     {quantityPost.map((item, index) => {
                         return (
-                            <Col span={6}>
+                            <Col span={6} key={index}>
                                 <a href={`posts/detail/${index}`}>
                                     <Card
                                         hoverable
