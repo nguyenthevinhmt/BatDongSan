@@ -1,18 +1,22 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  AppstoreOutlined,
-  ContainerOutlined,
-  DesktopOutlined,
-  LeftOutlined,
-  MailOutlined,
-  PieChartOutlined,
-  RightOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
+import AppstoreOutlined from "@ant-design/icons/AppstoreOutlined";
+import ContainerOutlined from "@ant-design/icons/ContainerOutlined";
+import DesktopOutlined from "@ant-design/icons/DesktopOutlined";
+import LeftOutlined from "@ant-design/icons/LeftOutlined";
+import MailOutlined from "@ant-design/icons/MailOutlined";
+import PieChartOutlined from "@ant-design/icons/PieChartOutlined";
+import RightOutlined from "@ant-design/icons/RightOutlined";
+import UserOutlined from "@ant-design/icons/UserOutlined";
 import "@/app/(pages)/(private)/styles/style.layout.css";
 import type { MenuProps } from "antd";
-import { Button, ConfigProvider, Layout, Menu } from "antd";
+import Button from "antd/es/button";
+import Layout from "antd/es/layout";
+import Menu from "antd/es/menu";
+import ConfigProvider from "antd/es/config-provider";
 import HeaderComponent from "@/components/shareLayout/header";
 import theme from "@/theme/themeConfig";
 import MenuItem from "antd/es/menu/MenuItem";

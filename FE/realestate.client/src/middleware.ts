@@ -1,7 +1,5 @@
 "use client";
 import { stackMiddlewares } from "./middlewares/stackMiddlewares";
-import { withAuth } from "./middlewares/withAuth";
-import { protectedRouteMiddleware } from "./middlewares/protectedRoute";
 
 // This function can be marked `async` if using `await` inside
 // export function middleware(request: NextRequest) {

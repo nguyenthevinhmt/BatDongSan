@@ -60,7 +60,7 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
             query = query.OrderDynamic(input.Sort);
             if (input.PageSize != -1)
             {
-                query = query.Skip(input.PageSize).Take(input.PageSize);
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
             }
             result.Items = query;
             return result;

@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 export const skipNullParams = (data: any) => {
   let editData: any = {};
   if (data)

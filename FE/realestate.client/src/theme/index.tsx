@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfigProvider } from "antd";
+import ConfigProvider from "antd/es/config-provider";
 import theme from "./themeConfig";
 import React from "react";
 

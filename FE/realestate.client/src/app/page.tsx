@@ -1,12 +1,12 @@
 "use client";
 import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
-import React, { useState } from "react";
-import { Flex, Tabs, Input, Cascader, Layout, Card, Affix } from "antd";
+import React from "react";
+import Flex from "antd/es/flex";
+import Layout from "antd/es/layout";
 import SearchComponent from "@/components/public/search";
 import ListPost from "./components/ListPost";
 import Footer from "@/components/shareLayout/footer";
-import { Carousel } from "@/components/public/carousel/carousel";
 import PostHorizon from "@/components/public/PostHorizon/post";
 import RealEstateByLocation from "@/components/public/realEstateByLocation";
 import { CarouselAds } from "@/components/public/carousel/carouselAds";

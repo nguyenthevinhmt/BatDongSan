@@ -1,4 +1,5 @@
-import { Button, Result } from 'antd';
+import Button from 'antd/es/button';
+import Result from 'antd/es/result';
 import HeaderComponent from "@/components/shareLayout/header";
 import Link from "next/link";
 

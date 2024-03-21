@@ -1,19 +1,14 @@
 'use client';
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import HeaderComponent from "@/components/shareLayout/header";
-import {
-    Flex,
-    Tooltip,
-    Col,
-    Card,
-    Divider,
-    Row
-} from 'antd';
-import Link from 'next/link';
-import {
-    LineOutlined,
-    EnvironmentOutlined,
-} from "@ant-design/icons";
+import Flex from 'antd/es/flex';
+import Tooltip from 'antd/es/tooltip';
+import Col from 'antd/es/col';
+import Card from 'antd/es/card';
+import Row from 'antd/es/row';
+import LineOutlined from "@ant-design/icons/LineOutlined";
+import EnvironmentOutlined from "@ant-design/icons/EnvironmentOutlined";
+
 const ListPost = () => {
 
     const [loading, setLoading] = useState(true);
@@ -86,11 +81,6 @@ const ListPost = () => {
             {
                 name: "ok"
             },
-
-
-
-
-
         ])
     const [visibleProducts, setVisibleProducts] = useState(8)
 

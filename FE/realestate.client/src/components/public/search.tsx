@@ -1,16 +1,16 @@
-import { getDistricts, getProvinces } from "@/services/post/address.service";
+import { getProvinces } from "@/services/post/address.service";
 import { getRealEstateType } from "@/services/post/post.service";
-import {
-  Button,
-  Flex,
-  Form,
-  Input,
-  Select,
-  Tabs,
-} from "antd";
-import React, { useEffect, useState } from "react";
+import Button from "antd/es/button";
+import Flex from "antd/es/flex";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Select from "antd/es/select";
+import Tabs from "antd/es/tabs";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
 import { FaSearch } from "react-icons/fa";
-import { IoSearch } from "react-icons/io5";
 
 interface Option {
   value: string | number;

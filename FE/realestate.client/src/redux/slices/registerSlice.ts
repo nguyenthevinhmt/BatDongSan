@@ -1,8 +1,4 @@
-import { ITokenResponse } from "@/shared/interfaces/ITokenResponse";
-import { RegisterType } from "@/shared/types/RegisterType";
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { HYDRATE } from "next-redux-wrapper";
-import { RootState } from "../store";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   // id: 0,

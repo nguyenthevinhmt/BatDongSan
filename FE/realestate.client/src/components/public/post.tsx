@@ -1,10 +1,10 @@
-import {
-  EnvironmentOutlined,
-  HeartFilled,
-  HeartOutlined,
-  LineOutlined,
-} from "@ant-design/icons";
-import { Badge, Button, Card, Flex, Tooltip } from "antd";
+import EnvironmentOutlined from "@ant-design/icons/EnvironmentOutlined";
+import HeartFilled from "@ant-design/icons/HeartFilled";
+import LineOutlined from "@ant-design/icons/LineOutlined";
+import Button from "antd/es/button";
+import Card from "antd/es/card";
+import Flex from "antd/es/flex";
+import Tooltip from "antd/es/tooltip";
 import React from "react";
 import LabelCard from "./HOC/labelCard";
 import { OptionConst } from "@/shared/consts/PostOption.const";

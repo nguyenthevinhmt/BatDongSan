@@ -5,7 +5,6 @@ import {
   NextResponse,
 } from "next/server";
 import { MiddlewareFactory } from "./type";
-import Cookies from "cookies";
 
 export const withAuth: MiddlewareFactory = (next: NextMiddleware) => {
   return async (request: NextRequest, _next: NextFetchEvent) => {

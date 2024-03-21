@@ -1,9 +1,8 @@
 "use client";
 
-import { RootState, AppDispatch } from "@/redux/store";
-import { Spin } from "antd";
+import { AppDispatch } from "@/redux/store";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();

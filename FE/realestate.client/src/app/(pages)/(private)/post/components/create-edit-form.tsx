@@ -12,22 +12,27 @@ import {
   getWards,
 } from "@/services/post/address.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-import { PlusOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Flex,
-  Form,
-  GetProp,
-  Input,
-  Modal,
-  Select,
-  Tooltip,
-  Upload,
-  UploadFile,
-  UploadProps,
-  message,
-} from "antd";
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import PlusOutlined from "@ant-design/icons/PlusOutlined";
+import Button from "antd/es/button";
+import Flex from "antd/es/flex";
+import Form from "antd/es/form";
+import { GetProp } from "antd/es/_util/type";
+import Input from "antd/es/input";
+import Modal from "antd/es/modal";
+import Select from "antd/es/select";
+import Tooltip from "antd/es/tooltip";
+import Upload from "antd/es/upload";
+import { 
+  UploadFile, 
+  UploadProps 
+} from "antd/es/upload/interface";
+import message from "antd/es/message";
+import React, { 
+  useEffect, 
+  useMemo, 
+  useState, 
+  useRef 
+} from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { environment } from "@/shared/environment/environment";
@@ -899,7 +904,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
       )}
       {isShowPaymentForm && (
         <>
-          <PaymentForm prop={postId} />
+          <PaymentForm postId={postId} status={1}/>
         </>
       )}
     </>

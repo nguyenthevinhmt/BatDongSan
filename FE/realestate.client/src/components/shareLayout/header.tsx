@@ -1,25 +1,35 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
 import { Header } from "antd/es/layout/layout";
-import { Avatar, Button, Dropdown, Menu } from "antd";
+import Avatar from "antd/es/avatar";
+import Button from "antd/es/button";
+import Dropdown from "antd/es/dropdown";
+import Menu from "antd/es/menu";
 import Image from "next/image";
 import type { MenuProps } from "antd";
 import Link from "next/link";
-import {
-  DownOutlined,
-  HeartOutlined,
-  LockOutlined,
-  LogoutOutlined,
-  SolutionOutlined,
-  UnorderedListOutlined,
-  UserOutlined,
-  WalletOutlined,
-} from "@ant-design/icons";
-import { redirect, usePathname, useRouter } from "next/navigation";
+import DownOutlined from "@ant-design/icons/DownOutlined";
+import HeartOutlined from "@ant-design/icons/HeartOutlined";
+import LockOutlined from "@ant-design/icons/LockOutlined";
+import LogoutOutlined from "@ant-design/icons/LogoutOutlined";
+import SolutionOutlined from "@ant-design/icons/SolutionOutlined";
+import UnorderedListOutlined from "@ant-design/icons/UnorderedListOutlined";
+import UserOutlined from "@ant-design/icons/UserOutlined";
+import WalletOutlined from "@ant-design/icons/WalletOutlined";
+import { 
+  usePathname, 
+  useRouter 
+} from "next/navigation";
 import logo from "@/assets/image/logo.svg";
 import { CookieService } from "@/shared/services/cookies.service";
 import axiosInstance from "@/shared/configs/axiosInstance";
-import { useDispatch, useSelector } from "react-redux";
+import { 
+  useDispatch, 
+  useSelector 
+} from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";

@@ -1,6 +1,7 @@
 "use client";
 import theme from "@/theme/themeConfig";
-import {ConfigProvider, Layout } from "antd";
+import ConfigProvider from "antd/es/config-provider";
+import Layout from "antd/es/layout";
 import React from "react";
 
 const CommontLayout = ({ children }: { children: React.ReactElement }) => {

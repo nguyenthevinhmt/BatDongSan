@@ -1,4 +1,4 @@
-import { Badge } from "antd";
+import Badge from "antd/lib/badge";
 import React, { memo } from "react";
 
 interface LabelCardProps {

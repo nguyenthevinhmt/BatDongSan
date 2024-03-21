@@ -1,4 +1,4 @@
-import { Flex } from 'antd'
+import Flex from "antd/es/flex";
 import React from 'react'
 import Image from 'next/image'
 import "@/components/public/realEstateByLocation/style.css"

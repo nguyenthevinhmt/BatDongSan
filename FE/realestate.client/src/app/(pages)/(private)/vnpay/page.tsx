@@ -1,10 +1,7 @@
 "use client";
 import React from "react";
 import { useSearchParams } from "next/navigation";
-import { stringify } from "querystring";
 import { Flex } from "antd";
-// import {success} from "@/assets/image/success-icon.png"
-import Image from "next/image";
 interface VnpayResponseType {
   vnp_Amount: string | null;
   vnp_BankCode: string | null;

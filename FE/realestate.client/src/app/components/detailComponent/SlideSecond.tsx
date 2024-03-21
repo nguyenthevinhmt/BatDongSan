@@ -1,12 +1,12 @@
-import { List, Card, Flex, Divider, Button, Tooltip } from 'antd';
-import { CgSize } from "react-icons/cg";
-import { IoHomeOutline } from "react-icons/io5";
-import { TbCurrencyDong } from "react-icons/tb";
-import { TfiDirectionAlt } from "react-icons/tfi";
-import GoogleMap from '@/components/GoogleAPI/mapComponents';
-import { CiSquareChevRight, CiSquareChevLeft } from "react-icons/ci";
+import Card from 'antd/lib/card';
+import Flex from 'antd/es/flex';
+import Divider from 'antd/es/divider';
+import Button from 'antd/es/button';
+import Tooltip from 'antd/es/tooltip';
 import { useState } from 'react'
-import { ArrowLeftOutlined, ArrowRightOutlined, HeartFilled, HeartOutlined } from '@ant-design/icons'
+import ArrowLeftOutlined from '@ant-design/icons/ArrowLeftOutlined';
+import ArrowRightOutlined from '@ant-design/icons/ArrowRightOutlined';
+import HeartFilled from '@ant-design/icons/HeartFilled';
 
 const SlideSecond = () => {
     const data = [

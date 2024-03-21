@@ -5,7 +5,7 @@ import { environment } from "@/shared/environment/environment";
 export const walletInfo = async () => {
     try {
         const response = await axiosInstance.get(
-            `${environment.baseUrl}/api/wallet/persional/wallet-info`
+            `${environment.baseUrl}/api/wallet/personal/wallet-info`
         );
         if (response.status === HTTP_STATUS_CODE.OK) {
             return response;
@@ -16,11 +16,11 @@ export const walletInfo = async () => {
 };
 
 interface IWalletTransaction {
-    WalletId: number;
-    TransactionType: number;
-    pageSize: number;
-    pageNumber: number;
-    keyWord: string;
+    WalletId?: number;
+    TransactionType?: number;
+    pageSize?: number;
+    pageNumber?: number;
+    keyWord?: string;
 }
 export const getAllTransaction = async (info: IWalletTransaction) => {
     try {

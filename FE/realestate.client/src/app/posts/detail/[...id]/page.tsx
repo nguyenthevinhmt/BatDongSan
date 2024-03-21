@@ -1,33 +1,25 @@
 "use client";
-import { useParams } from "next/navigation";
 import HeaderComponent from "@/components/shareLayout/header";
-import { CgSize } from "react-icons/cg";
-import { TbCurrencyDong } from "react-icons/tb";
-import { TfiDirectionAlt } from "react-icons/tfi";
-import {
-  Carousel,
-  Avatar,
-  Flex,
-  Button,
-  Typography,
-  Divider,
-  Tooltip,
-  Anchor,
-  Dropdown
-} from 'antd';
-import React, { useState } from 'react';
-import { UserOutlined } from '@ant-design/icons';
+import Carousel from "antd/es/carousel";
+import Avatar from "antd/es/avatar";
+import Flex from "antd/es/flex";
+import Button from "antd/es/button";
+import Typography from "antd/es/typography";
+import Divider from "antd/es/divider";
+import Tooltip from "antd/es/tooltip";
+import Dropdown from "antd/es/dropdown";
+import React from 'react';
+import UserOutlined from "@ant-design/icons/UserOutlined";
 import { LuDot } from "react-icons/lu";
 import Link from "next/link";
 import zaloIcon from "@/assets/image/zaloIcon.png";
-import { TiSocialFacebookCircular } from "react-icons/ti";
-import { SiZalo } from "react-icons/si";
-import { IoShareSocialOutline, IoWarningOutline, IoHomeOutline } from "react-icons/io5";
+import { IoShareSocialOutline } from "react-icons/io5";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { CiLink } from "react-icons/ci";
 import type { MenuProps } from 'antd';
 import Image from "next/image";
 import MapComponent from "@/components/Map/MapComponent";
+
 const { Paragraph } = Typography;
 
 const page = () => {

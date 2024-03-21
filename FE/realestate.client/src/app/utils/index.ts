@@ -1,6 +1,3 @@
-import type { MenuProps } from 'antd';
-import Link from 'next/link';
-
 export const options = [
   {
     value: "zhejiang",

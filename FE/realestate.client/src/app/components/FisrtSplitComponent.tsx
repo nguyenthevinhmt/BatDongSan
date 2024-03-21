@@ -1,11 +1,11 @@
-import { Flex, List, Card, Image,Tag } from "antd";
+import Flex from "antd/es/flex";
+import Image from "antd/es/image";
 import bieudo from "../../assets/image/bieudo.webp";
 import home from "../../assets/image/home.webp";
 import book from "../../assets/image/book.webp";
 import pro from "../../assets/image/pro.webp";
 import man from "../../assets/image/man.webp";
 import phone from "../../assets/image/phone.webp";
-import { SketchOutlined } from "@ant-design/icons";
 
 const FisrtSplitComponent = () => {
     return (
