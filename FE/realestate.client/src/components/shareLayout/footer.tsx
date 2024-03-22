@@ -1,7 +1,8 @@
 import LogoGray from "@/assets/image/LogoGray";
-import { Button, Flex, Input } from "antd";
+import Button from "antd/es/button";
+import Flex from "antd/es/flex";
+import Input from "antd/es/input";
 import React from "react";
-import { BiSupport } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { MdOutlineHeadphones, MdOutlinePhoneInTalk } from "react-icons/md";
 import { TbUserQuestion } from "react-icons/tb";

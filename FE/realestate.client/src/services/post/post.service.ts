@@ -1,3 +1,4 @@
+import { options } from './../../app/utils/index';
 import { postStatus } from "@/shared/consts/postStatus";
 
 import { environment } from "@/shared/environment/environment";
@@ -337,13 +338,13 @@ interface IUpdatePost {
 };
 
 interface UpdateMediaType {
-  id: any;
+  id: number;
   name: string;
   description: string;
   mediaUrl: string;
 }
 
-export const updatePost = async (info: IPost & { id: number, status: number }) => {
+export const updatePost = async (info: IUpdatePost) => { 
   try {
     const response = await axiosInstance.put(
       `${environment.baseUrl}/api/post/update`,
@@ -366,7 +367,7 @@ export const updatePost = async (info: IPost & { id: number, status: number }) =
         options: info.options,
         calculateType: info.calculateType,
         lifeTime: info.lifeTime,
-        medias: info.listMedia,
+        listMedia: info.listMedia,
       }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
@@ -394,6 +395,54 @@ export const SearchPost = async (param: any) => {
     }
   } catch (error) {
     console.log("Error: Gọi api searh post bị lỗi!!!");
+    return null;
+  }
+}
+}
+
+export const findAllPersonal = async (info: IFindAllPost) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/personal/find-all`,
+      {
+        params: {
+          status: info.status || null,
+          postType: info.postType || null,
+          realEstateType: info.realEstateType || null,
+          pageSize: info.pageSize || -1,
+          pageNumber: info.pageNumber || 1,
+          keyword: info.keyword || null,
+        },
+      }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api findAllPersional của post bị lỗi!!!");
+    return null;
+  }
+}
+
+interface IRepublishPost {
+  id: number,
+  lifeTime: number,
+  options: number,
+  walletNumber: string,
+  postEndDate?: string
+}
+
+export const republishPost = async (info: IRepublishPost) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/republish-post`,
+      info
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api republish của post bị lỗi!!!");
     return null;
   }
 }

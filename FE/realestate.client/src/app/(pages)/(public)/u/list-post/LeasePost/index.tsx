@@ -1,10 +1,12 @@
-"use client"
-import { useState } from 'react'
-import { Col, Card, Flex, Tooltip, Row, Empty } from 'antd'
-import {
-    LineOutlined,
-    EnvironmentOutlined,
-} from "@ant-design/icons";
+import { useState } from 'react';
+import Col from 'antd/lib/grid/col';
+import Card from 'antd/lib/card';
+import Row from 'antd/lib/grid/row';
+import Flex from 'antd/es/flex';
+import Tooltip from 'antd/es/tooltip';
+import Empty from 'antd/es/empty';
+import LineOutlined from "@ant-design/icons/LineOutlined";
+import EnvironmentOutlined from "@ant-design/icons/EnvironmentOutlined";
 import nodata from "@/assets/image/nodata.jpg";
 
 const LeasePost = () => {

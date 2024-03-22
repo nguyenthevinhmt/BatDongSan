@@ -1,36 +1,32 @@
 "use client";
 import isAuth from "@/app/isAuth";
 import { UserType } from "@/shared/consts/userType";
-import {
-  Button,
-  Dropdown,
-  Flex,
-  Form,
-  Input,
-  List,
-  Menu,
-  Modal,
-  Select,
-  Space,
-  Switch,
-  Table,
-  Tag,
-} from "antd";
-import React, { use, useEffect, useState } from "react";
+import Dropdown from "antd/es/dropdown/dropdown";
+import Flex from "antd/es/flex";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Menu from "antd/es/menu";
+import Select from "antd/es/select";
+import Space from "antd/es/space";
+import Table from "antd/es/table";
+import Tag from "antd/es/tag";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
 import { postStatus } from "@/shared/consts/postStatus";
-import {
-  EllipsisOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  CloseCircleOutlined,
-  MinusCircleOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import EllipsisOutlined from "@ant-design/icons/EllipsisOutlined";
+import CheckCircleOutlined from "@ant-design/icons/CheckCircleOutlined";
+import ClockCircleOutlined from "@ant-design/icons/ClockCircleOutlined";
+import CloseCircleOutlined from "@ant-design/icons/CloseCircleOutlined";
+import MinusCircleOutlined from "@ant-design/icons/MinusCircleOutlined";
+import SyncOutlined from "@ant-design/icons/SyncOutlined";
 import type { TableColumnsType } from "antd";
 import {
   findAll,
   approvedPost,
   updateStatus,
+  findAllPersonal,
 } from "@/services/post/post.service";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -119,26 +115,34 @@ const Status = [
   {
     value: postStatus.INIT,
     label: "Khởi tạo",
+    accept: [UserType.CUSTOMER],
   },
   {
     value: postStatus.PENDING,
     label: "Chờ xử lý/yêu cầu duyệt",
+    accept: [UserType.ADMIN, UserType.CUSTOMER]
   },
   {
     value: postStatus.POSTED,
     label: "Đã đăng",
+    accept: [UserType.ADMIN, UserType.CUSTOMER]
   },
   {
     value: postStatus.CANCEL,
     label: "Hủy duyệt",
+    accept: [UserType.ADMIN, UserType.CUSTOMER]
   },
   {
     value: postStatus.REMOVED,
     label: "Đã gỡ",
+    accept: [UserType.ADMIN, UserType.CUSTOMER]
   },
 ];
 
 const ManagePost = () => {
+  const authStore = useSelector((state: RootState) => state.auth);
+  const role = authStore?.user?.data?.userType;
+
   const timerRef = React.useRef<any>(null);
   const [form] = Form.useForm<any>();
   const [listPost, setListPost] = React.useState<IPost[]>([]);
@@ -148,10 +152,9 @@ const ManagePost = () => {
   const [change, setChange] = useState(false);
   const router = useRouter();
 
-  const authStore = useSelector((state: RootState) => state.auth);
-
   useEffect(() => {
     const fetchData = async () => {
+      if (role === UserType.ADMIN) {
       const res = await findAll({ pageSize: 10, pageNumber: 1 });
       const data = res?.data.items;
       const posts: IPost[] = data?.map((post: any) => ({
@@ -168,6 +171,24 @@ const ManagePost = () => {
 
       setListPost(posts);
       setTotalItems(res?.data.totalItems);
+    } else {
+      const res = await findAllPersonal({ pageSize: 10, pageNumber: 1 });
+      const data = res?.data.items;
+      const posts: IPost[] = data?.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        rentalObject: post.rentalObject,
+        youtubeLink: post.youtubeLink,
+        postTypeId: post.postTypeId,
+        realEstateTypeId: post.realEstateTypeId,
+        status: post.status,
+        mediaUrl: post.firstImageUrl,
+      }));
+
+      setListPost(posts);
+      setTotalItems(res?.data.totalItems);
+    }
     };
 
     fetchData();
@@ -186,15 +207,17 @@ const ManagePost = () => {
         handleSearch(pageNumber, pageSize);
         console.log(res);
       },
+      accept: [UserType.ADMIN]
     },
     {
       key: 2,
       label: "hủy duyệt",
       onClick: async (id: number) => {
-        const res = await updateStatus({ id: id, status: postStatus.REMOVED });
+        const res = await updateStatus({ id: id, status: postStatus.CANCEL });
         handleSearch(pageNumber, pageSize);
         console.log(res);
       },
+      accept: [UserType.ADMIN]
     },
     {
       key: 3,
@@ -203,7 +226,13 @@ const ManagePost = () => {
         const role = authStore?.user?.data?.userType;
         return router.push(`/post/edit/?role=${role}&postId=${id}`);
       },
+      accept: [UserType.ADMIN, UserType.CUSTOMER]
     },
+    // {
+    //   key: 4,
+    //   label: "Đăng lại (chưa xử lý)",
+    //   accept: [UserType.CUSTOMER]
+    // }
   ];
 
   const columns: TableColumnsType<IPost> = [
@@ -307,7 +336,7 @@ const ManagePost = () => {
                 Hủy duyệt
               </Tag>
             );
-          } else {
+          } else if (statusItem.value === postStatus.REMOVED) {
             return (
               <Tag icon={<MinusCircleOutlined />} color="#ccc">
                 Đã gỡ
@@ -328,26 +357,27 @@ const ManagePost = () => {
       render: (text, record) => {
         let items = [];
         if (record.status === postStatus.INIT) {
-          items.push(actions[1]);
-          items.push(actions[2]);
+          actions[1].accept.includes(role) && items.push(actions[1]);
+          actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.PENDING) {
-          items.push(actions[0]);
-          items.push(actions[1]);
-          items.push(actions[2]);
+          actions[0].accept.includes(role) && items.push(actions[0]);
+          actions[1].accept.includes(role) && items.push(actions[1]);
+          actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.POSTED) {
-          items.push(actions[1]);
-          items.push(actions[2]);
+          //actions[1].accept.includes(role) && items.push(actions[1]);
+          actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.CANCEL) {
-          items.push(actions[2]);
+          actions[2].accept.includes(role) && items.push(actions[2]);
         } else {
-          items.push(actions[2]);
+          actions[2].accept.includes(role) && items.push(actions[2]);
+          //actions[3].accept.includes(role) && items.push(actions[3]);
         }
 
         const menu = (
           <Menu>
             {items?.map((item, index) => (
-              <Menu.Item key={index} onClick={() => item.onClick(record.id)}>
-                {item.label}
+              <Menu.Item key={index} onClick={() => item && item.onClick && item.onClick(record.id)}>
+                {item?.label}
               </Menu.Item>
             ))}
           </Menu>
@@ -368,29 +398,59 @@ const ManagePost = () => {
 
   const handleSearch = async (pageNumber?: number, pageSize?: number) => {
     const values = form.getFieldsValue();
-    const res = await findAll({
-      pageSize: pageSize || -1,
-      pageNumber: pageNumber || 1,
-      status: values.status,
-      postType: values.postTypeId,
-      realEstateType: values.realEstateTypeId,
-      keyword: values.keyword,
-    });
-    const data = res?.data.items;
-    const posts: IPost[] = data?.map((post: any) => ({
-      id: post.id,
-      title: post.title,
-      description: post.description,
-      rentalObject: post.rentalObject,
-      youtubeLink: post.youtubeLink,
-      postTypeId: post.postTypeId,
-      realEstateTypeId: post.realEstateTypeId,
-      status: post.status,
-      mediaUrl: post.firstImageUrl,
-    }));
-
-    setListPost(posts);
-    setTotalItems(res?.data.totalItems);
+    if (role === UserType.ADMIN) {
+      const res = await findAll({
+        pageSize: pageSize || -1,
+        pageNumber: pageNumber || 1,
+        status: values.status,
+        postType: values.postTypeId,
+        realEstateType: values.realEstateTypeId,
+        keyword: values.keyword,
+      });
+  
+      const data = res?.data.items;
+      
+      const posts: IPost[] = data?.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        rentalObject: post.rentalObject,
+        youtubeLink: post.youtubeLink,
+        postTypeId: post.postTypeId,
+        realEstateTypeId: post.realEstateTypeId,
+        status: post.status,
+        mediaUrl: post.firstImageUrl,
+      }));
+  
+      setListPost(posts);
+      setTotalItems(res?.data.totalItems);
+    } else {
+      const res = await findAllPersonal({
+        pageSize: pageSize || -1,
+        pageNumber: pageNumber || 1,
+        status: values.status,
+        postType: values.postTypeId,
+        realEstateType: values.realEstateTypeId,
+        keyword: values.keyword,
+      });
+  
+      const data = res?.data.items;
+      
+      const posts: IPost[] = data?.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        rentalObject: post.rentalObject,
+        youtubeLink: post.youtubeLink,
+        postTypeId: post.postTypeId,
+        realEstateTypeId: post.realEstateTypeId,
+        status: post.status,
+        mediaUrl: post.firstImageUrl,
+      }));
+  
+      setListPost(posts);
+      setTotalItems(res?.data.totalItems);
+    }
   };
 
   return (
@@ -477,7 +537,7 @@ const ManagePost = () => {
               <Select
                 allowClear={true}
                 placeholder="Tất cả"
-                options={Status}
+                options={Status.filter((item) => item.accept.includes(role))}
                 onChange={() => setChange(!change)}
               />
             </Form.Item>
@@ -511,7 +571,7 @@ const ManagePost = () => {
               },
             }}
             dataSource={listPost}
-            scroll={{ x: 1500, y: 600 }}
+            scroll={{ x: 1500, y: 400 }}
           />
         </div>
       </div>

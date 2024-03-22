@@ -1,6 +1,5 @@
 import { RootState } from "@/redux/store";
 import {
-    addPost,
     apiRemoveImage,
     apiUploadImage,
     deleteImage,
@@ -10,23 +9,26 @@ import {
     updatePost,
 } from "@/services/post/post.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-import { ConsoleSqlOutlined, DeleteOutlined, PlusOutlined, ZoomInOutlined } from "@ant-design/icons";
+import PlusOutlined from "@ant-design/icons/PlusOutlined";
+import Button from "antd/es/button";
+import Flex from "antd/es/flex";
+import Form from "antd/es/form";
+import { GetProp } from "antd/es/_util/type";
+import Input from "antd/es/input";
+import Modal from "antd/es/modal";
+import Select from "antd/es/select";
+import Tooltip from "antd/es/tooltip";
+import Upload from "antd/es/upload";
 import {
-    Button,
-    Card,
-    Flex,
-    Form,
-    GetProp,
-    Input,
-    Modal,
-    Select,
-    Tooltip,
-    Upload,
     UploadFile,
-    UploadProps,
-    message,
-} from "antd";
-import React, { useEffect, useMemo, useState } from "react";
+    UploadProps
+} from "antd/es/upload/interface";
+import message from "antd/es/message";
+import React, {
+    useEffect,
+    useMemo,
+    useState
+} from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import BingMapsReact from "bingmaps-react";
@@ -35,8 +37,11 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
-import Item from "antd/es/list/Item";
-import { getDistricts, getProvinces, getWards } from "@/services/post/address.service";
+import {
+    getDistricts,
+    getProvinces,
+    getWards
+} from "@/services/post/address.service";
 import MapComponent from "@/components/Map/MapComponent";
 
 
@@ -63,13 +68,6 @@ interface IPost {
 }
 
 interface MediaType {
-    id: any;
-    name: string;
-    description: string;
-    mediaUrl: string;
-}
-
-interface MediaResponse {
     id: number;
     name: string;
     description: string;
@@ -146,6 +144,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     const [status, setStatus] = useState<number>(1);
     const [modalDeleteImg, setModalDeleteImg] = useState(false);
     const [curentFile, setCurrentFile] = useState<UploadFile>();
+    const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
+
     useEffect(() => {
         const fetchDetailPost = async () => {
             const response = await getById(postId);
@@ -190,6 +190,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 wards: post.ward,
                 street: post.street,
             });
+            setPostType(post.postTypeId);
             form.setFieldsValue({
                 title: post.title,
                 description: post.description,
@@ -354,7 +355,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                     prevList.filter((item) => item.uid !== file.uid)
                 );
                 setListMedia((prevUrls) =>
-                    prevUrls.filter((url) => url.name !== file.name.replace(/\.\w+$/, ""))
+                    prevUrls.filter((url) => url.name !== file.name.replace(/\.\w+$/, "") && url.description !== file.secure_url)
                 );
             }
         }
@@ -401,7 +402,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
         setListMedia((prevUrls) => [
             ...prevUrls,
             {
-                id: response.uid,
+                id: -1,
                 mediaUrl: response.url,
                 name: response.original_filename,
                 description: response.secure_url,
@@ -431,7 +432,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
 
         const response = await updatePost({ ...postInfo, id: postId, status: status });
         if (response?.code === HTTP_STATUS_CODE.OK) {
-            message.success("Cập nhật thành công");
+            toast.done("Cập nhật thành công");
+            setIsShowPaymentForm(true);
         }
         else {
             console.log("error: ", response);
@@ -455,470 +457,305 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
 
     return (
         <>
-            {" "}
-            <Flex justify="center" gap="small" vertical>
-                <div
-                    style={{
-                        width: "50%",
-                        margin: "auto",
-                        padding: 20,
-                        backgroundColor: "#fff",
-                        borderRadius: 8,
-                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-                    }}
-                >
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        autoComplete="off"
-                        onFinish={(formValue) => handleSubmit(formValue)}
-                        onFinishFailed={() => {
-                            message.error("Vui lòng kiểm tra lại các trường thông tin!");
+            {!isShowPaymentForm ?
+                <Flex justify="center" gap="small" vertical>
+                    <div
+                        style={{
+                            width: "50%",
+                            margin: "auto",
+                            padding: 20,
+                            backgroundColor: "#fff",
+                            borderRadius: 8,
+                            boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                         }}
-                        initialValues={initialValues}
                     >
-                        <p
-                            style={{
-                                fontSize: 24,
-                                fontWeight: "500",
-                                marginBottom: 5,
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            autoComplete="off"
+                            onFinish={(formValue) => handleSubmit(formValue)}
+                            onFinishFailed={() => {
+                                message.error("Vui lòng kiểm tra lại các trường thông tin!");
                             }}
-                        >
-                            Thông tin cơ bản
-                        </p>
-
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                height: 40,
-                            }}
-                        >
-                            <Form.Item style={{ width: "50%" }}>
-                                <Button
-                                    style={{
-                                        width: "100%",
-                                        backgroundColor:
-                                            postType === 1 ? "rgba(0, 0, 0, 0.6)" : "#fff",
-                                        color: postType === 1 ? "white" : "rgb(153, 153, 153)",
-                                        fontWeight: postType === 1 ? "bold" : "normal",
-                                        border: "1px solid rgb(204, 204, 204)",
-                                        borderTopLeftRadius: 5,
-                                        borderBottomLeftRadius: 5,
-                                    }}
-                                    disabled={!edit}
-                                    value={1}
-                                    onClick={() => setPostType(1)}
-                                >
-                                    Bán
-                                </Button>
-                            </Form.Item>
-                            <Form.Item style={{ width: "50%" }}>
-                                <Button
-                                    style={{
-                                        width: "100%",
-                                        backgroundColor:
-                                            postType === 2 ? "rgba(0, 0, 0, 0.6)" : "#fff",
-                                        color: postType === 2 ? "white" : "rgb(153, 153, 153)",
-                                        fontWeight: postType === 2 ? "bold" : "normal",
-                                        border: "1px solid rgb(204, 204, 204)",
-                                        borderTopRightRadius: 5,
-                                        borderBottomRightRadius: 5,
-                                    }}
-                                    value={2}
-                                    disabled={!edit}
-                                    onClick={() => setPostType(2)}
-                                >
-                                    Cho thuê
-                                </Button>
-                            </Form.Item>
-                        </div>
-
-                        <div>
-                            <Form.Item
-                                name="realEstateTypeId"
-                                label={<strong>Loại bất động sản</strong>}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Vui lòng chọn loại bất động sản",
-                                    },
-                                ]}
-                            >
-                                <Select
-                                    style={{ width: "100%" }}
-                                    placeholder="Chọn loại bất động sản"
-                                    disabled={!edit}
-                                    options={realEstateType?.map((item: any) => {
-                                        return {
-                                            value: item?.id,
-                                            label: item?.name,
-                                        };
-                                    })}
-                                />
-                            </Form.Item>
-                        </div>
-
-                        <Flex justify="center" gap={"small"}>
-                            <Form.Item
-                                name="province"
-                                label={<strong>Tỉnh, thành phố</strong>}
-                                style={{ width: "50%" }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Tỉnh, Thành phố không được bỏ trống",
-                                    },
-                                ]}
-                            >
-                                <Select
-                                    placeholder="Chọn tỉnh/thành phố"
-                                    value={location?.provinces}
-                                    disabled={!edit}
-                                    onChange={(value, option) =>
-                                        handleProvinceChange(value, option)
-                                    }
-                                    options={provinces?.map((item: any) => {
-                                        return {
-                                            value: item?.id,
-                                            label: item?.name,
-                                        };
-                                    })}
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name="district"
-                                label={<strong>Quận, huyện</strong>}
-                                style={{ width: "50%" }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Quận, huyện không được bỏ trống",
-                                    },
-                                ]}
-                            >
-                                <Select
-                                    placeholder="Chọn quận/huyện"
-                                    onChange={(value, option) =>
-                                        handleDistrictChange(value, option)
-                                    }
-                                    value={location?.districts}
-                                    disabled={isDisableSelect.districtDisable || !edit}
-                                    options={districts?.map((item: any) => {
-                                        return {
-                                            value: item?.id,
-                                            label: item?.fullName,
-                                        };
-                                    })}
-                                />
-                            </Form.Item>
-                        </Flex>
-
-                        <Flex justify="center" gap={"small"}>
-                            <Form.Item
-                                name="ward"
-                                label={<strong>Phường, xã</strong>}
-                                style={{ width: "50%" }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Phường, xã không được bỏ trống",
-                                    },
-                                ]}
-                            >
-                                <Select
-                                    placeholder="Chọn phường/xã"
-                                    disabled={isDisableSelect.wardDisable || !edit}
-                                    value={location?.wards}
-                                    options={wards?.map((item: any) => {
-                                        return {
-                                            value: item?.id,
-                                            label: item?.name,
-                                        };
-                                    })}
-                                    onChange={(value, option) =>
-                                        handleWardChange(value, option)
-                                    }
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                name="street"
-                                label={<strong>Đường, phố</strong>}
-                                style={{ width: "50%" }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: "Đường, phố không được bỏ trống",
-                                    },
-                                ]}
-                            >
-                                <Input
-                                    value={location.street}
-                                    disabled={!edit}
-                                    onChange={(e) => {
-                                        setLocation((prev: any) => {
-                                            return {
-                                                ...prev,
-                                                street: e.target.value,
-                                            };
-                                        });
-                                    }}
-                                />
-                            </Form.Item>
-                        </Flex>
-
-                        <Form.Item
-                            name="detailAddress"
-                            label={<strong>Địa chỉ chi tiết</strong>}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Địa chỉ chi tiết không được bỏ trống",
-                                },
-                            ]}
-                        >
-                            <Input disabled={!edit} />
-                        </Form.Item>
-                        {showMap && (
-                            <Flex justify="center">
-                                <MapComponent prop={coordinates} height={270} width={850} />
-                            </Flex>
-                        )}
-                        <div
-                            style={{
-                                width: "100%",
-                                margin: "auto",
-                                backgroundColor: "#fff",
-                                marginTop: "20px",
-                            }}
+                            initialValues={initialValues}
                         >
                             <p
                                 style={{
                                     fontSize: 24,
-                                    marginBottom: 5,
                                     fontWeight: "500",
+                                    marginBottom: 5,
                                 }}
                             >
-                                Thông tin bài viết
+                                Thông tin cơ bản
                             </p>
-                            <Tooltip
-                                placement="bottom"
-                                title={
-                                    <div style={{ width: "100%" }}>
-                                        <strong>Tiêu đề nên có:</strong>
-                                        <p>Loại hình bất động sản, diện tích, địa chỉ.</p>
-                                        <p>VD: bán nhà riêng 50m2 chính chủ tại Cầu Giấy</p>
-                                        <strong>Tiêu đề không nên có:</strong>
-                                        <p>Nội dung không liên quan đến bất động sản.</p>
-                                        <p>Số điện thoại chưa đăng ký.</p>
-                                        <p>
-                                            Tiếng Việt không dấu hoặc ngôn ngữ khác ngoài tiếng
-                                            Việt.
-                                        </p>
-                                    </div>
-                                }
-                                arrow={mergedArrow}
-                            >
-                                <Form.Item
-                                    name="title"
-                                    label={
-                                        <strong>
-                                            Tiêu đề{" "}
-                                            <span style={{ fontWeight: "lighter" }}>
-                                                (Tối thiểu 30 ký tự, tối đa 99 ký tự)
-                                            </span>
-                                        </strong>
-                                    }
-                                    rules={[
-                                        { required: true, message: "* Tiêu đề bắt buộc nhập" },
-                                    ]}
-                                >
-                                    <Input style={{ height: 50 }} disabled={!edit} />
-                                </Form.Item>
-                            </Tooltip>
-                            <Form.Item
-                                name="description"
-                                label={
-                                    <strong>
-                                        Mô tả{" "}
-                                        <span style={{ fontWeight: "lighter" }}>
-                                            (Tối thiểu 30 ký tự, tối đa 3000 ký tự)
-                                        </span>
-                                    </strong>
-                                }
-                                rules={[
-                                    { required: true, message: "* Mô tả bắt buộc nhập" },
-                                ]}
-                            >
-                                <Input.TextArea style={{ height: 150, fontFamily: 'sans-serif' }} disabled={!edit} />
-                            </Form.Item>
-                        </div>
 
-                        <div
-                            style={{
-                                width: "100%",
-                                margin: "auto",
-                                backgroundColor: "#fff",
-                            }}
-                        >
-                            <p
+                            <div
                                 style={{
-                                    fontSize: 24,
-                                    marginBottom: 5,
-                                    fontWeight: "500",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    height: 40,
                                 }}
                             >
-                                Thông tin bất động sản
-                            </p>
-                            <Form.Item
-                                name="area"
-                                label={<strong>Diện tích</strong>}
-                                rules={[
-                                    { required: true, message: "Trường bắt buộc nhập" },
-                                ]}
-                            >
-                                <Input type="number" placeholder="m²" disabled={!edit} />
-                            </Form.Item>
-                            <Flex justify="center" gap={"small"}>
-                                <Form.Item
-                                    name="price"
-                                    label={
-                                        <strong>
-                                            <span style={{ color: "#ff4d4f" }}>* </span>Mức giá
-                                        </strong>
-                                    }
-                                    style={{ width: "70%" }}
-                                    rules={[{ validator: validatePrice }]}
-                                >
-                                    <Input disabled={currentCalculateType === 3 || !edit} />
+                                <Form.Item style={{ width: "50%" }}>
+                                    <Button
+                                        style={{
+                                            width: "100%",
+                                            backgroundColor:
+                                                postType === 1 ? "rgba(0, 0, 0, 0.6)" : "#fff",
+                                            color: postType === 1 ? "white" : "rgb(153, 153, 153)",
+                                            fontWeight: postType === 1 ? "bold" : "normal",
+                                            border: "1px solid rgb(204, 204, 204)",
+                                            borderTopLeftRadius: 5,
+                                            borderBottomLeftRadius: 5,
+                                        }}
+                                        disabled={!edit}
+                                        value={1}
+                                        onClick={() => setPostType(1)}
+                                    >
+                                        Bán
+                                    </Button>
                                 </Form.Item>
+                                <Form.Item style={{ width: "50%" }}>
+                                    <Button
+                                        style={{
+                                            width: "100%",
+                                            backgroundColor:
+                                                postType === 2 ? "rgba(0, 0, 0, 0.6)" : "#fff",
+                                            color: postType === 2 ? "white" : "rgb(153, 153, 153)",
+                                            fontWeight: postType === 2 ? "bold" : "normal",
+                                            border: "1px solid rgb(204, 204, 204)",
+                                            borderTopRightRadius: 5,
+                                            borderBottomRightRadius: 5,
+                                        }}
+                                        value={2}
+                                        disabled={!edit}
+                                        onClick={() => setPostType(2)}
+                                    >
+                                        Cho thuê
+                                    </Button>
+                                </Form.Item>
+                            </div>
 
+                            <div>
                                 <Form.Item
-                                    name="calculateType"
-                                    label={<strong>Đơn vị</strong>}
-                                    style={{ width: "30%" }}
+                                    name="realEstateTypeId"
+                                    label={<strong>Loại bất động sản</strong>}
                                     rules={[
-                                        { required: true, message: "Trường bắt buộc nhập" },
+                                        {
+                                            required: true,
+                                            message: "Vui lòng chọn loại bất động sản",
+                                        },
                                     ]}
                                 >
                                     <Select
                                         style={{ width: "100%" }}
+                                        placeholder="Chọn loại bất động sản"
                                         disabled={!edit}
-                                        //value={calculateType[0].value}
-                                        optionFilterProp="children"
-                                        options={calculateType?.map((item: any) => {
+                                        options={realEstateType?.map((item: any) => {
                                             return {
-                                                value: item?.value,
-                                                label: item?.label,
+                                                value: item?.id,
+                                                label: item?.name,
                                             };
                                         })}
-                                        onChange={(value: string, option) => {
-                                            // console.log("object", value, option)
-                                            setCurrentCalculateType(+value);
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <Flex justify="center" gap={"small"}>
+                                <Form.Item
+                                    name="province"
+                                    label={<strong>Tỉnh, thành phố</strong>}
+                                    style={{ width: "50%" }}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Tỉnh, Thành phố không được bỏ trống",
+                                        },
+                                    ]}
+                                >
+                                    <Select
+                                        placeholder="Chọn tỉnh/thành phố"
+                                        value={location?.provinces}
+                                        disabled={!edit}
+                                        onChange={(value, option) =>
+                                            handleProvinceChange(value, option)
+                                        }
+                                        options={provinces?.map((item: any) => {
+                                            return {
+                                                value: item?.id,
+                                                label: item?.name,
+                                            };
+                                        })}
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    name="district"
+                                    label={<strong>Quận, huyện</strong>}
+                                    style={{ width: "50%" }}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Quận, huyện không được bỏ trống",
+                                        },
+                                    ]}
+                                >
+                                    <Select
+                                        placeholder="Chọn quận/huyện"
+                                        onChange={(value, option) =>
+                                            handleDistrictChange(value, option)
+                                        }
+                                        value={location?.districts}
+                                        disabled={isDisableSelect.districtDisable || !edit}
+                                        options={districts?.map((item: any) => {
+                                            return {
+                                                value: item?.id,
+                                                label: item?.fullName,
+                                            };
+                                        })}
+                                    />
+                                </Form.Item>
+                            </Flex>
+
+                            <Flex justify="center" gap={"small"}>
+                                <Form.Item
+                                    name="ward"
+                                    label={<strong>Phường, xã</strong>}
+                                    style={{ width: "50%" }}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Phường, xã không được bỏ trống",
+                                        },
+                                    ]}
+                                >
+                                    <Select
+                                        placeholder="Chọn phường/xã"
+                                        disabled={isDisableSelect.wardDisable || !edit}
+                                        value={location?.wards}
+                                        options={wards?.map((item: any) => {
+                                            return {
+                                                value: item?.id,
+                                                label: item?.name,
+                                            };
+                                        })}
+                                        onChange={(value, option) =>
+                                            handleWardChange(value, option)
+                                        }
+                                    />
+                                </Form.Item>
+                                <Form.Item
+                                    name="street"
+                                    label={<strong>Đường, phố</strong>}
+                                    style={{ width: "50%" }}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Đường, phố không được bỏ trống",
+                                        },
+                                    ]}
+                                >
+                                    <Input
+                                        value={location.street}
+                                        disabled={!edit}
+                                        onChange={(e) => {
+                                            setLocation((prev: any) => {
+                                                return {
+                                                    ...prev,
+                                                    street: e.target.value,
+                                                };
+                                            });
                                         }}
                                     />
                                 </Form.Item>
                             </Flex>
-                        </div>
-
-                        <div
-                            style={{
-                                width: "100%",
-                                margin: "auto",
-                                backgroundColor: "#fff",
-                            }}
-                        >
-                            <p
-                                style={{
-                                    fontSize: 24,
-                                    marginBottom: 5,
-                                    fontWeight: "500",
-                                }}
-                            >
-                                Hình ảnh & Video
-                            </p>
-                            <ul style={{ paddingLeft: 20 }}>
-                                <li>Đăng tối thiểu 4 ảnh thường với tin VIP</li>
-                                <li>Đăng tối đa 24 ảnh với tất cả các loại tin</li>
-                                <li>Hãy dùng ảnh thật, không trùng, không chèn SDT</li>
-                                <li>
-                                    Mỗi ảnh kích thước tối thiểu 100x100 px, tối đa 15MB
-                                </li>
-                                <li>Mô tả ảnh tối đa 45 ký tự</li>
-                            </ul>
 
                             <Form.Item
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    marginTop: "10px",
-                                }}
-                                valuePropName="fileList"
-                                getValueFromEvent={normFile}
+                                name="detailAddress"
+                                label={<strong>Địa chỉ chi tiết</strong>}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Địa chỉ chi tiết không được bỏ trống",
+                                    },
+                                ]}
                             >
-                                <Upload
-                                    disabled={!edit}
-                                    customRequest={handleUpload}
-                                    multiple={true}
-                                    listType="picture-card"
-                                    fileList={fileList}
-                                    onPreview={handlePreview}
-                                    onRemove={(item) => {
-                                        setCurrentFile(item);
-                                        showModalDeleteImg();
-                                        return false;
+                                <Input disabled={!edit} />
+                            </Form.Item>
+                            {showMap && (
+                                <Flex justify="center">
+                                    <MapComponent prop={coordinates} height={270} width={850} />
+                                </Flex>
+                            )}
+                            <div
+                                style={{
+                                    width: "100%",
+                                    margin: "auto",
+                                    backgroundColor: "#fff",
+                                    marginTop: "20px",
+                                }}
+                            >
+                                <p
+                                    style={{
+                                        fontSize: 24,
+                                        marginBottom: 5,
+                                        fontWeight: "500",
                                     }}
-                                    onChange={handleChange}
                                 >
-                                    <button
-                                        style={{ border: 0, background: "none" }}
-                                        type="button"
-                                        disabled={!edit}
-                                    >
-                                        <PlusOutlined />
-                                        <div style={{ marginTop: 8 }}>
-                                            Bấm để chọn ảnh cần tải lên
+                                    Thông tin bài viết
+                                </p>
+                                <Tooltip
+                                    placement="bottom"
+                                    title={
+                                        <div style={{ width: "100%" }}>
+                                            <strong>Tiêu đề nên có:</strong>
+                                            <p>Loại hình bất động sản, diện tích, địa chỉ.</p>
+                                            <p>VD: bán nhà riêng 50m2 chính chủ tại Cầu Giấy</p>
+                                            <strong>Tiêu đề không nên có:</strong>
+                                            <p>Nội dung không liên quan đến bất động sản.</p>
+                                            <p>Số điện thoại chưa đăng ký.</p>
+                                            <p>
+                                                Tiếng Việt không dấu hoặc ngôn ngữ khác ngoài tiếng
+                                                Việt.
+                                            </p>
                                         </div>
-                                    </button>
-                                </Upload>
-                                <Modal
-                                    open={previewOpen}
-                                    title={previewTitle}
-                                    footer={null}
-                                    onCancel={handleCancel}
+                                    }
+                                    arrow={mergedArrow}
                                 >
-                                    <Image
-                                        alt="example"
-                                        style={{ width: "100%", height: "100%" }}
-                                        width={100}
-                                        height={100}
-                                        src={previewImage}
-                                    />
-                                </Modal>
-                                <Modal
-                                    title="Xóa hình ảnh"
-                                    open={modalDeleteImg}
-                                    onOk={() => {
-                                        handleRemove(curentFile);
-                                        hideModalDeleteImg();
-                                    }}
-                                    onCancel={hideModalDeleteImg}
-                                    okText="Xóa"
-                                    cancelText="Hủy"
+                                    <Form.Item
+                                        name="title"
+                                        label={
+                                            <strong>
+                                                Tiêu đề{" "}
+                                                <span style={{ fontWeight: "lighter" }}>
+                                                    (Tối thiểu 30 ký tự, tối đa 99 ký tự)
+                                                </span>
+                                            </strong>
+                                        }
+                                        rules={[
+                                            { required: true, message: "* Tiêu đề bắt buộc nhập" },
+                                        ]}
+                                    >
+                                        <Input style={{ height: 50 }} disabled={!edit} />
+                                    </Form.Item>
+                                </Tooltip>
+                                <Form.Item
+                                    name="description"
+                                    label={
+                                        <strong>
+                                            Mô tả{" "}
+                                            <span style={{ fontWeight: "lighter" }}>
+                                                (Tối thiểu 30 ký tự, tối đa 3000 ký tự)
+                                            </span>
+                                        </strong>
+                                    }
+                                    rules={[
+                                        { required: true, message: "* Mô tả bắt buộc nhập" },
+                                    ]}
                                 >
-                                    <p>Bạn sẽ không thể hoàn tác sau khi xóa ảnh.</p>
-                                    <p>Bạn chắc chắn muốn xóa ảnh chứ?</p>
-                                </Modal>
-                            </Form.Item>
-                            <Form.Item
-                                name={"youtubeLink"}
-                                label={<strong>Link youtube</strong>}
-                            >
-                                <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!edit} />
-                            </Form.Item>
-                        </div>
+                                    <Input.TextArea style={{ height: 150, fontFamily: 'sans-serif' }} disabled={!edit} />
+                                </Form.Item>
+                            </div>
 
-                        {edit ?
                             <div
                                 style={{
                                     width: "100%",
@@ -929,142 +766,310 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 <p
                                     style={{
                                         fontSize: 24,
+                                        marginBottom: 5,
                                         fontWeight: "500",
                                     }}
                                 >
-                                    Thông tin liên hệ
+                                    Thông tin bất động sản
                                 </p>
+                                <Form.Item
+                                    name="area"
+                                    label={<strong>Diện tích</strong>}
+                                    rules={[
+                                        { required: true, message: "Trường bắt buộc nhập" },
+                                    ]}
+                                >
+                                    <Input type="number" placeholder="m²" disabled={!edit} />
+                                </Form.Item>
                                 <Flex justify="center" gap={"small"}>
                                     <Form.Item
-                                        name="name"
-                                        label={<strong>Tên liên hệ</strong>}
-                                        style={{ width: "50%" }}
+                                        name="price"
+                                        label={
+                                            <strong>
+                                                <span style={{ color: "#ff4d4f" }}>* </span>Mức giá
+                                            </strong>
+                                        }
+                                        style={{ width: "70%" }}
+                                        rules={[{ validator: validatePrice }]}
                                     >
-                                        <Input
-                                            value={userInfo.fullname}
-                                            placeholder={userInfo.fullname}
-                                            disabled={true}
-                                        />
+                                        <Input disabled={currentCalculateType === 3 || !edit} />
                                     </Form.Item>
+
                                     <Form.Item
-                                        name="phoneNumber"
-                                        label={<strong>Số điện thoại</strong>}
-                                        style={{ width: "50%" }}
+                                        name="calculateType"
+                                        label={<strong>Đơn vị</strong>}
+                                        style={{ width: "30%" }}
+                                        rules={[
+                                            { required: true, message: "Trường bắt buộc nhập" },
+                                        ]}
                                     >
-                                        <Input
-                                            value={userInfo.phoneNumber}
-                                            placeholder={userInfo.phoneNumber}
-                                            disabled={true}
+                                        <Select
+                                            style={{ width: "100%" }}
+                                            disabled={!edit}
+                                            //value={calculateType[0].value}
+                                            optionFilterProp="children"
+                                            options={calculateType?.map((item: any) => {
+                                                return {
+                                                    value: item?.value,
+                                                    label: item?.label,
+                                                };
+                                            })}
+                                            onChange={(value: string, option) => {
+                                                // console.log("object", value, option)
+                                                setCurrentCalculateType(+value);
+                                            }}
                                         />
                                     </Form.Item>
                                 </Flex>
+                            </div>
+
+                            <div
+                                style={{
+                                    width: "100%",
+                                    margin: "auto",
+                                    backgroundColor: "#fff",
+                                }}
+                            >
+                                <p
+                                    style={{
+                                        fontSize: 24,
+                                        marginBottom: 5,
+                                        fontWeight: "500",
+                                    }}
+                                >
+                                    Hình ảnh & Video
+                                </p>
+                                <ul style={{ paddingLeft: 20 }}>
+                                    <li>Đăng tối thiểu 4 ảnh thường với tin VIP</li>
+                                    <li>Đăng tối đa 24 ảnh với tất cả các loại tin</li>
+                                    <li>Hãy dùng ảnh thật, không trùng, không chèn SDT</li>
+                                    <li>
+                                        Mỗi ảnh kích thước tối thiểu 100x100 px, tối đa 15MB
+                                    </li>
+                                    <li>Mô tả ảnh tối đa 45 ký tự</li>
+                                </ul>
 
                                 <Form.Item
-                                    name="email"
-                                    label={<strong>Email</strong>}
-                                    style={{ width: "50%", marginTop: "-5px" }}
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        marginTop: "10px",
+                                    }}
+                                    valuePropName="fileList"
+                                    getValueFromEvent={normFile}
                                 >
-                                    <Input
-                                        value={userInfo.email}
-                                        placeholder={userInfo.email}
-                                        disabled={true}
-                                    />
+                                    <Upload
+                                        disabled={!edit}
+                                        customRequest={handleUpload}
+                                        multiple={true}
+                                        listType="picture-card"
+                                        fileList={fileList}
+                                        onPreview={handlePreview}
+                                        onRemove={(item) => {
+                                            setCurrentFile(item);
+                                            showModalDeleteImg();
+                                            return false;
+                                        }}
+                                        onChange={handleChange}
+                                    >
+                                        <button
+                                            style={{ border: 0, background: "none" }}
+                                            type="button"
+                                            disabled={!edit}
+                                        >
+                                            <PlusOutlined />
+                                            <div style={{ marginTop: 8 }}>
+                                                Bấm để chọn ảnh cần tải lên
+                                            </div>
+                                        </button>
+                                    </Upload>
+                                    <Modal
+                                        open={previewOpen}
+                                        title={previewTitle}
+                                        footer={null}
+                                        onCancel={handleCancel}
+                                    >
+                                        <Image
+                                            alt="example"
+                                            style={{ width: "100%", height: "100%" }}
+                                            width={100}
+                                            height={100}
+                                            src={previewImage}
+                                        />
+                                    </Modal>
+                                    <Modal
+                                        title="Xóa hình ảnh"
+                                        open={modalDeleteImg}
+                                        onOk={() => {
+                                            handleRemove(curentFile);
+                                            hideModalDeleteImg();
+                                        }}
+                                        onCancel={hideModalDeleteImg}
+                                        okText="Xóa"
+                                        cancelText="Hủy"
+                                    >
+                                        <p>Bạn sẽ không thể hoàn tác sau khi xóa ảnh.</p>
+                                        <p>Bạn chắc chắn muốn xóa ảnh chứ?</p>
+                                    </Modal>
                                 </Form.Item>
-                            </div> : <></>
-                        }
+                                <Form.Item
+                                    name={"youtubeLink"}
+                                    label={<strong>Link youtube</strong>}
+                                >
+                                    <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!edit} />
+                                </Form.Item>
+                            </div>
 
-                        {
-                            edit ?
+                            {edit ?
                                 <div
                                     style={{
-                                        // height: 70,
                                         width: "100%",
                                         margin: "auto",
                                         backgroundColor: "#fff",
                                     }}
                                 >
-                                    <div
+                                    <p
                                         style={{
-                                            display: "flex",
-                                            justifyContent: "flex-end",
+                                            fontSize: 24,
+                                            fontWeight: "500",
                                         }}
                                     >
-                                        <Form.Item>
-                                            <Button
-                                                style={{
-                                                    padding: "0 15px",
-                                                    margin: "0 10px",
-                                                    color: "#555",
-                                                    backgroundColor: "#fafafa",
-                                                    border: "1px solid #ccc",
-                                                }}
-                                                onClick={() => {
-                                                    Modal.confirm({
-                                                        title: "Bạn có chắc chắn muốn hủy?",
-                                                        content: "Các thay đổi của bạn sẽ không được lưu.",
-                                                        okText: "Đồng ý",
-                                                        cancelText: "Hủy",
-                                                        onOk() {
-                                                            router.back();
-                                                        },
-                                                        onCancel() {
-                                                            console.log("cancel");
-                                                        },
-                                                    });
-                                                }}
-                                            >
-                                                Hủy
-                                            </Button>
+                                        Thông tin liên hệ
+                                    </p>
+                                    <Flex justify="center" gap={"small"}>
+                                        <Form.Item
+                                            name="name"
+                                            label={<strong>Tên liên hệ</strong>}
+                                            style={{ width: "50%" }}
+                                        >
+                                            <Input
+                                                value={userInfo.fullname}
+                                                placeholder={userInfo.fullname}
+                                                disabled={true}
+                                            />
                                         </Form.Item>
+                                        <Form.Item
+                                            name="phoneNumber"
+                                            label={<strong>Số điện thoại</strong>}
+                                            style={{ width: "50%" }}
+                                        >
+                                            <Input
+                                                value={userInfo.phoneNumber}
+                                                placeholder={userInfo.phoneNumber}
+                                                disabled={true}
+                                            />
+                                        </Form.Item>
+                                    </Flex>
 
-                                        <Form.Item>
-                                            <Button
-                                                style={{
-                                                    padding: "0 15px",
-                                                    color: "white",
-                                                    backgroundColor: "rgb(224, 60, 49)",
-                                                    border: "none",
-                                                }}
-                                                htmlType="submit"
-                                            >
-                                                Tiếp tục
-                                            </Button>
-                                        </Form.Item>
-                                    </div>
-                                </div> :
-                                <div
-                                    style={{
-                                        // height: 70,
-                                        width: "100%",
-                                        margin: "auto",
-                                        backgroundColor: "#fff",
-                                    }}
-                                >
+                                    <Form.Item
+                                        name="email"
+                                        label={<strong>Email</strong>}
+                                        style={{ width: "50%", marginTop: "-5px" }}
+                                    >
+                                        <Input
+                                            value={userInfo.email}
+                                            placeholder={userInfo.email}
+                                            disabled={true}
+                                        />
+                                    </Form.Item>
+                                </div> : <></>
+                            }
+
+                            {
+                                edit ?
                                     <div
                                         style={{
-                                            display: "flex",
-                                            justifyContent: "flex-end",
+                                            // height: 70,
+                                            width: "100%",
+                                            margin: "auto",
+                                            backgroundColor: "#fff",
                                         }}
                                     >
-                                        <Form.Item>
-                                            <Button
-                                                style={{
-                                                    padding: "0 15px",
-                                                    color: "white",
-                                                    backgroundColor: "rgb(224, 60, 49)",
-                                                    border: "none",
-                                                }}
-                                                onClick={goBack}
-                                            >
-                                                Quay lại
-                                            </Button>
-                                        </Form.Item>
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
+                                            <Form.Item>
+                                                <Button
+                                                    style={{
+                                                        padding: "0 15px",
+                                                        margin: "0 10px",
+                                                        color: "#555",
+                                                        backgroundColor: "#fafafa",
+                                                        border: "1px solid #ccc",
+                                                    }}
+                                                    onClick={() => {
+                                                        Modal.confirm({
+                                                            title: "Bạn có chắc chắn muốn hủy?",
+                                                            content: "Các thay đổi của bạn sẽ không được lưu.",
+                                                            okText: "Đồng ý",
+                                                            cancelText: "Hủy",
+                                                            onOk() {
+                                                                router.back();
+                                                            },
+                                                            onCancel() {
+                                                                console.log("cancel");
+                                                            },
+                                                        });
+                                                    }}
+                                                >
+                                                    Hủy
+                                                </Button>
+                                            </Form.Item>
+
+                                            <Form.Item>
+                                                <Button
+                                                    style={{
+                                                        padding: "0 15px",
+                                                        color: "white",
+                                                        backgroundColor: "rgb(224, 60, 49)",
+                                                        border: "none",
+                                                    }}
+                                                    htmlType="submit"
+                                                >
+                                                    Tiếp tục
+                                                </Button>
+                                            </Form.Item>
+                                        </div>
+                                    </div> :
+                                    <div
+                                        style={{
+                                            // height: 70,
+                                            width: "100%",
+                                            margin: "auto",
+                                            backgroundColor: "#fff",
+                                        }}
+                                    >
+                                        <div
+                                            style={{
+                                                display: "flex",
+                                                justifyContent: "flex-end",
+                                            }}
+                                        >
+                                            <Form.Item>
+                                                <Button
+                                                    style={{
+                                                        padding: "0 15px",
+                                                        color: "white",
+                                                        backgroundColor: "rgb(224, 60, 49)",
+                                                        border: "none",
+                                                    }}
+                                                    onClick={goBack}
+                                                >
+                                                    Quay lại
+                                                </Button>
+                                            </Form.Item>
+                                        </div>
                                     </div>
-                                </div>
-                        }
-                    </Form>
-                </div>
-            </Flex>
+                            }
+                        </Form>
+                    </div>
+                </Flex>
+                : <PaymentForm postId={postId} status={status} />
+            }
+
         </>
     );
 };

@@ -2,7 +2,6 @@ import {
   NextFetchEvent,
   NextMiddleware,
   NextRequest,
-  NextResponse,
 } from "next/server";
 import { MiddlewareFactory } from "./type";
 

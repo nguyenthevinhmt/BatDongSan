@@ -1,5 +1,7 @@
-import { CaseReducer, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { 
+  PayloadAction, 
+  createSlice 
+} from "@reduxjs/toolkit";
 
 const initialState: any = {
   user: {

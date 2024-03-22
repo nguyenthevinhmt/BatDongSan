@@ -1,23 +1,23 @@
 "use client";
-import { updatePaymentStatus } from "@/services/post/post.service";
+import { 
+  republishPost, 
+  updatePaymentStatus 
+} from "@/services/post/post.service";
+import { walletInfo } from "@/services/wallet/wallet.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import { formatNumber } from "@/shared/utils/common-helpers";
-import { LeftOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  DatePicker,
-  Divider,
-  Flex,
-  Form,
-  InputNumber,
-  Modal,
-  Radio,
-  message,
-} from "antd";
-import { useForm } from "antd/es/form/Form";
+import LeftOutlined from "@ant-design/icons/LeftOutlined";
+import Button from "antd/es/button";
+import Card from "antd/es/card";
+import DatePicker from "antd/es/date-picker";
+import Divider from "antd/es/divider";
+import Flex from "antd/es/flex";
+import Form from "antd/es/form";
+import InputNumber from "antd/es/input-number";
+import Modal from "antd/es/modal";
+import message from "antd/es/message";
 import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/router";
 import React, { useState } from "react";
 
 interface IForm {
@@ -27,7 +27,7 @@ interface IForm {
   postEndDate?: Date;
 }
 
-const PaymentForm = ({ prop }: any) => {
+const PaymentForm = ({ postId, status}: {postId: number, status: number}) => {
   const [formData, setFormData] = useState<IForm>({
     options: 1,
     lifeTime: 5,
@@ -60,18 +60,35 @@ const PaymentForm = ({ prop }: any) => {
   ];
 
   const handleSubmit = async (formValue: any) => {
-    console.log("object form", formValue);
-    const payload = {
-      options: formData.options,
-      lifeTime: formData.lifeTime,
-      id: prop,
-    };
-    const response = await updatePaymentStatus(payload);
-    if (response?.code === HTTP_STATUS_CODE.OK) {
-      message.success("Bạn đã thanh toán thành công");
-      setTimeout(() => {
-        router.replace("/post/manage");
-      }, 1000);
+    if (status === 5) {
+      const walletResponse = await walletInfo();
+      const payload = {
+        options: formData.options,
+        lifeTime: formData.lifeTime,
+        id: postId,
+        walletNumber: walletResponse?.data.data.walletNumber,
+      };
+      const response = await republishPost(payload);
+      if (response?.code === HTTP_STATUS_CODE.OK) {
+        message.success("Bạn đã thanh toán thành công");
+        setTimeout(() => {
+          router.replace("/post/manage");
+        }, 1000);
+      }
+    } else {
+      console.log("object form", formValue);
+      const payload = {
+        options: formData.options,
+        lifeTime: formData.lifeTime,
+        id: postId,
+      };
+      const response = await updatePaymentStatus(payload);
+      if (response?.code === HTTP_STATUS_CODE.OK) {
+        message.success("Bạn đã thanh toán thành công");
+        setTimeout(() => {
+          router.replace("/post/manage");
+        }, 1000);
+      }
     }
   };
   return (

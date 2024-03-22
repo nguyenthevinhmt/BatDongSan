@@ -1,5 +1,8 @@
 import { environment } from "@/shared/environment/environment";
-import React, { useEffect, useState } from "react";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
 import BingMapsReact from "bingmaps-react";
 
 const MapComponent = ({ prop, width, height }: { prop: any, width: number, height: number }) => {

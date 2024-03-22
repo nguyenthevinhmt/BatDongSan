@@ -1,17 +1,13 @@
 'use client';
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import HeaderComponent from "@/components/shareLayout/header";
-import {
-    Avatar,
-    List,
-    Space,
-    Divider,
-    Tooltip,
-    Button,
-    Flex
-} from 'antd';
-import Link from 'next/link';
-import { HeartOutlined, LineOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import Flex from 'antd/es/flex';
+import Tooltip from 'antd/es/tooltip';
+import Col from 'antd/es/col';
+import Card from 'antd/es/card';
+import Row from 'antd/es/row';
+import LineOutlined from "@ant-design/icons/LineOutlined";
+import EnvironmentOutlined from "@ant-design/icons/EnvironmentOutlined";
 
 const ListPost = () => {
 

@@ -1,30 +1,20 @@
 "use client";
-
-import { RootState, AppDispatch } from "@/redux/store";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import "@/app/(pages)/(private)/styles/style.layout.css";
-import {
-  Button,
-  Collapse,
-  CollapseProps,
-  Flex,
-  Form,
-  Input,
-  Modal,
-  Upload,
-} from "antd";
+import Button from "antd/es/button";
+import Collapse from "antd/es/collapse";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import Modal from "antd/es/modal";
+import Upload from "antd/es/upload";
 import { PlusOutlined } from "@ant-design/icons";
 import {
   getUserInfo,
   updateUserInfo,
   changePassword,
-  removeAccount,
+  removeAccount
 } from "../../../../services/user/user.service";
-import {
-  useLoginMutation,
-  useLogoutMutation,
-} from "@/app/(auth)/auth/_services/auth.service";
+import { useLogoutMutation } from "@/app/(auth)/auth/_services/auth.service";
 
 const UserPage = () => {
   //const dispatch = useDispatch<AppDispatch>();

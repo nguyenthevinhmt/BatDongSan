@@ -2,7 +2,7 @@ import axios from "axios";
 import { RefreshTokenConfig } from "./authConfig";
 import { environment } from "../environment/environment";
 import { authConst } from "@/app/(auth)/auth/const/authConst";
-import { CookieService, saveToken } from "../services/cookies.service";
+import { CookieService } from "../services/cookies.service";
 import { CommonStatus } from "../consts/CommonStatus";
 import Cookies from "js-cookie";
 import { redirect } from "next/navigation";

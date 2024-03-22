@@ -1,6 +1,6 @@
 'use client'
-import { LoadingOutlined } from "@ant-design/icons";
-import { Modal, Spin, theme } from "antd";
+import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
+import Spin from "antd/es/spin";
 import React from "react";
 
 const LoadingComponent = () => {

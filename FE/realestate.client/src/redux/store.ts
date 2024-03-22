@@ -1,6 +1,12 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { 
+  combineReducers, 
+  configureStore 
+} from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
-import { authApi, loginApi } from "@/app/(auth)/auth/_services/auth.service";
+import { 
+  authApi, 
+  loginApi 
+} from "@/app/(auth)/auth/_services/auth.service";
 import { persistReducer } from "redux-persist";
 import registerReducer from "./slices/registerSlice";
 import {

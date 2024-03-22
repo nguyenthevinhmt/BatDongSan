@@ -1,13 +1,13 @@
 'use client';
 import React from 'react'
-import PaymentForm from '../components/payment-form'
-import { useEffect, useState } from 'react'
+import { 
+  useEffect, 
+  useState 
+} from 'react'
 import dynamic from 'next/dynamic';
 import isAuth from '@/app/isAuth';
 import { UserType } from '@/shared/consts/userType';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import { useSearchParams } from 'next/navigation';
 
 const WatchEditForm = dynamic(() => import('../components/watch-edit-form'), { ssr: false });
 

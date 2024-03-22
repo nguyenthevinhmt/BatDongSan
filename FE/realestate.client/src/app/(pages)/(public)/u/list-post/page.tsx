@@ -1,25 +1,19 @@
 "use client"
 import { useState, useEffect } from "react"
 import HeaderComponent from "@/components/shareLayout/header";
-import {
-    Avatar,
-    Flex,
-    Dropdown,
-    Tooltip,
-    Button,
-    Typography,
-    Col,
-    Card,
-    Divider,
-    Row
-} from 'antd';
+import Avatar from 'antd/es/avatar';
+import Flex from 'antd/es/flex';
+import Dropdown from 'antd/es/dropdown';
+import Tooltip from 'antd/es/tooltip';
+import Button from 'antd/es/button';
+import Typography from 'antd/es/typography';
+import Col from 'antd/es/col';
+import Card from 'antd/es/card';
+import Divider from 'antd/es/divider';
+import Row from 'antd/es/row';
 import Link from 'next/link';
-import {
-    LineOutlined,
-    EnvironmentOutlined,
-    ShareAltOutlined,
-    PhoneOutlined
-} from "@ant-design/icons";
+import LineOutlined from "@ant-design/icons/LineOutlined";
+import EnvironmentOutlined from "@ant-design/icons/EnvironmentOutlined";
 import { TiSocialFacebookCircular } from "react-icons/ti";
 import { SiZalo } from "react-icons/si";
 import { CiLink } from "react-icons/ci";

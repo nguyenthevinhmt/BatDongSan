@@ -1,4 +1,4 @@
-import { Breadcrumb } from "antd";
+import Breadcrumb from "antd/es/breadcrumb";
 import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
 import React from "react";
 

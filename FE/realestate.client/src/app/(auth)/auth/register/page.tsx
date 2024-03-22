@@ -1,6 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Flex, Form, Input, message } from "antd";
+import Button from "antd/es/button";
+import Form from "antd/es/form";
+import Input from "antd/es/input";
+import message from "antd/es/message";
+import Flex from "antd/es/flex";
 import {
   LockOutlined,
   MailOutlined,
@@ -10,8 +14,9 @@ import {
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "../_services/auth.service";
 import SpinComponent from "@/components/shareComponents/spinComponent";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateFormData } from "@/redux/slices/registerSlice";
+import { createWallet } from "@/services/wallet/wallet.service";
 
 type RegisterType = {
   username: string;

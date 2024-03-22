@@ -1,227 +1,285 @@
 "use client";
 import isAuth from '@/app/isAuth';
+import { getAllTransaction, walletInfo } from '@/services/wallet/wallet.service';
 import { UserType } from '@/shared/consts/userType';
-import { Form, TableColumnsType } from 'antd';
-import React, { use, useState } from 'react';
+import Button from 'antd/es/button';
+import Flex from 'antd/es/flex';
+import Form from 'antd/es/form';
+import List from 'antd/es/list';
+import Select from 'antd/es/select';
+import Table from 'antd/es/table';
+import { TableColumnsType } from 'antd';
+import React, { 
+  useEffect, 
+  useState 
+} from 'react';
+import WalletOutlined from '@ant-design/icons/WalletOutlined';
 
 interface ITransaction {
-    id: number;
-    walletID: number;
-    amount: number;
-    transactionNumber: string;
-    transactionType: number;
-    transactionFrom: string;
-    transactionTo: string;
-    description: string;
-    createDate: string;
+  id: number;
+  walletID: number;
+  amount: number;
+  transactionNumber: string;
+  transactionType: number;
+  transactionFrom: string;
+  transactionTo: string;
+  description: string;
+  createDate: Date;
+};
+
+interface IWalletTransaction {
+  WalletId: number;
+  TransactionType: number;
+  pageSize: number;
+  pageNumber: number;
+  keyWord: string;
+};
+
+interface IWallet {
+  id: number;
+  walletNumber: string;
+  balance: number;
+  userId: number;
+  userName: string;
 }
+
+const transactionType = [
+  {
+    value: 1,
+    label: "Nạp tiền",
+  },
+  {
+    value: 2,
+    label: "Rút tiền",
+  }
+]
+
 const WalletHistoryPage = () => {
-    // Add your component logic here
-    const [form] = Form.useForm<any>();
-    const [listPost, setListPost] = useState<ITransaction[]>([]);
-    const [totalItems, setTotalItems] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [change, setChange] = useState(false);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        const res = await findAll({ pageSize: 10, pageNumber: 1 });
-        const data = res?.data.items;
-        const posts: IPost[] = data.map((post: any) => ({
-          id: post.id,
-          title: post.title,
-          description: post.description,
-          rentalObject: post.rentalObject,
-          youtubeLink: post.youtubeLink,
-          postTypeId: post.postTypeId,
-          realEstateTypeId: post.realEstateTypeId,
-          status: post.status,
-          mediaUrl: post.firstImageUrl,
-        }));
-  
-        setListPost(posts);
-        setTotalItems(res?.data.totalItems);
-      };
-  
-      fetchData();
-    }, []);
-  
-    useEffect(() => {
-      handleSearch();
-    }, [change]);
-  
-    const columns: TableColumnsType<ITransaction> = [
-      {
-        title: "#ID",
-        width: 3,
-        dataIndex: "id",
-        key: "id",
-        fixed: "left",
-      },
-      {
-        title: "WalletId",
-        width: 100,
-        dataIndex: "walletId",
-        key: "walletId",
-      },
-      {
-        title: "Tiêu đề",
-        width: 40,
-        dataIndex: "title",
-        key: "title",
-      },
-      {
-        title: "Mô tả",
-        width: 100,
-        dataIndex: "description",
-        key: "description",
-        render: (text, record) => {
-          return record.description.length > 20
-            ? record.description.substring(0, 20) + "..."
-            : record.description;
-        }
-      },
-      {
-        title: "Loại bất động sản",
-        width: 170,
-        dataIndex: "realEstateTypeId",
-        key: "realEstateTypeId",
-        render: (realEstateTypeId: number) => {
-          const realEstateTypeItem = realEstateType.find(
-            (item) => item.value === realEstateTypeId
-          );
-          return realEstateTypeItem ? realEstateTypeItem.label : "";
-        },
-      },
-      {
-        title: "Loại bài đăng",
-        width: 50,
-        dataIndex: "postTypeId",
-        key: "postTypeId",
-        render: (postTypeId: number) => {
-          const postTypeItem = postType.find((item) => item.value === postTypeId);
-          return postTypeItem ? postTypeItem.label : "";
-        },
-      },
-      {
-        title: "Trạng thái",
-        width: 100,
-        dataIndex: "status",
-        key: "status",
-        fixed: "right",
-        render: (statusId: number) => {
-          const statusItem = Status.find((item) => item.value === statusId);
-            if (statusItem) {
-                if (statusItem.value === postStatus.INIT) {
-                    return <Tag icon={<ClockCircleOutlined />} color="default">khởi tạo</Tag>;
-                } else if (statusItem.value === postStatus.PENDING) {
-                    return <Tag icon={<SyncOutlined spin />} color="processing">chờ xử lý/ yêu cầu duyệt</Tag>;
-                } else if (statusItem.value === postStatus.POSTED) {
-                    return <Tag icon={<CheckCircleOutlined />} color="success">đã đăng</Tag>;
-                } else if (statusItem.value === postStatus.CANCEL) {
-                    return <Tag icon={<ExclamationCircleOutlined />} color="warning">hủy duyệt</Tag>;
-                } else {
-                    return <Tag icon={<MinusCircleOutlined />} color="error">đã gỡ</Tag>;
-                }
+  // Add your component logic here
+  const [form] = Form.useForm<any>();
+  const [listTransaction, setListTransaction] = useState<ITransaction[]>([]);
+  const [totalItems, setTotalItems] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [change, setChange] = useState(false);
+  const [wallet, setWallet] = useState<IWallet>();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      //lấy id ví ứng với người dùng hiện tại
+      const walletResponse = await walletInfo();
+      
+      setWallet({
+        id: walletResponse?.data.data.id,
+        walletNumber: walletResponse?.data.data.walletNumber,
+        balance: walletResponse?.data.data.balance,
+        userId: walletResponse?.data.data.userId,
+        userName: walletResponse?.data.data.userName
+      });
+      console.log("wallet", wallet);
+
+      //lấy thông tin giao dịch
+      if (walletResponse?.data.data.id) {
+        const res = await getAllTransaction({ WalletId: walletResponse?.data.data.id, pageSize: 10, pageNumber: 1 });
+        const data = res?.data.data.items;
+        const transactions: ITransaction[] = data?.map((trans: any) => (
+          {
+            id: trans.id,
+            walletId: trans.walletID,
+            amount: trans.amount,
+            transactionNumber: trans.transactionNumber,
+            description: trans.description,
+            transactionType: trans.transactionType,
+            transactionFrom: trans.transactionFrom,
+            transactionTo: trans.transactionTo,
+            createDate: trans.createDate
           }
-          else {
-              return "";
-          }
-          
-        },
+        ));
+
+        setListTransaction(transactions);
+        setTotalItems(res?.data.data.totalItems);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [change]);
+
+  const columns: TableColumnsType<ITransaction> = [
+    {
+      title: "#ID",
+      width: 30,
+      dataIndex: "id",
+      key: "id",
+      fixed: "left",
+    },
+    {
+      title: "Số tiền",
+      width: 70,
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "Mã giao dịch",
+      width: 100,
+      dataIndex: "transactionNumber",
+      key: "transactionNumber",
+    },
+    {
+      title: "Loại giao dịch",
+      width: 70,
+      dataIndex: "transactionType",
+      key: "transactionType",
+      render: (transType: number) => {
+        const transactionTypeItem = transactionType.find(
+          (item: any) => item.value === transType
+        );
+        return transactionTypeItem ? transactionTypeItem.label : "";
       },
-      {
-        title: "",
-        width: 50,
-        dataIndex: "action",
-        key: "action",
-        fixed: "right",
-        render: (text, record) => {
-          let items = [];
-          if (record.status === postStatus.INIT) {
-            items.push(actions[1]);
-            items.push(actions[2]);
-          } else if (record.status === postStatus.PENDING) {
-            items.push(actions[0]);
-            items.push(actions[1]);
-            items.push(actions[2]);
-          } else if (record.status === postStatus.POSTED) {
-            items.push(actions[1]);
-            items.push(actions[2]);
-          } else if (record.status === postStatus.CANCEL) {
-            items.push(actions[2]);
-          } else {
-            items.push(actions[2]);
-          }
-  
-          const menu = (
-            <Menu>
-              {items.map((item, index) => (
-                <Menu.Item key={index} onClick={() => item.onClick(record.id)}>
-                  {item.label}
-                </Menu.Item>
-              ))}
-            </Menu>
-          );
-  
-          return (
-            <Space size="middle">
-              <Dropdown overlay={menu} placement="bottomRight">
-                <a>
-                  <EllipsisOutlined style={{ fontSize: 25 }} />
-                </a>
-              </Dropdown>
-            </Space>
-          );
-        },
-      },
-    ];
-  
-    const handleSearch = async (pageNumber?: number, pageSize?: number) => {
+    },
+    {
+      title: "Giao dịch từ",
+      width: 70,
+      dataIndex: "transactionFrom",
+      key: "transactionFrom",
+    },
+    {
+      title: "Giao dịch đến",
+      width: 100,
+      dataIndex: "transactionTo",
+      key: "transactionTo",
+    },
+    {
+      title: "Thời gian giao dịch",
+      width: 50,
+      dataIndex: "createDate",
+      key: "createDate",
+    },
+  ];
+
+  const handleSearch = async (pageNumber?: number, pageSize?: number) => {
+    if (wallet?.id) {
       const values = form.getFieldsValue();
-      const res = await findAll({
+      const res = await getAllTransaction({
+        WalletId: wallet.id,
+        TransactionType: values.transactionType,
         pageSize: pageSize || -1,
         pageNumber: pageNumber || 1,
-        status: values.status,
-        postType: values.postTypeId,
-        realEstateType: values.realEstateTypeId,
-        keyword: values.keyword,
+        keyWord: "",
       });
-      const data = res?.data.items;
-      const posts: IPost[] = data.map((post: any) => ({
-        id: post.id,
-        title: post.title,
-        description: post.description,
-        rentalObject: post.rentalObject,
-        youtubeLink: post.youtubeLink,
-        postTypeId: post.postTypeId,
-        realEstateTypeId: post.realEstateTypeId,
-        status: post.status,
-        mediaUrl: post.firstImageUrl,
-      }));
-  
-      setListPost(posts);
-      setTotalItems(res?.data.totalItems);
-    };
-  
-    return (
-      <Flex justify="center" gap="small" vertical>
-        <div
-          style={{
+
+      const data = res?.data.data.items;
+      const transactions: ITransaction[] = data?.map((trans: any) => (
+        {
+          id: trans.id,
+          walletId: trans.walletID,
+          amount: trans.amount,
+          description: trans.description,
+          transactionNumber: trans.transactionNumber,
+          transactionType: trans.transactionType,
+          transactionFrom: trans.transactionFrom,
+          transactionTo: trans.transactionTo,
+          createDate: trans.createDate
+        }
+      ));
+
+      setListTransaction(transactions);
+      setTotalItems(res?.data.data.totalItems);
+    } else {
+      console.log("wallet is null");
+    }
+
+  };
+
+  return (
+    <div>
+      <Flex
+        justify='flex-start'
+        align='center'
+        style={{
+          backgroundColor: "#fff",
+          height: 70,
+          marginBottom: 10,
+          paddingLeft: 20,
+          borderRadius: 8,
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+        }}>
+        <div style={{
+          fontSize: 24,
+          fontWeight: "500",
+          marginBottom: 5,
+        }}>Thông tin số dư</div>
+      </Flex>
+      <Flex
+        justify='space-between'
+        gap='small'
+        style={{
+          borderRadius: 8,
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+        }}
+      >
+        <Flex style={{ width: '29.5%' }}>
+          <div style={{
             width: "100%",
+            height: "100%",
             margin: "auto",
             padding: 20,
             backgroundColor: "#fff",
             borderRadius: 8,
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            autoComplete="off"
-            onFinish={handleSearch}
+          }}>
+            <p
+              style={{
+                fontSize: 24,
+                fontWeight: "500",
+                marginBottom: 5,
+              }}
+            >
+              Thông tin ví
+            </p>
+            <List
+              itemLayout="vertical"
+              dataSource={wallet ? [wallet] : []}
+              renderItem={(item, index) => (
+                <List.Item key={item.id}>
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, fontSize: 16 }}>
+                    <div style={{ fontWeight: 'bold' }}>Tên:</div>
+                    <div>{item.userName}</div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, fontSize: 16 }}>
+                    <div style={{ fontWeight: 'bold' }}>Số ví:</div>
+                    <div>{item.walletNumber}</div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, fontSize: 16 }}>
+                    <div style={{ fontWeight: 'bold' }}>Balance</div>
+                    <div>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(item.balance)}</div>
+                  </div>
+                </List.Item>
+              )}
+            />
+            {
+              wallet?.id ?
+                <Button type="primary" style={{
+                  width: "100%",
+                }}
+                > <WalletOutlined /> Nạp tiền</Button> : null
+            }
+
+          </div>
+        </Flex>
+        <Flex justify="center" gap="small" vertical style={{ width: '70%' }}>
+          <div
+            style={{
+              width: "100%",
+              margin: "auto",
+              padding: 20,
+              backgroundColor: "#fff",
+              borderRadius: 8,
+              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+            }}
           >
             <p
               style={{
@@ -230,108 +288,69 @@ const WalletHistoryPage = () => {
                 marginBottom: 5,
               }}
             >
-              Danh sách bài đăng
+              Lịch sử giao dịch
             </p>
-  
-            <Flex justify="flex-start" align="flex-end">
-              <Form.Item
-                name="keyword"
-                label={<strong>Từ khóa</strong>}
-                style={{ marginRight: 10 }}
-              >
-                <Input placeholder="Tìm theo tiêu đề" onChange={() => setChange(!change)}/>
-              </Form.Item>
-  
-              <Form.Item
-                name="realEstateTypeId"
-                label={<strong>Loại bất động sản</strong>}
-                style={{ marginRight: 10 }}
-              >
-                <Select
-                  defaultValue={realEstateType[0].value}
-                  placeholder="Chọn loại bất động sản"
-                  options={realEstateType}
-                  onChange={() => setChange(!change)}
-                />
-              </Form.Item>
-  
-              <Form.Item
-                name="postTypeId"
-                label={<strong>Loại bài đăng</strong>}
-                style={{ marginRight: 10 }}
-              >
-                <Select
-                  defaultValue={postType[0].value}
-                  placeholder="Chọn loại bài đăng"
-                  options={postType}
-                  onChange={() => setChange(!change)}
-                />
-              </Form.Item>
-  
-              <Form.Item
-                name="status"
-                label={<strong>Trạng thái bài đăng</strong>}
-                style={{ marginRight: 10 }}
-              >
-                <Select
-                  defaultValue={Status[0].value}
-                  showSearch
-                  placeholder="Chọn loại trạng thái bài đăng"
-                  options={Status}
-                  onChange={() => setChange(!change)}
-                />
-              </Form.Item>
-  
-              <Form.Item style={{}}>
-                <Button
-                  style={{
-                    padding: "0 15px",
-                    color: "white",
-                    backgroundColor: "rgb(224, 60, 49)",
-                    border: "none",
-                  }}
-                  type="primary"
-                  htmlType="submit"
+            <Form
+              form={form}
+              layout="horizontal"
+              autoComplete="off"
+              onFinish={handleSearch}
+            >
+              <Flex justify="flex-start" align="flex-end">
+                <Form.Item
+                  name="transactionType"
+                  label={<strong>Loại giao dịch</strong>}
+                  style={{ marginRight: 10 }}
                 >
-                  Tìm kiếm
-                </Button>
-              </Form.Item>
-            </Flex>
-          </Form>
-  
-          <div>
-            <Table
-              columns={columns}
-              pagination={{
-                position: ["none", "bottomCenter"],
-                pageSize: pageSize,
-                showSizeChanger: true,
-                pageSizeOptions: ["10", "20", "30", "40"],
-                total: totalItems,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} items`, // Show total number of records and current display range
-                itemRender: (current, type, originalElement) => {
-                  if (type === "prev") {
-                    return <a>Previous</a>;
-                  }
-                  if (type === "next") {
-                    return <a>Next</a>;
-                  }
-                  return originalElement;
-                },
-                onChange: (pageNumber, pageSize) => {
-                  setPageNumber(pageNumber);
-                  setPageSize(pageSize);
-                  handleSearch(pageNumber, pageSize);
-                },
-              }}
-              dataSource={listPost}
-              scroll={{ x: "max-content" }}
-            />
+                  <Select
+                    allowClear={true}
+                    placeholder="Tất cả"
+                    options={transactionType}
+                    onChange={() => setChange(!change)}
+                  />
+                </Form.Item>
+              </Flex>
+            </Form>
+
+            <div>
+              <Table
+                // style={{
+                //   maxHeight: '300px',
+                // }}
+                columns={columns}
+                pagination={{
+                  position: ["none", "bottomCenter"],
+                  pageSize: pageSize,
+                  showSizeChanger: true,
+                  pageSizeOptions: ["10", "20", "30", "40"],
+                  total: totalItems,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} items`, // Show total number of records and current display range
+                  itemRender: (current, type, originalElement) => {
+                    if (type === "prev") {
+                      return <a>Previous</a>;
+                    }
+                    if (type === "next") {
+                      return <a>Next</a>;
+                    }
+                    return originalElement;
+                  },
+                  onChange: (pageNumber, pageSize) => {
+                    setPageNumber(pageNumber);
+                    setPageSize(pageSize);
+                    handleSearch(pageNumber, pageSize);
+                  },
+                }}
+                dataSource={listTransaction}
+                scroll={{ x: window.innerWidth * 0.7, y: 300 }}
+              />
+            </div>
           </div>
-        </div>
+        </Flex>
       </Flex>
-    );
+    </div>
+
+  );
 };
 
 export default isAuth(WalletHistoryPage, [UserType.ADMIN, UserType.CUSTOMER]);

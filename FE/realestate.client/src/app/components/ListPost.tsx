@@ -1,7 +1,16 @@
-"use client"
-import { Card, Flex, Button, Row, Col, Typography } from "antd";
-import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
-import React, { useState, useEffect } from "react";
+import Flex from "antd/es/flex";
+import Button from "antd/es/button";
+import Row from "antd/es/row";
+import Col from "antd/es/col";
+import Typography from "antd/es/typography";
+import { 
+  IoIosArrowDown, 
+  IoIosArrowForward 
+} from "react-icons/io";
+import React, { 
+  useState, 
+  useEffect 
+} from "react";
 import PostCard from "@/components/public/post";
 import Link from "next/link";
 import { recommendPost } from "@/services/post/post.service";

@@ -1,6 +1,8 @@
-"use client"
-import React, { useState } from 'react'
-import { Button, Divider, Flex, Tooltip } from 'antd'
+import React, { useState } from 'react';
+import Button from 'antd/lib/button';
+import Divider from 'antd/lib/divider';
+import Flex from 'antd/es/flex';
+import Tooltip from 'antd/lib/tooltip';
 import { Carousel } from '../carousel/carousel'
 import LabelCardHorizon from '../HOC/LabelCardHorizon'
 import { OptionConst } from '@/shared/consts/PostOption.const'

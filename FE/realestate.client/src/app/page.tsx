@@ -1,8 +1,9 @@
 "use client"
 import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
-import React, { useState } from "react";
-import { Flex, Layout } from "antd";
+import React from "react";
+import Flex from "antd/es/flex";
+import Layout from "antd/es/layout";
 import SearchComponent from "@/components/public/search";
 import ListPost from "./components/ListPost";
 import Footer from "@/components/shareLayout/footer";
