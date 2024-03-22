@@ -364,7 +364,7 @@ const ManagePost = () => {
           actions[1].accept.includes(role) && items.push(actions[1]);
           actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.POSTED) {
-          actions[1].accept.includes(role) && items.push(actions[1]);
+          //actions[1].accept.includes(role) && items.push(actions[1]);
           actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.CANCEL) {
           actions[2].accept.includes(role) && items.push(actions[2]);

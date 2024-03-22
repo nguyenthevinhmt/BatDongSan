@@ -41,3 +41,15 @@ export const getAllTransaction = async (info: IWalletTransaction) => {
         console.log("Gọi api lấy lịch sử giao dịch bị lỗi", error);
     }
 };
+
+export const createWallet = async (userId: any) => {
+    try {
+        const response = await axiosInstance.post(
+            `${environment.baseUrl}/api/wallet/create?userId=${userId}`);
+        if (response.status === HTTP_STATUS_CODE.OK) {
+            return response;
+        }
+    } catch (error) {
+        console.log("Gọi api tạo ví bị lỗi", error);
+    }
+};
