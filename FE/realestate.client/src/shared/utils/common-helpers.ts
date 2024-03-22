@@ -28,26 +28,32 @@ export function formatVietnameseToString(str: string) {
   return str;
 }
 //get time ago
-export function formatDate(date: any) {
-  const today: any = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+export function formatDate(timestamp: any) {
+  const now: any = new Date();
+  const postDate: any = new Date(timestamp);
+  const timeDiff = now - postDate;
+  const seconds = Math.floor(timeDiff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+  const weeks = Math.floor(days / 7);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(days / 365);
 
-  const postDate: any = new Date(date);
-  const elapsedDays = Math.floor((today - postDate) / (1000 * 60 * 60 * 24));
-  const elapsedWeeks = Math.floor(elapsedDays / 7);
-  const elapsedMonths = Math.floor(elapsedDays / 30);
-
-  if (postDate.toDateString() === today.toDateString()) {
-    return "Đăng hôm nay";
-  } else if (postDate.toDateString() === yesterday.toDateString()) {
-    return "Đăng hôm qua";
-  } else if (elapsedDays <= 7) {
-    return `Đăng ${elapsedDays} ngày trước`;
-  } else if (elapsedWeeks <= 4) {
-    return `Đăng ${elapsedWeeks} tuần trước`;
+  if (years > 0) {
+    return `Đăng ${years} năm trước`;
+  } else if (months > 0) {
+    return `Đăng ${months} tháng trước`;
+  } else if (weeks > 0) {
+    return `Đăng ${weeks} tuần trước`;
+  } else if (days > 0) {
+    return `Đăng ${days} ngày trước`;
+  } else if (hours > 0) {
+    return `Đăng ${hours} giờ trước`;
+  } else if (minutes > 0) {
+    return `Đăng ${minutes} phút trước`;
   } else {
-    return `Đăng ${elapsedMonths} tháng trước`;
+    return `Vừa đăng`;
   }
 }
 
@@ -62,4 +68,19 @@ export function classificationPostType(type: any) {
     case type = 4 || '4':
       return "Tin VIP Kim cương"
   }
-} 
+}
+function isInteger(number: any) {
+  return number % 1 === 0;
+}
+export function formatCurrency(amount: any) {
+  const suffixes = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "nghìn triệu tỷ"];
+  let suffixIndex = 0;
+
+  while (amount >= 1000 && suffixIndex < suffixes.length - 1) {
+    amount /= 1000;
+    suffixIndex++;
+  }
+
+  const formattedAmount = isInteger(amount) ? amount.toFixed(0) : amount.toFixed(2);
+  return `${formattedAmount} ${suffixes[suffixIndex]}`;
+}

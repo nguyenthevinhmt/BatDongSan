@@ -452,6 +452,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 wallet.Balance = wallet.Balance - TotalAmount;
             }
+            _dbContext.SaveChanges();
 
             if (post.PostStartDate >= DateTime.Now.Date)
             {
@@ -540,7 +541,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 TotalItems = query.Count(),
             };
-            query = query.OrderByDescending(c => c.PostStartDate).ThenByDescending(c => c.CreatedDate);
+            query = query.OrderByDescending(c => c.CreatedDate).ThenByDescending(c => c.Options);
             if (input.PageSize != -1)
             {
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
@@ -598,7 +599,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 TotalItems = query.Count(),
             };
-            query = query.OrderByDescending(c => c.ModifiedDate);
+            query = query.OrderByDescending(c => c.PostStartDate).ThenByDescending(c => c.ApproveAt);
             if (input.PageSize != -1)
             {
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);

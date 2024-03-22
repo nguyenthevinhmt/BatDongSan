@@ -1,0 +1,14 @@
+# pip install -r requirements.txt
+vietocr
+uvicorn==0.23.2
+fastapi
+pylibsrtp
+databases
+yolov5
+yolov8
+aiosqlite
+python-multipart
+Jinja2
+shapely==2.0.1
+ultralytics
+pillow==9.5.0

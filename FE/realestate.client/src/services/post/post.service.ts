@@ -344,7 +344,7 @@ interface UpdateMediaType {
   mediaUrl: string;
 }
 
-export const updatePost = async (info: IUpdatePost) => { 
+export const updatePost = async (info: IUpdatePost) => {
   try {
     const response = await axiosInstance.put(
       `${environment.baseUrl}/api/post/update`,
@@ -398,6 +398,24 @@ export const SearchPost = async (param: any) => {
     return null;
   }
 }
+
+export const GetListPostNewest = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/find-all-newest`, {
+      params: {
+        pageSize: 10,
+        pageNumber: 1
+      }
+    }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api danh sách bài viết mới nhất bị lỗi!!!");
+    return null;
+  }
 }
 
 export const findAllPersonal = async (info: IFindAllPost) => {

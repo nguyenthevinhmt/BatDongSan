@@ -6,7 +6,7 @@ import React from 'react'
 const ResultSearch = ({ post }: any) => {
     return (
         <>
-            {true ? <div style={{ width: '1300px' }}>
+            {post ? <div style={{ width: '1300px' }}>
                 <ListPost />
             </div> :
                 <>

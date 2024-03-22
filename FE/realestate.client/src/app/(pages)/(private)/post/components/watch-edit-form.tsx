@@ -149,7 +149,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     useEffect(() => {
         const fetchDetailPost = async () => {
             const response = await getById(postId);
-            const data = response?.data.data;
+            const data = response?.data;
+            console.log("data", data)
             const post: IPost = {
                 title: data?.title,
                 description: data?.description,
@@ -175,7 +176,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
             };
             setListMediaId(data.medias.map((item: any) => item.id) || []);
             setListMedia(post.listMedia || []);
-            setFileList(data.medias?.map((item: any) => ({
+            setFileList(data?.medias?.map((item: any) => ({
                 uid: item.id,
                 name: item.name,
                 status: "done",

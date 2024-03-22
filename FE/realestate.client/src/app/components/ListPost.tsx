@@ -2,23 +2,23 @@ import Flex from "antd/es/flex";
 import Button from "antd/es/button";
 import Row from "antd/es/row";
 import Col from "antd/es/col";
-import Typography from "antd/es/typography";
-import { 
-  IoIosArrowDown, 
-  IoIosArrowForward 
+import {
+  IoIosArrowDown,
+  IoIosArrowForward
 } from "react-icons/io";
-import React, { 
-  useState, 
-  useEffect 
+import React, {
+  useState,
+  useEffect
 } from "react";
 import PostCard from "@/components/public/post";
 import Link from "next/link";
 import { recommendPost } from "@/services/post/post.service";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
-const ListPost = ({ post }: any) => {
+const ListPost = () => {
   const [loading, setLoading] = useState(false);
-  const [heart, setHeart] = useState(true);
-  const [listPost, setListPost] = useState<any>([]);
+  // const [heart, setHeart] = useState(true);
+  const [listPost, setListPost] = useState<any[]>([]);
   const [statusLoadmore, setStatusLoadmore] = useState(true);
   const [visibleProducts, setVisibleProducts] = useState(8);
   const [pageNumber, setPageNumber] = useState(1);
@@ -33,11 +33,14 @@ const ListPost = ({ post }: any) => {
         pageNumber: pageNumber,
       };
       const response = await recommendPost(params);
-      setListPost((prev: any) => {
-        return [...listPost,
-        ...response.data?.items]
-      })
-      setLoading(false)
+      if (response?.code === HTTP_STATUS_CODE.OK) {
+        await setListPost(() => {
+          return [...listPost,
+          ...(response?.data?.items || [])]
+        })
+        setLoading(false)
+
+      }
       return response;
     };
     fetchPublicPost();
@@ -62,8 +65,8 @@ const ListPost = ({ post }: any) => {
           {listPost?.map((item: any) => {
             return (
               <Col span={6} key={Math.random()}>
-                <Link href={`posts/detail/${item?.id}`}>
-                  <PostCard option={item?.options} loading={loading} />
+                <Link href={`/home/post/detail/${item?.id}`}>
+                  <PostCard data={item} option={item?.options} loading={loading} />
                 </Link>
               </Col>
             );
