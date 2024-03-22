@@ -150,9 +150,9 @@ const Page = () => {
               color: "#2C2C2C",
               marginBottom: "10px"
             }}>Thông tin mô tả chi tiết</h1>
-            <p style={{ marginBottom: '50px' }}>
+            <div style={{ marginBottom: '50px', whiteSpace: "pre-line" }}>
               {data?.description}
-            </p>
+            </div>
             <h1 id="part-2" style={{
               fontSize: "18px",
               margin: "40px 0 10px 0",
