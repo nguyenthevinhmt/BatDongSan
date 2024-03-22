@@ -8,6 +8,13 @@ import Card from 'antd/es/card';
 import Row from 'antd/es/row';
 import LineOutlined from "@ant-design/icons/LineOutlined";
 import EnvironmentOutlined from "@ant-design/icons/EnvironmentOutlined";
+import Space from "antd/es/space";
+import React from "react";
+import Divider from "antd/es/divider";
+import List from "antd/es/list";
+import Avatar from "antd/es/avatar";
+import HeartOutlined from "@ant-design/icons/HeartOutlined";
+import Button from "antd/es/button";
 
 const ListPost = () => {
 

@@ -159,7 +159,7 @@ const ListPost = () => {
           dataSource={data}
           footer={
             <div>
-              <b>dm</b> batdongsan
+              {/* <b>dm</b> batdongsan */}
             </div>
           }
           renderItem={(item, i) => (
@@ -228,12 +228,3 @@ const ListPost = () => {
   )
 }
 export default ListPost
-
-
-
-var styleButton: any = {
-  fontFamily: "Lexend Medium, Roboto, Arial",
-  background: '#009BA1',
-  color: '#fff',
-  marginTop: "8px"
-}
