@@ -1,20 +1,14 @@
 import ListPost from '@/app/components/ListPost'
-import { SmileOutlined } from '@ant-design/icons'
-import { Flex, Result } from 'antd'
 import React from 'react'
+import ListPostResult from './ListPostResult'
 
 const ResultSearch = ({ post }: any) => {
     return (
         <>
             {post ? <div style={{ width: '1300px' }}>
-                <ListPost />
+                <ListPostResult data={post} />
             </div> :
-                <>
-                    <Result
-                        icon={<SmileOutlined />}
-                        title="Không tìm thấy kết quả nào phù hợp với từ khóa bạn tìm kiếm"
-                    />
-                </>}
+                <ListPost />}
         </>
     )
 }

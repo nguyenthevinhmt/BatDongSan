@@ -48,7 +48,7 @@ const App = () => {
           }}
         >
           <ListPost />
-          <ListPostHorizon />
+          <ListPostHorizon isShowHeader={true} />
 
           <div style={{ margin: '60px 0px' }}>
             <RealEstateByLocation />
@@ -59,8 +59,4 @@ const App = () => {
     </>
   );
 };
-const AppPage = () => {
-  return withTheme(<App />);
-};
-
-export default AppPage;
+export default App;

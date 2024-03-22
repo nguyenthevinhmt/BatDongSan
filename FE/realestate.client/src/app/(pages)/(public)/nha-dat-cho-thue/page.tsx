@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SearchPost } from "@/services/post/post.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-import HighlightPost from "@/components/public/LayoutComponent/HighlightPost";
 import { Flex } from "antd";
 import ResultSearch from "@/components/public/result";
 import RecommendPost from "@/components/public/LayoutComponent/HighlightPost";

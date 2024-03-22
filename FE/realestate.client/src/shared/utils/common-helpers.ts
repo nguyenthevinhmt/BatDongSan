@@ -72,7 +72,10 @@ export function classificationPostType(type: any) {
 function isInteger(number: any) {
   return number % 1 === 0;
 }
-export function formatCurrency(amount: any) {
+export function formatCurrency(amount?: any) {
+  if (!amount) {
+    return null;
+  }
   const suffixes = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "nghìn triệu tỷ"];
   let suffixIndex = 0;
 

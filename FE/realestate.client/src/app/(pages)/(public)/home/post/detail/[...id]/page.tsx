@@ -29,7 +29,7 @@ import { getById } from "@/services/post/post.service";
 import { Carousel } from "@/components/public/carousel/carousel";
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
-import { classificationPostType } from "@/shared/utils/common-helpers";
+import { classificationPostType, formatCurrency } from "@/shared/utils/common-helpers";
 import Image from "next/image";
 const { Paragraph } = Typography;
 
@@ -175,7 +175,7 @@ const Page = () => {
                 <Flex>
                   <TbCurrencyDong style={{ fontSize: "34px" }} />
                   <p style={styleIcon}>
-                    Mức giá<span style={{ marginLeft: "122px", fontWeight: "400" }}>{data?.price}</span>
+                    Mức giá<span style={{ marginLeft: "122px", fontWeight: "400" }}>{formatCurrency(data?.price)}</span>
                   </p>
                 </Flex>
                 <Divider style={{ margin: "10px 0" }} />

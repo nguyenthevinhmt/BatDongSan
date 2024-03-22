@@ -23,7 +23,7 @@ const Page = () => {
       Object.entries(params).filter(([_, value]) => value !== undefined)
     );
     const searchPost = async (param: any) => {
-      const res = await SearchPost(filteredParams);
+      const res = await SearchPost(param);
       if (res.code === HTTP_STATUS_CODE.OK) {
         await setData(res?.data)
       }

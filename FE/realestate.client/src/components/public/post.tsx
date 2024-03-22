@@ -11,7 +11,7 @@ import { OptionConst } from "@/shared/consts/PostOption.const";
 import Image from "next/image";
 import { FaRegHeart } from "react-icons/fa";
 import dayjs from "dayjs";
-import { formatDate } from "@/shared/utils/common-helpers";
+import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
 
 const PostCard = ({
   option,
@@ -64,14 +64,14 @@ const PostCard = ({
             fontWeight: 500,
           }}
         >
-          Giá thỏa thuận <LineOutlined /> <span>{data?.area} m²</span>
+          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} - <span>{data?.area} m²</span>
         </span>
         <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px" }}>
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           {`${data.district}, ${data.province}`}
         </p>
         <Flex justify="space-between" align="center">
-          <Tooltip placement="bottom" title={dayjs(data?.createDate).format("DD/MM/YYYY")} color={"#423e3e"}>
+          <Tooltip placement="bottom" title={dayjs(data?.createdDate).format("DD/MM/YYYY")} color={"#423e3e"}>
             <span
               style={{
                 color: "#999",
@@ -117,7 +117,7 @@ const PostCard = ({
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
               alt="#"
-              src="https://res.cloudinary.com/deurdoich/image/upload/v1710727579/DATN/l73ifg1hsmsdf8mx44xg.jpg"
+              src={data?.firstImageUrl}
             />
           )
         }
@@ -142,9 +142,9 @@ const PostCard = ({
             fontWeight: 500,
           }}
         >
-          Giá thỏa thuận <LineOutlined /> <span>{data?.area} m²</span>
+          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} - <span>{data?.area} m²</span>
         </span>
-        <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px" }}>
+        <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px", fontFamily: '__Lexend_126e48, __Lexend_Fallback_126e48' }}>
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           {`${data.district}, ${data.province}`}
         </p>
@@ -155,6 +155,7 @@ const PostCard = ({
                 color: "#999",
                 fontSize: "13px",
                 marginBottom: "4px",
+                fontFamily: '__Lexend_126e48, __Lexend_Fallback_126e48'
               }}
             >
               {formatDate(dayjs(data?.createdDate))}

@@ -7,6 +7,7 @@ import { Metadata } from "next";
 import CommontLayout from "@/components/commonLayout/CommontLayout";
 import ToastProvider from "@/shared/provider/toast.provider";
 import { Lexend } from 'next/font/google'
+import StyledComponentsRegistry from "./AntdRegistry";
 
 export const metadata: Metadata = {
   title: "Batdongsan.com",
@@ -22,7 +23,7 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => (
   <html lang="en">
     <body className={lexend.className}>
       <link rel="icon" href="../../favicon_io/favicon.ico" sizes="any" />
-      <AntdRegistry>
+      <StyledComponentsRegistry>
         <StoreProvider>
           <CommontLayout>
             <ToastProvider>
@@ -30,7 +31,7 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => (
             </ToastProvider>
           </CommontLayout>
         </StoreProvider>
-      </AntdRegistry>
+      </StyledComponentsRegistry>
     </body>
   </html>
 );
