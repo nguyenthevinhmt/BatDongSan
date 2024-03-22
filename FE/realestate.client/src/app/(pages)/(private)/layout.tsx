@@ -66,7 +66,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     getItem("Quản lý tài chính", "wallet/manager", <MailOutlined />, [
       getItem("Thông tin số dư", "5"),
       getItem(<Link href={"/wallet/history"}>Lịch sử giao dịch</Link>, "wallet/history"),
-      getItem("Nạp tiền", "7"),
+      getItem(<Link href={"/wallet/recharge"}>Nạp tiền</Link>, "wallet/recharge"),
     ]),
 
     getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [

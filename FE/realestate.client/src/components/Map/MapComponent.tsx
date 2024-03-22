@@ -15,7 +15,7 @@ const MapComponent = ({ prop }: any) => {
       if (prop?.latitude !== 0 && prop?.longitude !== 0) {
         onMapReady();
       }
-    }, 500);
+    }, 1000);
     return () => { clearTimeout(timeoutId) }
   }, [prop]);
   return (

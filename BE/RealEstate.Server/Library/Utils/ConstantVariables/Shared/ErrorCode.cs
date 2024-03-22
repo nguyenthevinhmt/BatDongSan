@@ -39,6 +39,7 @@
         TransactionNotFound = 4001,
         UserHasBeenCreatedWallet = 4002,
         InsufficientAccountBalance = 4003,
+        TransactionExisted = 4004,
 
         //Bank Account
         BankAccountTypeIsExist = 5000,

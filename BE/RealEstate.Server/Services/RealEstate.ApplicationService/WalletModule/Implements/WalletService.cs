@@ -116,7 +116,11 @@ namespace RealEstate.ApplicationService.WalletModule.Implements
         {
             var currentUserWallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber) 
                                     ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
+
             currentUserWallet.Balance += input.TransactionAmount;
+            if (_dbContext.Transactions.Any(c => c.TransactionNumber == input.TransactionNumber)) {
+                throw new UserFriendlyException(ErrorCode.TransactionExisted);
+            }
 
             var transaction = new Transaction()
             {

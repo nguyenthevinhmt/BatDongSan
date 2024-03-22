@@ -321,7 +321,7 @@ const ManagePost = () => {
           } else if (statusItem.value === postStatus.PENDING) {
             return (
               <Tag icon={<SyncOutlined spin />} color="warning">
-                Chờ xử lý/ yêu cầu duyệt
+                Chờ xử lý
               </Tag>
             );
           } else if (statusItem.value === postStatus.POSTED) {
@@ -350,7 +350,7 @@ const ManagePost = () => {
     },
     {
       title: "",
-      width: 50,
+      width: 20,
       dataIndex: "action",
       key: "action",
       fixed: "right",

@@ -17,7 +17,7 @@
 		<text name="error_WalletNotFound">Wallet not found</text>
 		<text name="error_TransactionNotFound">Transaction not found</text>
 		<text name="error_UserHasBeenCreatedWallet">Wallet has been created</text>
-
+		<text name="error_TransactionExisted">Transaction is existed</text>
 
 
 	</texts>

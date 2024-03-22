@@ -31,7 +31,6 @@ import React, {
 } from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import BingMapsReact from "bingmaps-react";
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -42,6 +41,9 @@ import {
     getProvinces, 
     getWards 
 } from "@/services/post/address.service";
+import { postStatus } from "@/shared/consts/postStatus";
+import MapComponent from "@/components/Map/MapComponent";
+
 
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
@@ -682,34 +684,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                             </Form.Item>
                             {showMap && (
                                 <Flex justify="center">
-                                    <BingMapsReact
-                                        bingMapsKey={environment.BingMapsApiKey}
-                                        height={270}
-                                        width={850}
-                                        pushPins={
-                                            bingMapReady
-                                                ? [
-                                                    {
-                                                        center: {
-                                                            latitude: coordinates.latitude,
-                                                            longitude: coordinates.longitude,
-                                                        },
-                                                    },
-                                                ]
-                                                : null
-                                        }
-                                        viewOptions={{
-                                            center: {
-                                                latitude: coordinates.latitude,
-                                                longitude: coordinates.longitude,
-                                            },
-                                            mapTypeId: "road",
-                                            zoom: 16,
-                                        }}
-                                        onMapReady={() => {
-                                            setBingMapReady(true);
-                                        }}
-                                    />
+                                    <MapComponent prop={coordinates} />
                                 </Flex>
                             )}
                             <div
@@ -1045,19 +1020,24 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                                 </Button>
                                             </Form.Item>
 
-                                            <Form.Item>
-                                                <Button
-                                                    style={{
-                                                        padding: "0 15px",
-                                                        color: "white",
-                                                        backgroundColor: "rgb(224, 60, 49)",
-                                                        border: "none",
-                                                    }}
-                                                    htmlType="submit"
-                                                >
-                                                    Tiếp tục
-                                                </Button>
-                                            </Form.Item>
+                                            {
+                                                (status !== postStatus.POSTED || postStatus.PENDING) ?
+                                                    <></>
+                                                    :
+                                                    <Form.Item>
+                                                        <Button
+                                                            style={{
+                                                                padding: "0 15px",
+                                                                color: "white",
+                                                                backgroundColor: "rgb(224, 60, 49)",
+                                                                border: "none",
+                                                            }}
+                                                            htmlType="submit"
+                                                        >
+                                                            Tiếp tục
+                                                        </Button>
+                                                    </Form.Item>
+                                            }
                                         </div>
                                     </div> :
                                     <div

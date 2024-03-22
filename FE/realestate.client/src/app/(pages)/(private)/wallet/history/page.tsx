@@ -9,11 +9,14 @@ import List from 'antd/es/list';
 import Select from 'antd/es/select';
 import Table from 'antd/es/table';
 import { TableColumnsType } from 'antd';
-import React, { 
-  useEffect, 
-  useState 
+import React, {
+  useEffect,
+  useState
 } from 'react';
 import WalletOutlined from '@ant-design/icons/WalletOutlined';
+import { useRouter } from 'next/navigation';
+import dayjs from 'dayjs';
+
 
 interface ITransaction {
   id: number;
@@ -63,12 +66,13 @@ const WalletHistoryPage = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [change, setChange] = useState(false);
   const [wallet, setWallet] = useState<IWallet>();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       //lấy id ví ứng với người dùng hiện tại
       const walletResponse = await walletInfo();
-      
+
       setWallet({
         id: walletResponse?.data.data.id,
         walletNumber: walletResponse?.data.data.walletNumber,
@@ -121,6 +125,7 @@ const WalletHistoryPage = () => {
       width: 70,
       dataIndex: "amount",
       key: "amount",
+      render: (amount: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(amount),
     },
     {
       title: "Mã giao dịch",
@@ -154,9 +159,10 @@ const WalletHistoryPage = () => {
     },
     {
       title: "Thời gian giao dịch",
-      width: 50,
+      width: 100,
       dataIndex: "createDate",
       key: "createDate",
+      render: (createDate: Date) => dayjs(createDate).format('HH:mm DD/MM/YYYY')
     },
   ];
 
@@ -191,8 +197,11 @@ const WalletHistoryPage = () => {
     } else {
       console.log("wallet is null");
     }
-
   };
+
+  const handleRecharge = () => {
+    router.push("/wallet/recharge");
+  }
 
   return (
     <div>
@@ -262,10 +271,14 @@ const WalletHistoryPage = () => {
             />
             {
               wallet?.id ?
-                <Button type="primary" style={{
-                  width: "100%",
-                }}
-                > <WalletOutlined /> Nạp tiền</Button> : null
+                <Button
+                  type="primary"
+                  style={{
+                    width: "100%",
+                  }}
+                  onClick={handleRecharge}
+                > <WalletOutlined /> Nạp tiền</Button>
+                : null
             }
 
           </div>

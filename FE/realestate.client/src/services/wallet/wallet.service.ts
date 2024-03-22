@@ -53,3 +53,22 @@ export const createWallet = async (userId: any) => {
         console.log("Gọi api tạo ví bị lỗi", error);
     }
 };
+
+interface IWalletRecharge {
+    walletNumber: string;
+    transactionAmount: number;
+    transactionNumber: string;
+    transactionFrom: string;
+}
+export const rechangeWallet = async (payload: IWalletRecharge) => {
+    try {
+        const response = await axiosInstance.post(
+            `${environment.baseUrl}/api/wallet/recharge`, payload
+        );
+        if (response.status === HTTP_STATUS_CODE.OK) {
+            return response?.data;
+        }
+    } catch (error) {
+        console.log("Gọi api nạp tiền vào ví bị lỗi", error);
+    }
+};

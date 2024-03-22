@@ -19,6 +19,7 @@
 		<text name="error_WalletNotFound">Không tìm thấy thông tin ví cá nhân</text>
 		<text name="error_TransactionNotFound">Không tìm thấy thông tin lịch sử giao dịch</text>
 		<text name="error_UserHasBeenCreatedWallet">Người dùng đã tạo ví cá nhân</text>
+		<text name="error_TransactionExisted">Mã giao dịch đã tồn tại</text>
 		
 	</texts>
 </localizationDictionary>
