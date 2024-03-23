@@ -56,6 +56,11 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="input"></param>
         void UpdateStatus(UpdatePostStatusDto input);
         /// <summary>
+        /// Hủy duyệt bài
+        /// </summary>
+        /// <param name="id"></param>
+        void CancelRequest(int id);
+        /// <summary>
         /// Danh sách bài viết cá nhân 
         /// </summary>
         /// <param name="input"></param>

@@ -22,6 +22,7 @@ using RealEstate.Utils.CustomException;
 using RealEstate.Utils.Linq;
 using RealEstate.Utils.Localization;
 using SixLabors.ImageSharp;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Media = RealEstate.Domain.Entities.Media;
 
@@ -386,8 +387,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         }
         public void ApprovePost(int id)
         {
+            var currentUserId = _httpContext.GetCurrentUserId();
             var post = _dbContext.Posts.FirstOrDefault(p => p.Status == PostStatuses.PENDING && p.Id == id && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.POSTED;
+            post.ApproveAt = DateTime.Now;
+            post.ApproveBy = currentUserId;
             if (post.PostEndDate.Date >= DateTime.Now.Date)
             {
                 var jobId = BackgroundJob.Schedule<IPostService>(
@@ -482,6 +486,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 TransactionTo = "Tai khoan he thong",
                 WalletID = wallet.Id,
                 CreateDate = DateTime.Now,
+                PostId = post.Id
             };
             _dbContext.Transactions.Add(payloadToTransaction);
             transactions.Commit();
@@ -714,6 +719,33 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             }
             result.Items = query;
             return result;
+        }
+        public void CancelRequest(int id)
+        {
+            var post = _dbContext.Posts.FirstOrDefault(c => c.Id == id) 
+                        ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            post.Status = PostStatuses.CANCEL;
+            post.IsPayment = false;
+            var transaction = _dbContext.Transactions.FirstOrDefault(c => c.PostId == id) 
+                        ?? throw new UserFriendlyException(ErrorCode.TransactionNotFound);
+            var wallet = _dbContext.Wallets.FirstOrDefault(c => c.UserId == post.UserId)
+                        ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
+            wallet.Balance = wallet.Balance + transaction.Amount;
+            
+            var withDrawTransaction = new Transaction()
+            {
+                Amount = transaction.Amount,
+                Description = $"Thanh toan huy duyet bai. So tien giao dich {transaction.Amount}",
+                TransactionFrom = "Tai khoan he thong",
+                TransactionType = TransactionType.INPUT,
+                TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmssfff"),
+                TransactionTo = wallet.WalletNumber,
+                WalletID = wallet.Id,
+                CreateDate = DateTime.Now,
+                PostId = post.Id
+            };
+            _dbContext.Transactions.Add(withDrawTransaction);
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// <summary>
         /// Trạng thái
         /// </summary>
-        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.PENDING })]
+        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.PENDING, PostStatuses.CANCEL })]
         public int PostStatus {  get; set; }
     }
 }

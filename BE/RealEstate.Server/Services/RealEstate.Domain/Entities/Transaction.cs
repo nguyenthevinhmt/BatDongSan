@@ -19,6 +19,8 @@ namespace RealEstate.Domain.Entities
         /// </summary>
         public int WalletID { get; set; }
         public Wallet? Wallet { get; set; }
+
+        public int? PostId {  get; set; }
         /// <summary>
         /// Số tiền giao dịch
         /// </summary>

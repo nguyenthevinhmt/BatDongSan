@@ -1,8 +1,5 @@
 "use client";
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "antd/es/layout/layout";
 import Avatar from "antd/es/avatar";
 import Button from "antd/es/button";
@@ -19,25 +16,20 @@ import SolutionOutlined from "@ant-design/icons/SolutionOutlined";
 import UnorderedListOutlined from "@ant-design/icons/UnorderedListOutlined";
 import UserOutlined from "@ant-design/icons/UserOutlined";
 import WalletOutlined from "@ant-design/icons/WalletOutlined";
-import { 
-  usePathname, 
-  useRouter 
-} from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
 import { CookieService } from "@/shared/services/cookies.service";
 import axiosInstance from "@/shared/configs/axiosInstance";
-import { 
-  useDispatch, 
-  useSelector 
-} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import { formatVietnameseToString } from "@/shared/utils/common-helpers";
+import Badge from "antd/lib/badge";
 
 const HeaderComponent = () => {
   const router = useRouter();
-  const [userInfo, setUserInfo] = useState();
+  const [userInfo, setUserInfo] = useState<any>();
   const pathname = usePathname();
   const headerItems: MenuProps["items"] = [
     "Nhà đất bán",
@@ -65,7 +57,7 @@ const HeaderComponent = () => {
         const res = await axiosInstance.get(
           "http://localhost:5083/api/user/my-info"
         );
-        const data = await res.data;
+        const data = await res?.data;
         return data;
       } catch (error) {
         console.log(error);
@@ -110,7 +102,11 @@ const HeaderComponent = () => {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <>Thông tin cá nhân</>,
+      label: (
+        <Badge dot={!userInfo?.isConfirm}>
+          <>Thông tin cá nhân</>
+        </Badge>
+      ),
       icon: (
         <SolutionOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
       ),
@@ -276,32 +272,50 @@ const HeaderComponent = () => {
               <Dropdown menu={{ items }} trigger={["click"]}>
                 <div>
                   {!avatarUrl ? (
-                    <Avatar
+                    <Badge
+                      dot={!userInfo?.isConfirm}
                       style={{
-                        backgroundColor: "#fde3cf",
-                        color: "#f56a00",
-                        marginRight: "10px",
+                        width: "10px",
+                        height: "10px",
+                        transform: "translateX(-9px)",
                       }}
-                      size={44}
-                      icon={<UserOutlined />}
-                    ></Avatar>
+                    >
+                      <Avatar
+                        style={{
+                          backgroundColor: "#fde3cf",
+                          color: "#f56a00",
+                          marginRight: "10px",
+                        }}
+                        size={44}
+                        icon={<UserOutlined />}
+                      ></Avatar>
+                    </Badge>
                   ) : (
-                    <Avatar
+                    <Badge
+                      dot={!userInfo?.isConfirm}
                       style={{
-                        backgroundColor: "#fff",
-                        color: "#fff",
-                        marginRight: "10px",
+                        width: "10px",
+                        height: "10px",
+                        transform: "translateX(-9px)",
                       }}
-                      size={"large"}
-                      src={
-                        <Image
-                          src={avatarUrl}
-                          alt="avatar"
-                          height={44}
-                          width={44}
-                        />
-                      }
-                    ></Avatar>
+                    >
+                      <Avatar
+                        style={{
+                          backgroundColor: "#fff",
+                          color: "#fff",
+                          marginRight: "10px",
+                        }}
+                        size={"large"}
+                        src={
+                          <Image
+                            src={avatarUrl}
+                            alt="avatar"
+                            height={44}
+                            width={44}
+                          />
+                        }
+                      ></Avatar>
+                    </Badge>
                   )}
                   <span
                     style={{
