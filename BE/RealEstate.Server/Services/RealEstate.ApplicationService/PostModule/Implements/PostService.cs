@@ -182,6 +182,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl
                         };
             var result = new PagingResult<PostDto>()
             {

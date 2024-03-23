@@ -175,8 +175,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                     mediaUrl: item.mediaUrl,
                 })) : [],
             };
-            setListMediaId(data.medias?.map((item: any) => item.id) || []);
-            setListMedia(post.listMedia || []);
+            setListMediaId(data?.medias?.map((item: any) => item.id) || []);
+            setListMedia(post?.listMedia || []);
             setFileList(data?.medias?.map((item: any) => ({
                 uid: item.id,
                 name: item.name,

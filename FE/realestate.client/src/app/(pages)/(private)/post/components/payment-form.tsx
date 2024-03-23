@@ -1,7 +1,7 @@
 "use client";
-import { 
-  republishPost, 
-  updatePaymentStatus 
+import {
+  republishPost,
+  updatePaymentStatus,
 } from "@/services/post/post.service";
 import { walletInfo } from "@/services/wallet/wallet.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
@@ -17,7 +17,7 @@ import InputNumber from "antd/es/input-number";
 import Modal from "antd/es/modal";
 import message from "antd/es/message";
 import dayjs from "dayjs";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface IForm {
@@ -27,7 +27,13 @@ interface IForm {
   postEndDate?: Date;
 }
 
-const PaymentForm = ({ postId, status}: {postId: number, status: number}) => {
+const PaymentForm = ({
+  postId,
+  status,
+}: {
+  postId: number;
+  status: number;
+}) => {
   const [formData, setFormData] = useState<IForm>({
     options: 1,
     lifeTime: 5,
@@ -164,7 +170,7 @@ const PaymentForm = ({ postId, status}: {postId: number, status: number}) => {
                         <span style={{ color: "#E3AA49" }}>VIP Vàng</span>
                       )}
                       {item.option === 4 && (
-                        <span style={{ color: "#E03C31" }}>VIP bạc</span>
+                        <span style={{ color: "#E03C31" }}>VIP Kim Cương</span>
                       )}
                     </p>
                     <div style={{ fontSize: "12px" }}>

@@ -10,10 +10,7 @@ import Select from "antd/es/select";
 import Space from "antd/es/space";
 import Table from "antd/es/table";
 import Tag from "antd/es/tag";
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import { postStatus } from "@/shared/consts/postStatus";
 import EllipsisOutlined from "@ant-design/icons/EllipsisOutlined";
 import CheckCircleOutlined from "@ant-design/icons/CheckCircleOutlined";
@@ -120,22 +117,22 @@ const Status = [
   {
     value: postStatus.PENDING,
     label: "Chờ xử lý/yêu cầu duyệt",
-    accept: [UserType.ADMIN, UserType.CUSTOMER]
+    accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
   {
     value: postStatus.POSTED,
     label: "Đã đăng",
-    accept: [UserType.ADMIN, UserType.CUSTOMER]
+    accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
   {
     value: postStatus.CANCEL,
     label: "Hủy duyệt",
-    accept: [UserType.ADMIN, UserType.CUSTOMER]
+    accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
   {
     value: postStatus.REMOVED,
     label: "Đã gỡ",
-    accept: [UserType.ADMIN, UserType.CUSTOMER]
+    accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
 ];
 
@@ -155,40 +152,40 @@ const ManagePost = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (role === UserType.ADMIN) {
-      const res = await findAll({ pageSize: 10, pageNumber: 1 });
-      const data = res?.data.items;
-      const posts: IPost[] = data?.map((post: any) => ({
-        id: post.id,
-        title: post.title,
-        description: post.description,
-        rentalObject: post.rentalObject,
-        youtubeLink: post.youtubeLink,
-        postTypeId: post.postTypeId,
-        realEstateTypeId: post.realEstateTypeId,
-        status: post.status,
-        mediaUrl: post.firstImageUrl,
-      }));
+        const res = await findAll({ pageSize: 10, pageNumber: 1 });
+        const data = res?.data.items;
+        const posts: IPost[] = data?.map((post: any) => ({
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          rentalObject: post.rentalObject,
+          youtubeLink: post.youtubeLink,
+          postTypeId: post.postTypeId,
+          realEstateTypeId: post.realEstateTypeId,
+          status: post.status,
+          mediaUrl: post.firstImageUrl,
+        }));
 
-      setListPost(posts);
-      setTotalItems(res?.data.totalItems);
-    } else {
-      const res = await findAllPersonal({ pageSize: 10, pageNumber: 1 });
-      const data = res?.data.items;
-      const posts: IPost[] = data?.map((post: any) => ({
-        id: post.id,
-        title: post.title,
-        description: post.description,
-        rentalObject: post.rentalObject,
-        youtubeLink: post.youtubeLink,
-        postTypeId: post.postTypeId,
-        realEstateTypeId: post.realEstateTypeId,
-        status: post.status,
-        mediaUrl: post.firstImageUrl,
-      }));
+        setListPost(posts);
+        setTotalItems(res?.data.totalItems);
+      } else {
+        const res = await findAllPersonal({ pageSize: 10, pageNumber: 1 });
+        const data = res?.data.items;
+        const posts: IPost[] = data?.map((post: any) => ({
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          rentalObject: post.rentalObject,
+          youtubeLink: post.youtubeLink,
+          postTypeId: post.postTypeId,
+          realEstateTypeId: post.realEstateTypeId,
+          status: post.status,
+          mediaUrl: post.firstImageUrl,
+        }));
 
-      setListPost(posts);
-      setTotalItems(res?.data.totalItems);
-    }
+        setListPost(posts);
+        setTotalItems(res?.data.totalItems);
+      }
     };
 
     fetchData();
@@ -207,7 +204,7 @@ const ManagePost = () => {
         handleSearch(pageNumber, pageSize);
         console.log(res);
       },
-      accept: [UserType.ADMIN]
+      accept: [UserType.ADMIN],
     },
     {
       key: 2,
@@ -217,7 +214,7 @@ const ManagePost = () => {
         handleSearch(pageNumber, pageSize);
         console.log(res);
       },
-      accept: [UserType.ADMIN]
+      accept: [UserType.ADMIN],
     },
     {
       key: 3,
@@ -226,7 +223,7 @@ const ManagePost = () => {
         const role = authStore?.user?.data?.userType;
         return router.push(`/post/edit/?role=${role}&postId=${id}`);
       },
-      accept: [UserType.ADMIN, UserType.CUSTOMER]
+      accept: [UserType.ADMIN, UserType.CUSTOMER],
     },
     // {
     //   key: 4,
@@ -332,7 +329,7 @@ const ManagePost = () => {
             );
           } else if (statusItem.value === postStatus.CANCEL) {
             return (
-              <Tag icon={< CloseCircleOutlined />} color="error">
+              <Tag icon={<CloseCircleOutlined />} color="error">
                 Hủy duyệt
               </Tag>
             );
@@ -376,7 +373,10 @@ const ManagePost = () => {
         const menu = (
           <Menu>
             {items?.map((item, index) => (
-              <Menu.Item key={index} onClick={() => item && item.onClick && item.onClick(record.id)}>
+              <Menu.Item
+                key={index}
+                onClick={() => item && item.onClick && item.onClick(record.id)}
+              >
                 {item?.label}
               </Menu.Item>
             ))}
@@ -407,9 +407,9 @@ const ManagePost = () => {
         realEstateType: values.realEstateTypeId,
         keyword: values.keyword,
       });
-  
+
       const data = res?.data.items;
-      
+
       const posts: IPost[] = data?.map((post: any) => ({
         id: post.id,
         title: post.title,
@@ -421,7 +421,7 @@ const ManagePost = () => {
         status: post.status,
         mediaUrl: post.firstImageUrl,
       }));
-  
+
       setListPost(posts);
       setTotalItems(res?.data.totalItems);
     } else {
@@ -433,9 +433,9 @@ const ManagePost = () => {
         realEstateType: values.realEstateTypeId,
         keyword: values.keyword,
       });
-  
+
       const data = res?.data.items;
-      
+
       const posts: IPost[] = data?.map((post: any) => ({
         id: post.id,
         title: post.title,
@@ -447,7 +447,7 @@ const ManagePost = () => {
         status: post.status,
         mediaUrl: post.firstImageUrl,
       }));
-  
+
       setListPost(posts);
       setTotalItems(res?.data.totalItems);
     }
@@ -544,7 +544,7 @@ const ManagePost = () => {
           </Flex>
         </Form>
 
-        <div style={{ height: '9s0%' }}>
+        <div style={{ height: "9s0%" }}>
           <Table
             columns={columns}
             pagination={{

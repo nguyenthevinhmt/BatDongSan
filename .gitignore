@@ -379,3 +379,4 @@ DbScaffold/
 *.lock
 
 /BE/RealEstate.Server/Tool/HostConsole/Migrations
+/BE/RealEstate.Server/Services/RealEstate.API/mailssave
