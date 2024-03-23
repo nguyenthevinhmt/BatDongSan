@@ -17,7 +17,7 @@ import InputNumber from "antd/es/input-number";
 import Modal from "antd/es/modal";
 import message from "antd/es/message";
 import dayjs from "dayjs";
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import React, { useState } from "react";
 
 interface IForm {

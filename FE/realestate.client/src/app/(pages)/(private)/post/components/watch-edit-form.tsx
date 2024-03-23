@@ -86,7 +86,6 @@ const getBase64 = (file: FileType): Promise<string> =>
 //type = [watch: 1, edit: 2]
 const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     const router = useRouter();
-    const [bingMapReady, setBingMapReady] = useState(false);
     const [postType, setPostType] = useState<number>(1);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState("");
@@ -146,6 +145,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     const [modalDeleteImg, setModalDeleteImg] = useState(false);
     const [curentFile, setCurrentFile] = useState<UploadFile>();
     const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
+    const [isDataChanged, setIsDataChanged] = useState(false);
 
     useEffect(() => {
         const fetchDetailPost = async () => {
@@ -175,7 +175,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                     mediaUrl: item.mediaUrl,
                 })) : [],
             };
-            setListMediaId(data.medias.map((item: any) => item.id) || []);
+            setListMediaId(data.medias?.map((item: any) => item.id) || []);
             setListMedia(post.listMedia || []);
             setFileList(data?.medias?.map((item: any) => ({
                 uid: item.id,
@@ -216,7 +216,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
         }
 
         fetchDetailPost();
-    }, [type, postId]);
+    }, [type, postId, isDataChanged]);
 
     useEffect(() => {
         const fetchProvince = async () => {
@@ -413,6 +413,11 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     };
 
     const handleSubmit = async (formValue: any) => {
+        //handleUpdate(formValue);
+        setIsShowPaymentForm(true);
+    };
+
+    const handleUpdate = async (formValue: any) => {
         const postInfo: IPost = {
             title: formValue.title,
             description: formValue.description,
@@ -435,12 +440,12 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
         const response = await updatePost({ ...postInfo, id: postId, status: status });
         if (response?.code === HTTP_STATUS_CODE.OK) {
             toast.done("Cập nhật thành công");
-            setIsShowPaymentForm(true);
+            setIsDataChanged(!isDataChanged);
         }
         else {
             console.log("error: ", response);
         }
-    };
+    }
 
     const validatePrice = (rule: any, value: any) => {
         if (currentCalculateType === 3) {
@@ -977,7 +982,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 </div> : <></>
                             }
 
-                            {
+                            
+                            {//check role
                                 edit ?
                                     <div
                                         style={{
@@ -1022,7 +1028,26 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             </Form.Item>
 
                                             {
-                                                (status !== postStatus.POSTED || postStatus.PENDING) ?
+                                                (status !== postStatus.POSTED && status !== postStatus.PENDING && status !== postStatus.REMOVED) ?
+                                                    <Form.Item>
+                                                        <Button
+                                                            style={{
+                                                                padding: "0 15px",
+                                                                marginRight: 10,
+                                                                color: "white",
+                                                                backgroundColor: "rgb(224, 60, 49)",
+                                                                border: "none",
+                                                            }}
+                                                            onClick={() => handleUpdate(form.getFieldsValue())}
+                                                        >
+                                                            Cập nhật
+                                                        </Button>
+                                                    </Form.Item>
+                                                    : <></>
+                                            }
+
+                                            {
+                                                (status === postStatus.POSTED || status === postStatus.PENDING) ?
                                                     <></>
                                                     :
                                                     <Form.Item>
@@ -1035,7 +1060,9 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                                             }}
                                                             htmlType="submit"
                                                         >
-                                                            Tiếp tục
+                                                            {status === postStatus.INIT ? "Đăng tin" : 
+                                                            status === postStatus.CANCEL ? "Trình duyệt" :
+                                                            status === postStatus.REMOVED ? "Đăng lại" : "Tiếp tục"}
                                                         </Button>
                                                     </Form.Item>
                                             }
