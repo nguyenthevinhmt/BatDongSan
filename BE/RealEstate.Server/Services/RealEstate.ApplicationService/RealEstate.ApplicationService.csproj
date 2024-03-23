@@ -18,8 +18,8 @@
   </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Hangfire.Core" Version="1.8.11" />
-		<PackageReference Include="MailKit" Version="4.3.0" />
-		<PackageReference Include="MimeKit" Version="4.3.0" />
+		<PackageReference Include="MailKit" Version="4.4.0" />
+		<PackageReference Include="MimeKit" Version="4.4.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Remove="Common\Localization\SourceFiles\en.xml" />

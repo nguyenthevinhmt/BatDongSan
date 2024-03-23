@@ -10,9 +10,8 @@ const nextConfig = {
         pathname: "deurdoich/image/**",
       },
     ],
-    domains: ['res.cloudinary.com'],
+    domains: ["res.cloudinary.com"],
   },
-  
 };
 
 export default nextConfig;

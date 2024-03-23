@@ -205,6 +205,17 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             if (user.Otp == CryptographyUtils.CreateMD5(otp) && user.OtpExpiredTime >= DateTime.Now)
             {
                 user.isOtpConfirm = true;
+                if (_dbContext.Wallets.Any(x => x.UserId == userId))
+                {
+                    throw new UserFriendlyException(ErrorCode.UserHasBeenCreatedWallet);
+                }
+                var walletInfo = new Wallet
+                {
+                    Balance = 0,
+                    WalletNumber = "BDS" + user.Id + user.PhoneNumber,
+                    UserId = userId,
+                };
+                _dbContext.Wallets.Add(walletInfo);
                 _dbContext.SaveChanges();
                 try
                 {

@@ -11,4 +11,3 @@ python-multipart
 Jinja2
 shapely==2.0.1
 ultralytics
-pillow==9.5.0
