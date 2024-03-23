@@ -21,14 +21,14 @@ const PaymentCallbackPage = () => {
   const vnp_BankCode = searchParams.get("vnp_BankCode");
   const vnp_BankTranNo = searchParams.get("vnp_BankTranNo");
   const vnp_CardType = searchParams.get("vnp_CardType");
-  const vnp_OrderInfo = searchParams.get("vnp_OrderInfo");
-  const vnp_PayDate = searchParams.get("vnp_PayDate");
+  //const vnp_OrderInfo = searchParams.get("vnp_OrderInfo");
+  //const vnp_PayDate = searchParams.get("vnp_PayDate");
   const vnp_ResponseCode = searchParams.get("vnp_ResponseCode");
-  const vnp_TmnCode = searchParams.get("vnp_TmnCode");
+  //const vnp_TmnCode = searchParams.get("vnp_TmnCode");
   const vnp_TransactionNo = searchParams.get("vnp_TransactionNo");
-  const vnp_TransactionStatus = searchParams.get("vnp_TransactionStatus");
-  const vnp_TxnRef = searchParams.get("vnp_TxnRef");
-  const vnp_SecureHash = searchParams.get("vnp_SecureHash");
+  //const vnp_TransactionStatus = searchParams.get("vnp_TransactionStatus");
+  //const vnp_TxnRef = searchParams.get("vnp_TxnRef");
+  //const vnp_SecureHash = searchParams.get("vnp_SecureHash");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +45,7 @@ const PaymentCallbackPage = () => {
         const request = await rechangeWallet(payload);
         if (request?.code === 4004) {
           //   setIsSuccess(false);
+          router.replace("/wallet/history");
         } else {
           setIsSuccess(true);
           await setBalance(balance + vnp_Amount);
@@ -79,8 +80,9 @@ const PaymentCallbackPage = () => {
             " bằng " +
             vnp_CardType +
             " thành công, cảm ơn quý bạn." +
-            " Số dư hiện tại: " +
             <br /> +
+            " Số dư hiện tại: " +
+            
             new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "VND",

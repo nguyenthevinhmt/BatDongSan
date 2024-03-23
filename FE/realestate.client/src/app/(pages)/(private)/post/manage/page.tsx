@@ -544,7 +544,7 @@ const ManagePost = () => {
           </Flex>
         </Form>
 
-        <div style={{ height: "9s0%" }}>
+        <div style={{ height: "90%" }}>
           <Table
             columns={columns}
             pagination={{
