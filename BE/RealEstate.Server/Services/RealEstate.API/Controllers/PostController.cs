@@ -170,5 +170,36 @@ namespace RealEstate.API.Controllers
             _postService.deleteImage(id);
             return new();
         }
+
+        /// <summary>
+        /// Danh sách bài viết mới nhất
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("find-all-newest")]
+        public ApiResponse<PagingResult<PostDto>> FindAllPostNewest([FromQuery]PagingRequestBaseDto input)
+        {
+            return new(_postService.FindAllPostNewest(input));
+        }
+        /// <summary>
+        /// Tìm kiếm bất động sản theo tỉnh thành
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("find-all-by-province")]
+        public ApiResponse<PagingResult<PostDto>> FindAllPostByProvince([FromQuery] PagingRequestBaseDto input)
+        {
+            return new(_postService.FindAllPostByProvince(input));
+        }
+        /// <summary>
+        /// Tìm kiếm bài viết trang chủ
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("search-post")]
+        public ApiResponse<PagingResult<PostDto>> SearchPost([FromQuery] SearchPostRequestDto input)
+        {
+            return new(_postService.SearchPost(input));
+        }
     }
 }

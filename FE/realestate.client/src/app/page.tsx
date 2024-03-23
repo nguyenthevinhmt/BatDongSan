@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import HeaderComponent from "@/components/shareLayout/header";
 import withTheme from "@/theme";
 import React from "react";
@@ -10,10 +10,8 @@ import Footer from "@/components/shareLayout/footer";
 import PostHorizon from "@/components/public/PostHorizon/post";
 import RealEstateByLocation from "@/components/public/realEstateByLocation";
 import { CarouselAds } from "@/components/public/carousel/carouselAds";
+import ListPostHorizon from "@/components/public/PostHorizon/ListPostHorizon";
 const App = () => {
-  const hoverStyles = {
-    transform: "scale(1,2)",
-  };
 
   return (
     <>
@@ -50,14 +48,7 @@ const App = () => {
           }}
         >
           <ListPost />
-          <div style={{ margin: '50px 0px' }}>
-            <h2 style={{ fontSize: '24px', marginBottom: '30px', fontWeight: '500' }}>Bất động sản nổi bật</h2>
-            <PostHorizon option={1} />
-            <PostHorizon option={2} />
-            <PostHorizon option={3} />
-            <PostHorizon option={4} />
-
-          </div>
+          <ListPostHorizon isShowHeader={true} />
 
           <div style={{ margin: '60px 0px' }}>
             <RealEstateByLocation />
@@ -68,8 +59,4 @@ const App = () => {
     </>
   );
 };
-const AppPage = () => {
-  return withTheme(<App />);
-};
-
-export default AppPage;
+export default App;

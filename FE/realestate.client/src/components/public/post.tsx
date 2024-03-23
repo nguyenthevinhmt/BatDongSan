@@ -10,13 +10,17 @@ import LabelCard from "./HOC/labelCard";
 import { OptionConst } from "@/shared/consts/PostOption.const";
 import Image from "next/image";
 import { FaRegHeart } from "react-icons/fa";
+import dayjs from "dayjs";
+import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
 
 const PostCard = ({
   option,
   loading,
+  data
 }: {
   option: number;
   loading: boolean;
+  data: any;
 }) => {
   let color = "";
   if (option === OptionConst.NORMAL) {
@@ -35,7 +39,7 @@ const PostCard = ({
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
               alt="#"
-              src="https://res.cloudinary.com/deurdoich/image/upload/v1710727579/DATN/l73ifg1hsmsdf8mx44xg.jpg"
+              src={data?.firstImageUrl}
             />
           )
         }
@@ -43,34 +47,31 @@ const PostCard = ({
         <h2
           className="ellipsis-multiline"
           style={{
-            fontFamily: "Roboto,Arial",
             height: "40px",
-            fontSize: "15px",
+            fontSize: "14px",
             lineHeight: "20px",
             fontWeight: "500",
             color: "#2C2C2C",
             marginBottom: "4px",
-            letterSpacing: "1px",
           }}
         >
-          {/* {item.name} */}
-          tên
+          {data?.title}
         </h2>
         <span
           style={{
             color: "#E03C31",
-            fontSize: "17px",
-            fontWeight: 600,
+            fontSize: "14px",
+            fontWeight: 500,
           }}
         >
-          Giá thỏa thuận <LineOutlined /> <span>56m²</span>
+          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} - <span>{data?.area} m²</span>
         </span>
-        <p style={{ marginTop: "4px", fontSize: "16px" }}>
+        <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px" }}>
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
-          Liên Chiểu, Đà Nẵng
+          {`${data.district}, ${data.province}`}
         </p>
-        <Flex justify="space-between" align="flex-end">
-          <Tooltip placement="bottom" title={"27/02/2024"} color={"#423e3e"}>
+        <Flex justify="space-between" align="center">
+          <Tooltip placement="bottom" title={dayjs(data?.createdDate).format("DD/MM/YYYY")} color={"#423e3e"}>
             <span
               style={{
                 color: "#999",
@@ -78,26 +79,17 @@ const PostCard = ({
                 marginBottom: "4px",
               }}
             >
-              Đăng 3 ngày trước
+              {formatDate(dayjs(data?.createdDate))}
             </span>
           </Tooltip>
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
-          //   title={heart ? "Bấm để lưu tin" : "Bấm để bỏ lưu tin"}
+            title={"Bấm để lưu tin"}
           >
-            <Button
-              danger
-              // onClick={onChange}
-              icon={
-                <HeartFilled />
-                //   heart ? (
-                //     <HeartOutlined style={{ color: "black" }} />
-                //   ) : (
-                //     <HeartFilled />
-                //   )
-              }
-            />
+            <FaRegHeart onClick={() => {
+              console.log("click")
+            }} />
           </Tooltip>
         </Flex>
       </Card>
@@ -125,7 +117,7 @@ const PostCard = ({
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
               alt="#"
-              src="https://res.cloudinary.com/deurdoich/image/upload/v1710727579/DATN/l73ifg1hsmsdf8mx44xg.jpg"
+              src={data?.firstImageUrl}
             />
           )
         }
@@ -141,32 +133,32 @@ const PostCard = ({
             marginBottom: "4px",
           }}
         >
-          {/* {item.name} */}
-          Bán nhà lấy tiền trả lợi, giá từ 8 tỷ
+          {data?.title}
         </h2>
         <span
           style={{
             color: "#E03C31",
-            fontSize: "16px",
-            fontWeight: '500',
+            fontSize: "14px",
+            fontWeight: 500,
           }}
         >
-          Giá thỏa thuận <LineOutlined /> <span>56m²</span>
+          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} - <span>{data?.area} m²</span>
         </span>
-        <p style={{ marginTop: "4px", fontSize: "14px" }}>
+        <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px", fontFamily: '__Lexend_126e48, __Lexend_Fallback_126e48' }}>
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
-          Liên Chiểu, Đà Nẵng
+          {`${data.district}, ${data.province}`}
         </p>
-        <Flex justify="space-between" align="flex-end">
-          <Tooltip placement="bottom" title={"27/02/2024"} color={"#423e3e"}>
+        <Flex justify="space-between" align="center">
+          <Tooltip placement="bottom" title={dayjs(data?.createdDate).format("DD/MM/YYYY")} color={"#423e3e"}>
             <span
               style={{
                 color: "#999",
                 fontSize: "13px",
                 marginBottom: "4px",
+                fontFamily: '__Lexend_126e48, __Lexend_Fallback_126e48'
               }}
             >
-              Đăng 3 ngày trước
+              {formatDate(dayjs(data?.createdDate))}
             </span>
           </Tooltip>
           <Tooltip
@@ -174,18 +166,6 @@ const PostCard = ({
             color={"#423e3e"}
             title={"Bấm để lưu tin"}
           >
-            {/* <Button
-              danger
-              // onClick={onChange}
-              icon={
-                <FaRegHeart />
-                //   heart ? (
-                //     <HeartOutlined style={{ color: "black" }} />
-                //   ) : (
-                //     <HeartFilled />
-                //   )
-              }
-            ></Button> */}
             <FaRegHeart onClick={() => {
               console.log("click")
             }} />

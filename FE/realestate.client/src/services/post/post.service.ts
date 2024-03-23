@@ -205,7 +205,7 @@ export const getById = async (id: number) => {
       `${environment.baseUrl}/api/post/find-by-id?id=${id}`
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
-      return response;
+      return response?.data;
     }
   } catch (error) {
     console.log("Error: Gọi api getbyid của post bị lỗi!!!");
@@ -344,7 +344,7 @@ interface UpdateMediaType {
   mediaUrl: string;
 }
 
-export const updatePost = async (info: IUpdatePost) => { 
+export const updatePost = async (info: IUpdatePost) => {
   try {
     const response = await axiosInstance.put(
       `${environment.baseUrl}/api/post/update`,
@@ -375,6 +375,45 @@ export const updatePost = async (info: IUpdatePost) => {
     }
   } catch (error) {
     console.log("Error: Gọi api update của post bị lỗi!!!");
+    return null;
+  }
+}
+
+export const SearchPost = async (param: any) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/search-post`, {
+      params: {
+        ...param,
+        pageSize: 25,
+        pageNumber: 1
+      }
+    }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api searh post bị lỗi!!!");
+    return null;
+  }
+}
+
+export const GetListPostNewest = async () => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/find-all-newest`, {
+      params: {
+        pageSize: 10,
+        pageNumber: 1
+      }
+    }
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api danh sách bài viết mới nhất bị lỗi!!!");
     return null;
   }
 }

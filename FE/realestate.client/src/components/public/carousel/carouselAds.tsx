@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import Image from 'next/image';
+import "./carousel.css";
 
 interface ICarousel {
     src: string,

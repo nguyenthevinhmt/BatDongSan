@@ -19,15 +19,15 @@ import Modal from "antd/es/modal";
 import Select from "antd/es/select";
 import Tooltip from "antd/es/tooltip";
 import Upload from "antd/es/upload";
-import { 
-    UploadFile, 
-    UploadProps 
+import {
+    UploadFile,
+    UploadProps
 } from "antd/es/upload/interface";
 import message from "antd/es/message";
-import React, { 
-    useEffect, 
-    useMemo, 
-    useState 
+import React, {
+    useEffect,
+    useMemo,
+    useState
 } from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
@@ -36,10 +36,10 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
-import { 
-    getDistricts, 
-    getProvinces, 
-    getWards 
+import {
+    getDistricts,
+    getProvinces,
+    getWards
 } from "@/services/post/address.service";
 import { postStatus } from "@/shared/consts/postStatus";
 import MapComponent from "@/components/Map/MapComponent";
@@ -150,7 +150,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     useEffect(() => {
         const fetchDetailPost = async () => {
             const response = await getById(postId);
-            const data = response?.data.data;
+            const data = response?.data;
+            console.log("data", data)
             const post: IPost = {
                 title: data?.title,
                 description: data?.description,
@@ -176,7 +177,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
             };
             setListMediaId(data.medias.map((item: any) => item.id) || []);
             setListMedia(post.listMedia || []);
-            setFileList(data.medias?.map((item: any) => ({
+            setFileList(data?.medias?.map((item: any) => ({
                 uid: item.id,
                 name: item.name,
                 status: "done",
@@ -684,7 +685,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                             </Form.Item>
                             {showMap && (
                                 <Flex justify="center">
-                                    <MapComponent prop={coordinates} />
+                                    <MapComponent prop={coordinates} height={270} width={850} />
                                 </Flex>
                             )}
                             <div
@@ -1073,7 +1074,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                         </Form>
                     </div>
                 </Flex>
-                : <PaymentForm postId={postId} status={status}/>
+                : <PaymentForm postId={postId} status={status} />
             }
 
         </>

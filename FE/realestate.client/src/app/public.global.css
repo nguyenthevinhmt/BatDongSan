@@ -39,6 +39,14 @@ body {
   white-space: normal;
 }
 
+.ellipsis-multiline2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
 .hide-copy-icon .ant-typography-copy {
   display: none !important;
 }
@@ -52,4 +60,9 @@ body {
 
 .hide-border {
   border: 0px solid #fff;
+}
+
+.hover-card:hover{
+  border-color: #FCFCFC; 
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.12)
 }

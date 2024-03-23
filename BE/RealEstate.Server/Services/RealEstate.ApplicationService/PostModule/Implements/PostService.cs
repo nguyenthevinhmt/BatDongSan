@@ -200,6 +200,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         {
             _logger.LogInformation($"{nameof(FindById)}: id : {id}");
             var findPost = (from post in _dbContext.Posts 
+                            join user in _dbContext.Users on post.UserId equals user.Id
                             join image in _dbContext.Medias on post.Id equals image.PostId into imageGroup
                             from image in imageGroup.DefaultIfEmpty()
                             where post.Id == id && !post.Deleted //&& !image.Deleted
@@ -223,7 +224,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 LifeTime = post.LifeTime,
                                 CalculateType = post.CalculateType,
                                 Options = post.Options,
-                                Medias = _mapper.Map<List<MediaDto>>(post.Medias.Where(m => !m.Deleted).ToList() ?? new List<Media>()),
+                                CreatedDate = post.CreatedDate,
+                                PostEndDate = post.PostEndDate,
+                                UserName = user.Username,
+                                UserPhoneNumber = user.PhoneNumber,
+                                Medias = _mapper.Map<List<MediaDto>>(post.Medias!.Where(m => !m.Deleted).ToList() ?? new List<Media>()),
                             }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             return findPost;
         }
@@ -447,6 +452,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 wallet.Balance = wallet.Balance - TotalAmount;
             }
+            _dbContext.SaveChanges();
 
             if (post.PostStartDate >= DateTime.Now.Date)
             {
@@ -535,7 +541,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 TotalItems = query.Count(),
             };
-            query = query.OrderByDescending(c => c.PostStartDate).ThenByDescending(c => c.CreatedDate);
+            query = query.OrderByDescending(c => c.CreatedDate).ThenByDescending(c => c.Options);
             if (input.PageSize != -1)
             {
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
@@ -549,6 +555,164 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var image = _dbContext.Medias.FirstOrDefault(c => c.Id == id && !c.Deleted) ?? throw new UserFriendlyException(ErrorCode.FileNotFound);
             image.Deleted = true;
             _dbContext.SaveChanges();
+        }
+
+        public PagingResult<PostDto> FindAllPostNewest(PagingRequestBaseDto input)
+        {
+            _logger.LogInformation($"{nameof(FindAllPostNewest)}: input: {JsonSerializer.Serialize(input)}");
+            var query = from post in _dbContext.Posts
+                        join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
+                        where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                && !post.Deleted
+                                && post.Status == PostStatuses.POSTED && post.IsPayment
+                        select new PostDto
+                        {
+                            Title = post.Title,
+                            ApproveAt = DateTime.Now,
+                            ApproveBy = post.ApproveBy,
+                            Area = post.Area,
+                            Description = post.Description,
+                            DetailAddress = post.DetailAddress,
+                            District = post.District,
+                            Id = post.Id,
+                            PostTypeId = post.PostTypeId,
+                            Price = post.Price,
+                            Province = post.Province,
+                            RealEstateTypeId = post.RealEstateTypeId,
+                            RentalObject = post.RentalObject,
+                            Status = post.Status,
+                            Street = post.Street,
+                            UserId = post.UserId,
+                            Ward = post.Ward,
+                            YoutubeLink = post.YoutubeLink,
+                            PostEndDate = post.PostEndDate,
+                            CreatedBy = post.CreatedBy,
+                            CreatedDate = post.CreatedDate,
+                            ModifiedBy = post.ModifiedBy,
+                            ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl,
+                            Options = post.Options,
+                            PostStartDate = post.PostStartDate
+                        };
+            var result = new PagingResult<PostDto>()
+            {
+                TotalItems = query.Count(),
+            };
+            query = query.OrderByDescending(c => c.PostStartDate).ThenByDescending(c => c.ApproveAt);
+            if (input.PageSize != -1)
+            {
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
+            }
+            result.Items = query;
+            return result;
+        }
+
+        public PagingResult<PostDto> FindAllPostByProvince(PagingRequestBaseDto input)
+        {
+            _logger.LogInformation($"{nameof(FindAllPostByProvince)}: input: {JsonSerializer.Serialize(input)}");
+            var query = from post in _dbContext.Posts
+                        join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
+                        where (input.Keyword == null || post.Province.ToLower().Contains(input.Keyword.ToLower()))
+                                && !post.Deleted
+                                && post.Status == PostStatuses.POSTED && post.IsPayment
+                        select new PostDto
+                        {
+                            Title = post.Title,
+                            ApproveAt = DateTime.Now,
+                            ApproveBy = post.ApproveBy,
+                            Area = post.Area,
+                            Description = post.Description,
+                            DetailAddress = post.DetailAddress,
+                            District = post.District,
+                            Id = post.Id,
+                            PostTypeId = post.PostTypeId,
+                            Price = post.Price,
+                            Province = post.Province,
+                            RealEstateTypeId = post.RealEstateTypeId,
+                            RentalObject = post.RentalObject,
+                            Status = post.Status,
+                            Street = post.Street,
+                            UserId = post.UserId,
+                            Ward = post.Ward,
+                            YoutubeLink = post.YoutubeLink,
+                            PostEndDate = post.PostEndDate,
+                            CreatedBy = post.CreatedBy,
+                            CreatedDate = post.CreatedDate,
+                            ModifiedBy = post.ModifiedBy,
+                            ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl,
+                            Options = post.Options,
+                            PostStartDate = post.PostStartDate
+                        };
+            var result = new PagingResult<PostDto>()
+            {
+                TotalItems = query.Count(),
+            };
+            query = query.OrderByDescending(c => c.ModifiedDate);
+            if (input.PageSize != -1)
+            {
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
+            }
+            result.Items = query;
+            return result;
+        }
+
+        public PagingResult<PostDto> SearchPost(SearchPostRequestDto input)
+        {
+            _logger.LogInformation($"{nameof(SearchPost)}: input: {JsonSerializer.Serialize(input)}");
+            var query = from post in _dbContext.Posts
+                        join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                        from postmedia in pm.Take(1).DefaultIfEmpty()
+                        where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
+                                && !post.Deleted
+                                && (input.Area == null || post.Area == input.Area)
+                                && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
+                                && (input.PostType == null || post.PostTypeId == input.PostType)
+                                && (input.Province == null || post.Province.ToLower().Contains(input.Province.ToLower()))
+                                && (input.Province == null || post.Province.ToLower().Contains(input.Province.ToLower()))
+                                && post.Status == PostStatuses.POSTED && post.IsPayment
+                        select new PostDto
+                        {
+                            Title = post.Title,
+                            ApproveAt = DateTime.Now,
+                            ApproveBy = post.ApproveBy,
+                            Area = post.Area,
+                            Description = post.Description,
+                            DetailAddress = post.DetailAddress,
+                            District = post.District,
+                            Id = post.Id,
+                            PostTypeId = post.PostTypeId,
+                            Price = post.Price,
+                            Province = post.Province,
+                            RealEstateTypeId = post.RealEstateTypeId,
+                            RentalObject = post.RentalObject,
+                            Status = post.Status,
+                            Street = post.Street,
+                            UserId = post.UserId,
+                            Ward = post.Ward,
+                            YoutubeLink = post.YoutubeLink,
+                            PostEndDate = post.PostEndDate,
+                            CreatedBy = post.CreatedBy,
+                            CreatedDate = post.CreatedDate,
+                            ModifiedBy = post.ModifiedBy,
+                            ModifiedDate = post.ModifiedDate,
+                            FirstImageUrl = postmedia.MediaUrl,
+                            Options = post.Options,
+                            PostStartDate = post.PostStartDate
+                        };
+            var result = new PagingResult<PostDto>()
+            {
+                TotalItems = query.Count(),
+            };
+            query = query.OrderByDescending(c => c.ModifiedDate);
+            if (input.PageSize != -1)
+            {
+                query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
+            }
+            result.Items = query;
+            return result;
         }
     }
 }

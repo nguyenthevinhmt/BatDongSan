@@ -73,6 +73,10 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
             Utils.ConstantVariables.Post.CalculateType.Agree
         })]
         public int CalculateType { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime PostEndDate { get; set; }
+        public string? UserName { get; set; }
+        public string? UserPhoneNumber { get; set; }
         public List<MediaDto> Medias { get; set; } = new();
     }
 }

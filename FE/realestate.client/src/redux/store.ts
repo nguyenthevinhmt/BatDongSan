@@ -20,6 +20,7 @@ import {
   WebStorage,
 } from "redux-persist";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
+import postReducer from "./slices/post.slice";
 
 export function createPersistStore(): WebStorage {
   const isServer = typeof window === "undefined";
@@ -52,8 +53,15 @@ const persistConfig = {
   storage,
 };
 
+const persistPostConfig = {
+  key: "post",
+  version: 1,
+  storage,
+}
+
 const rootReducer = combineReducers({
   auth: persistReducer(persistConfig, authReducer),
+  post: persistReducer(persistConfig, postReducer),
   register: registerReducer,
   [authApi.reducerPath]: authApi.reducer,
   [loginApi.reducerPath]: loginApi.reducer,
@@ -68,7 +76,6 @@ export const store = configureStore({
       },
     }).concat([authApi.middleware, loginApi.middleware]),
 });
-// const persistedReducers = persistReducer(persistConfig, rootReducer);
 
 export let persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
