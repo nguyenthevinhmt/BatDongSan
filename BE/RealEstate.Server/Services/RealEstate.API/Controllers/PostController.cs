@@ -201,5 +201,17 @@ namespace RealEstate.API.Controllers
         {
             return new(_postService.SearchPost(input));
         }
+
+        /// <summary>
+        /// Hủy duyệt bài
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut("cancel-request")]
+        public ApiResponse CancelRequest(int id)
+        {
+            _postService.CancelRequest(id);
+            return new();
+        }
     }
 }
