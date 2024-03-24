@@ -18,7 +18,9 @@ const getBase64 = (file: FileType): Promise<string> =>
   });
 
 const InfoForm = () => {
-  const [avatar, setAvatar] = useState<any>();
+  const [avatar, setAvatar] = useState<any>(
+    "https://res.cloudinary.com/deurdoich/image/upload/v1710872032/DATN/ikzqtrqfdsxblizrbp2e.jpg"
+  );
   const [onFocus, setOnFocus] = useState(false);
 
   const handleUpload = async ({ file, onSuccess, onError }: any) => {

@@ -3,17 +3,36 @@ import Form from "antd/lib/form";
 import React from "react";
 
 const LockAccountForm = () => {
+  const [form] = Form.useForm();
   return (
     <div style={{ marginLeft: "24px" }}>
-      <Form style={{ marginTop: "5px" }}>
+      <Form
+        form={form}
+        autoComplete="off"
+        style={{ marginTop: "5px" }}
+        layout="vertical"
+        onFinish={(formValue) => {
+          console.log("formValue", formValue);
+        }}
+      >
         <Flex align="center" gap={10}>
           <div>
-            <Form.Item>
-              <div style={{ fontWeight: "500" }}>Nhập mật khẩu hiện tại</div>
-              <Input.Password />
+            <Form.Item
+              name={["currentPassword"]}
+              label={
+                <div style={{ fontWeight: "500" }}>Nhập mật khẩu hiện tại</div>
+              }
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập mật khẩu hiện tại!",
+                },
+              ]}
+            >
+              <Input.Password allowClear />
             </Form.Item>
           </div>
-          <Form.Item style={{ marginTop: "20px" }}>
+          <Form.Item style={{ marginTop: "30px" }}>
             <Button
               size="middle"
               htmlType="submit"
@@ -23,7 +42,7 @@ const LockAccountForm = () => {
                 border: "none",
               }}
             >
-              Xóa tài khoản
+              Khoá tài khoản
             </Button>
           </Form.Item>
         </Flex>

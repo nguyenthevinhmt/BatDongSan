@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import "./public.global.css";
 import { Metadata } from "next";
 import CommontLayout from "@/components/commonLayout/CommontLayout";

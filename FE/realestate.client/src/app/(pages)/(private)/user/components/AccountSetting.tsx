@@ -1,13 +1,12 @@
+import React, { useEffect, useRef, useState } from "react";
+import LockAccountForm from "./LockAccountForm";
+import RemoveAccountForm from "./RemoveAccountForm";
 import Button from "antd/lib/button";
 import Collapse from "antd/lib/collapse";
 import Flex from "antd/lib/flex";
 import Form from "antd/lib/form";
 import Input from "antd/lib/input";
-import React, { useEffect, useRef, useState } from "react";
-import LockAccountForm from "./LockAccountForm";
-import RemoveAccountForm from "./RemoveAccountForm";
-import { CheckPasswordMatch } from "@/shared/utils/common-helpers";
-import { message } from "antd";
+import message from "antd/lib/message";
 
 type FormType = {
   currentPassword: string;
@@ -23,17 +22,6 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
     confirmNewPassword: "",
   });
   const [isMatch, setMatch] = useState(false);
-  const newPasswordtimerRef = useRef<any>();
-  const reNewPasswordtimerRef = useRef<any>();
-
-  //   useEffect(() => {
-  //     // if (formData?.newPassword != formData?.confirmNewPassword) {
-  //     //   setMatch(true);
-  //     // } else {
-  //     //   setMatch(false);
-  //     // }
-  //   }, [formData?.confirmNewPassword, formData?.newPassword]);
-
   const collapseItem = [
     {
       key: "1",
@@ -74,13 +62,9 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
           layout="vertical"
           onFinish={(formValue) => {
             console.log("data", formValue);
-            if (formData?.newPassword != formData?.confirmNewPassword) {
-              setMatch(true);
-            } else {
-              setMatch(false);
-            }
           }}
-          onFinishFailed={() => {
+          onFinishFailed={(formValue) => {
+            console.log("formvalue", formValue);
             message.error("Vui lòng nhập đúng thông tin!");
           }}
         >
@@ -94,21 +78,11 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
               },
             ]}
           >
-            <Input.Password
-            //   allowClear
-            //   value={formData?.currentPassword}
-            //   onChange={(data) => {
-            //     setFormData((prev: any) => {
-            //       return {
-            //         ...prev,
-            //         currentPassword: data?.target?.value,
-            //       };
-            //     });
-            //   }}
-            />
+            <Input.Password allowClear />
           </Form.Item>
           <Form.Item
             name="newPassword"
+            dependencies={["currentPassword"]}
             label={<p style={{ fontWeight: "500" }}>Mật khẩu mới</p>}
             rules={[
               {
@@ -127,20 +101,20 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
                         new Error("Mật khẩu phải chứa ít nhất một số!")
                       ),
               },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("currentPassword") === value) {
+                    return Promise.reject(
+                      new Error("Mật khẩu mới phải khác mật khẩu hiện tại!")
+                    );
+                  }
+
+                  return Promise.resolve();
+                },
+              }),
             ]}
           >
-            <Input.Password
-            //   allowClear
-            //   value={formData?.newPassword}
-            //   onChange={(e) => {
-            //     setFormData((prev: any) => {
-            //       return {
-            //         ...prev,
-            //         newPassword: e.target.value,
-            //       };
-            //     });
-            //   }}
-            />
+            <Input.Password allowClear />
           </Form.Item>
           <Form.Item
             name="confirmNewPassword"
@@ -149,7 +123,7 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập lại mật khẩu hiện tại!",
+                message: "Vui lòng nhập lại mật khẩu mới!",
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
@@ -161,19 +135,7 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
               }),
             ]}
           >
-            <Input.Password
-            //   allowClear
-            //   value={formData?.confirmNewPassword}
-            //   onChange={(e) => {
-            //     setFormData((prev: any) => {
-            //       return {
-            //         ...prev,
-            //         confirmNewPassword: e.target.value,
-            //       };
-            //     });
-            //   }}
-            />
-            <span>{isMatch && "Mật khẩu không khớp!"}</span>
+            <Input.Password allowClear />
           </Form.Item>
           <Flex justify="flex-end">
             <Form.Item>
