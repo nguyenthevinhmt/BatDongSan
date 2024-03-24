@@ -459,7 +459,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             }
             _dbContext.SaveChanges();
 
-            if (post.PostStartDate >= DateTime.Now.Date)
+            if (post.PostStartDate <= DateTime.Now)
             {
                 var jobId = BackgroundJob.Schedule<IPostService>(
                    x => x.ShowOnPost(post.Id),

@@ -251,7 +251,7 @@ const ManagePost = () => {
           ? record?.mediaUrl || ""
           : "https://res.cloudinary.com/deurdoich/image/upload/v1710429504/DATN/g5flsesusjkanoa6fg0q.jpg";
         return (
-          <Image
+          <img
             src={imageUrl}
             alt="Mô tả ảnh"
             width={100}

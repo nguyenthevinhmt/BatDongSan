@@ -6,10 +6,9 @@ import isAuth from "@/app/isAuth";
 import CreateEditForm from "../components/create-edit-form";
 
 const CreatePost = () => {
-  const createType = 1;
   return (
     <>
-      <CreateEditForm type={createType} />
+      <CreateEditForm />
     </>
   );
 };

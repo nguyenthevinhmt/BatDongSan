@@ -1,13 +1,15 @@
 import React, { Suspense } from "react";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
 import "./public.global.css";
-
-import StoreProvider from "./StoreProvider";
 import { Metadata } from "next";
 import CommontLayout from "@/components/commonLayout/CommontLayout";
 import ToastProvider from "@/shared/provider/toast.provider";
 import { Lexend } from "next/font/google";
 import StyledComponentsRegistry from "./AntdRegistry";
+import dynamic from "next/dynamic";
+
+const ReduxProvider = dynamic(() => import("@/app/StoreProvider"), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "Batdongsan.com",
@@ -23,16 +25,13 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => (
   <html lang="en">
     <body className={lexend.className}>
       <link rel="icon" href="../../favicon_io/favicon.ico" sizes="any" />
-
-      <Suspense fallback={<p>Loading feed...</p>}>
-        <StyledComponentsRegistry>
-          <StoreProvider>
-            <CommontLayout>
-              <ToastProvider>{children}</ToastProvider>
-            </CommontLayout>
-          </StoreProvider>
-        </StyledComponentsRegistry>
-      </Suspense>
+      <StyledComponentsRegistry>
+        <ReduxProvider>
+          <CommontLayout>
+            <ToastProvider>{children}</ToastProvider>
+          </CommontLayout>
+        </ReduxProvider>
+      </StyledComponentsRegistry>
     </body>
   </html>
 );

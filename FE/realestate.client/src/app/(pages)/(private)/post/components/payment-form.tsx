@@ -87,6 +87,7 @@ const PaymentForm = ({
         options: formData.options,
         lifeTime: formData.lifeTime,
         id: postId,
+        postStartDate: formData.postStartDate,
       };
       const response = await updatePaymentStatus(payload);
       if (response?.code === HTTP_STATUS_CODE.OK) {

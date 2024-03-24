@@ -22,17 +22,9 @@ import Modal from "antd/es/modal";
 import Select from "antd/es/select";
 import Tooltip from "antd/es/tooltip";
 import Upload from "antd/es/upload";
-import { 
-  UploadFile, 
-  UploadProps 
-} from "antd/es/upload/interface";
+import { UploadFile, UploadProps } from "antd/es/upload/interface";
 import message from "antd/es/message";
-import React, { 
-  useEffect, 
-  useMemo, 
-  useState, 
-  useRef 
-} from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import { environment } from "@/shared/environment/environment";
@@ -78,8 +70,7 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-//type = [create: 1, edit: 2]
-const CreateEditForm = ({ type }: { type: number }) => {
+const CreateEditForm = () => {
   const router = useRouter();
 
   const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
@@ -163,12 +154,12 @@ const CreateEditForm = ({ type }: { type: number }) => {
       const res = await axios.get(
         `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
           location?.street +
-          " " +
-          location.wards +
-          " " +
-          location.districts +
-          " " +
-          location.provinces
+            " " +
+            location.wards +
+            " " +
+            location.districts +
+            " " +
+            location.provinces
         )}&key=${environment.BingMapsApiKey}`
       );
       const coordinates = {
@@ -649,7 +640,9 @@ const CreateEditForm = ({ type }: { type: number }) => {
                       { required: true, message: "* Mô tả bắt buộc nhập" },
                     ]}
                   >
-                    <Input.TextArea style={{ height: 150, fontFamily: "sans-serif" }} />
+                    <Input.TextArea
+                      style={{ height: 150, fontFamily: "sans-serif" }}
+                    />
                   </Form.Item>
                 </div>
 
@@ -904,7 +897,7 @@ const CreateEditForm = ({ type }: { type: number }) => {
       )}
       {isShowPaymentForm && (
         <>
-          <PaymentForm postId={postId} status={1}/>
+          <PaymentForm postId={postId} status={1} />
         </>
       )}
     </>
