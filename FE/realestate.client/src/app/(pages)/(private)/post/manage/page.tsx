@@ -24,6 +24,7 @@ import {
   approvedPost,
   updateStatus,
   findAllPersonal,
+  cancelRequest,
 } from "@/services/post/post.service";
 import Image from "next/image";
 import { useSelector } from "react-redux";
@@ -210,7 +211,7 @@ const ManagePost = () => {
       key: 2,
       label: "hủy duyệt",
       onClick: async (id: number) => {
-        const res = await updateStatus({ id: id, status: postStatus.CANCEL });
+        const res = await cancelRequest(id);
         handleSearch(pageNumber, pageSize);
         console.log(res);
       },

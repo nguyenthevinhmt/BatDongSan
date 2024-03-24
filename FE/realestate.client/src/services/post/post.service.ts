@@ -464,3 +464,17 @@ export const republishPost = async (info: IRepublishPost) => {
     return null;
   }
 }
+
+export const cancelRequest = async (id: number) => {
+  try {
+    const response = await axiosInstance.put(
+      `${environment.baseUrl}/api/post/cancel-request?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api cancelRequest của post bị lỗi!!!");
+    return null;
+  }
+}

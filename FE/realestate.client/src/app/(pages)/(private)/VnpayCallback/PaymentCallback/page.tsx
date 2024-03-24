@@ -82,7 +82,7 @@ const PaymentCallbackPage = () => {
             " thành công, cảm ơn quý bạn." +
             <br /> +
             " Số dư hiện tại: " +
-            
+
             new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "VND",
@@ -90,8 +90,19 @@ const PaymentCallbackPage = () => {
             "VNĐ."
           }
           extra={[
-            <Button key="console">Trở về</Button>,
-            <Button type="primary" key="buy">
+            <Button
+              key="console"
+              onClick={() => {
+                router.replace("/wallet/history");
+              }}>
+              Trở về
+            </Button>,
+            <Button
+              type="primary"
+              key="buy"
+              onClick={() => {
+                router.replace("/wallet/recharge");
+              }}>
               Nạp thêm
             </Button>,
           ]}
