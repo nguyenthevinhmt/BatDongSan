@@ -85,5 +85,10 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// </summary>
         /// <param name="username"></param>
         UserDto RefreshOTP(string username);
+        /// <summary>
+        /// Khóa tài khoản
+        /// </summary>
+        /// <param name="Password"></param>
+        void DeactiveAccount(string Password);
     }
 }

@@ -44,8 +44,6 @@ import {
 import { postStatus } from "@/shared/consts/postStatus";
 import MapComponent from "@/components/Map/MapComponent";
 
-
-
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 interface IPost {
@@ -146,6 +144,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     const [curentFile, setCurrentFile] = useState<UploadFile>();
     const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
     const [isDataChanged, setIsDataChanged] = useState(false);
+    const [isChange, setIsChange] = useState(false);
 
     useEffect(() => {
         const fetchDetailPost = async () => {
@@ -515,7 +514,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             borderTopLeftRadius: 5,
                                             borderBottomLeftRadius: 5,
                                         }}
-                                        disabled={!edit}
+                                        disabled={!(edit && isChange)}
                                         value={1}
                                         onClick={() => setPostType(1)}
                                     >
@@ -535,7 +534,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             borderBottomRightRadius: 5,
                                         }}
                                         value={2}
-                                        disabled={!edit}
+                                        disabled={!(edit && isChange)}
                                         onClick={() => setPostType(2)}
                                     >
                                         Cho thuê
@@ -557,7 +556,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     <Select
                                         style={{ width: "100%" }}
                                         placeholder="Chọn loại bất động sản"
-                                        disabled={!edit}
+                                        disabled={!(edit && isChange)}
                                         options={realEstateType?.map((item: any) => {
                                             return {
                                                 value: item?.id,
@@ -583,7 +582,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     <Select
                                         placeholder="Chọn tỉnh/thành phố"
                                         value={location?.provinces}
-                                        disabled={!edit}
+                                        disabled={!(edit && isChange)}
                                         onChange={(value, option) =>
                                             handleProvinceChange(value, option)
                                         }
@@ -612,7 +611,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             handleDistrictChange(value, option)
                                         }
                                         value={location?.districts}
-                                        disabled={isDisableSelect.districtDisable || !edit}
+                                        disabled={isDisableSelect.districtDisable || !(edit && isChange)}
                                         options={districts?.map((item: any) => {
                                             return {
                                                 value: item?.id,
@@ -637,7 +636,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 >
                                     <Select
                                         placeholder="Chọn phường/xã"
-                                        disabled={isDisableSelect.wardDisable || !edit}
+                                        disabled={isDisableSelect.wardDisable || !(edit && isChange)}
                                         value={location?.wards}
                                         options={wards?.map((item: any) => {
                                             return {
@@ -663,7 +662,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                 >
                                     <Input
                                         value={location.street}
-                                        disabled={!edit}
+                                        disabled={!(edit && isChange)}
                                         onChange={(e) => {
                                             setLocation((prev: any) => {
                                                 return {
@@ -686,7 +685,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     },
                                 ]}
                             >
-                                <Input disabled={!edit} />
+                                <Input disabled={!(edit && isChange)} />
                             </Form.Item>
                             {showMap && (
                                 <Flex justify="center">
@@ -742,7 +741,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             { required: true, message: "* Tiêu đề bắt buộc nhập" },
                                         ]}
                                     >
-                                        <Input style={{ height: 50 }} disabled={!edit} />
+                                        <Input style={{ height: 50 }} disabled={!(edit && isChange)} />
                                     </Form.Item>
                                 </Tooltip>
                                 <Form.Item
@@ -759,7 +758,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         { required: true, message: "* Mô tả bắt buộc nhập" },
                                     ]}
                                 >
-                                    <Input.TextArea style={{ height: 150, fontFamily: 'sans-serif' }} disabled={!edit} />
+                                    <Input.TextArea style={{ height: 150, fontFamily: 'sans-serif' }} disabled={!(edit && isChange)} />
                                 </Form.Item>
                             </div>
 
@@ -786,7 +785,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         { required: true, message: "Trường bắt buộc nhập" },
                                     ]}
                                 >
-                                    <Input type="number" placeholder="m²" disabled={!edit} />
+                                    <Input type="number" placeholder="m²" disabled={!(edit && isChange)} />
                                 </Form.Item>
                                 <Flex justify="center" gap={"small"}>
                                     <Form.Item
@@ -799,7 +798,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         style={{ width: "70%" }}
                                         rules={[{ validator: validatePrice }]}
                                     >
-                                        <Input disabled={currentCalculateType === 3 || !edit} />
+                                        <Input disabled={currentCalculateType === 3 || (!(edit && isChange))} />
                                     </Form.Item>
 
                                     <Form.Item
@@ -812,7 +811,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     >
                                         <Select
                                             style={{ width: "100%" }}
-                                            disabled={!edit}
+                                            disabled={!(edit && isChange)}
                                             //value={calculateType[0].value}
                                             optionFilterProp="children"
                                             options={calculateType?.map((item: any) => {
@@ -866,7 +865,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     getValueFromEvent={normFile}
                                 >
                                     <Upload
-                                        disabled={!edit}
+                                        disabled={!(edit && isChange)}
                                         customRequest={handleUpload}
                                         multiple={true}
                                         listType="picture-card"
@@ -882,7 +881,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         <button
                                             style={{ border: 0, background: "none" }}
                                             type="button"
-                                            disabled={!edit}
+                                            disabled={!(edit && isChange)}
                                         >
                                             <PlusOutlined />
                                             <div style={{ marginTop: 8 }}>
@@ -923,7 +922,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     name={"youtubeLink"}
                                     label={<strong>Link youtube</strong>}
                                 >
-                                    <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!edit} />
+                                    <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!(edit && isChange)} />
                                 </Form.Item>
                             </div>
 
@@ -1029,20 +1028,50 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
 
                                             {
                                                 (status !== postStatus.POSTED && status !== postStatus.PENDING && status !== postStatus.REMOVED) ?
-                                                    <Form.Item>
-                                                        <Button
-                                                            style={{
-                                                                padding: "0 15px",
-                                                                marginRight: 10,
-                                                                color: "white",
-                                                                backgroundColor: "rgb(224, 60, 49)",
-                                                                border: "none",
-                                                            }}
-                                                            onClick={() => handleUpdate(form.getFieldsValue())}
-                                                        >
-                                                            Cập nhật
-                                                        </Button>
-                                                    </Form.Item>
+                                                    !isChange ?
+                                                        <Form.Item>
+                                                            <Button
+                                                                style={{
+                                                                    padding: "0 15px",
+                                                                    marginRight: 10,
+                                                                    color: "white",
+                                                                    backgroundColor: "rgb(224, 60, 49)",
+                                                                    border: "none",
+                                                                }}
+                                                                onClick={() => setIsChange(true)}
+                                                            >
+                                                                Cập nhật
+                                                            </Button>
+                                                        </Form.Item> :
+                                                        <Form.Item>
+                                                            <Button
+                                                                style={{
+                                                                    padding: "0 15px",
+                                                                    marginRight: 10,
+                                                                    color: "white",
+                                                                    backgroundColor: "rgb(224, 60, 49)",
+                                                                    border: "none",
+                                                                }}
+                                                                onClick={() => {
+                                                                    Modal.confirm({
+                                                                        title: "Bạn có chắc chắn muốn thay đổi?",
+                                                                        content: "Các thay đổi của bạn sẽ được lưu và không thể hoàn tác.",
+                                                                        okText: "Đồng ý",
+                                                                        cancelText: "Hủy",
+                                                                        onOk() {
+                                                                            handleUpdate(form.getFieldsValue());
+                                                                            setIsChange(false);
+                                                                        },
+                                                                        onCancel() {
+                                                                            console.log("cancel");
+                                                                        },
+                                                                    });
+                                                                    
+                                                                }}
+                                                            >
+                                                                Sửa
+                                                            </Button>
+                                                        </Form.Item>
                                                     : <></>
                                             }
 

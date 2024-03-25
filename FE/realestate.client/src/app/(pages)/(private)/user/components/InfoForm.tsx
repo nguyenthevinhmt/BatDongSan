@@ -1,12 +1,16 @@
+import { RootState } from "@/redux/store";
 import { apiUploadImage } from "@/services/post/post.service";
+import { getUserInfo, updateUserInfo } from "@/services/user/user.service";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import PlusOutlined from "@ant-design/icons/PlusOutlined";
-import { GetProp } from "antd/lib";
+import { GetProp, message } from "antd/lib";
 import Button from "antd/lib/button";
 import Flex from "antd/lib/flex";
 import Form from "antd/lib/form";
 import Input from "antd/lib/input";
 import Upload, { UploadProps } from "antd/lib/upload/Upload";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 const getBase64 = (file: FileType): Promise<string> =>
@@ -18,15 +22,39 @@ const getBase64 = (file: FileType): Promise<string> =>
   });
 
 const InfoForm = () => {
-  const [avatar, setAvatar] = useState<any>(
-    "https://res.cloudinary.com/deurdoich/image/upload/v1710872032/DATN/ikzqtrqfdsxblizrbp2e.jpg"
-  );
+
+  const [form] = Form.useForm();
+  const [userInfo, setUserInfo] = useState({
+    avatar: form.getFieldValue("avatarUrl"),
+    taxCode: "",
+    fullname: "",
+    phoneNumber: "",
+    email: "",
+  });
   const [onFocus, setOnFocus] = useState(false);
+
+  const [fileList, setFileList] = useState<any>([]);
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
 
   const handleUpload = async ({ file, onSuccess, onError }: any) => {
     const response = await apiUploadImage({ file, onSuccess, onError });
-    setAvatar(response?.data);
+    await form.setFieldValue("avatarUrl", response?.secure_url);
   };
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      await form.setFieldsValue({
+        avatarUrl: userSelector.avatarUrl,
+        taxCode: userSelector.taxCode,
+        fullname: userSelector.fullname,
+        phoneNumber: userSelector.phoneNumber,
+        email: userSelector.email,
+      });
+    }
+    fetchUserInfo();
+  }, [form]);
 
   const uploadButton = (
     <button
@@ -38,9 +66,9 @@ const InfoForm = () => {
       }}
       type="button"
     >
-      {avatar ? (
+      {userSelector?.avatar ? (
         <img
-          src={avatar}
+          src={userInfo?.avatar}
           alt="avatar"
           style={{
             objectFit: "cover",
@@ -58,8 +86,32 @@ const InfoForm = () => {
     </button>
   );
 
+  const handleUpdate = (formValue: any) => {
+    const updateUser = async () => {
+      const res = await updateUserInfo(formValue);
+      if (res?.code === HTTP_STATUS_CODE.OK) {
+        message.success("Cập nhật thành công");
+        // userInfo?.avatar = res?.data?.avatarUrl
+      }
+      else {
+        message.success("Có lỗi xảy ra");
+      }
+    }
+    updateUser();
+  };
+
   return (
-    <Form>
+    <Form
+      form={form}
+      onFinish={(formValue) => {
+        handleUpdate(formValue);
+      }}
+      onFinishFailed={() => {
+        message.error("Vui lòng kiểm tra lại các trường thông tin!");
+      }}
+      autoComplete="false"
+      layout="vertical"
+    >
       <p style={{ fontSize: "16px", fontWeight: "500" }}>Thông tin cá nhân</p>
       <div
         style={{
@@ -71,17 +123,20 @@ const InfoForm = () => {
         }}
       >
         <Form.Item
+          name={"avatarUrl"}
           style={{
             display: "flex",
             justifyContent: "center",
             marginTop: "10px",
           }}
-          valuePropName="avatar"
+        // valuePropName="avatar"
         >
           <Upload
             name="avatar"
             listType="picture-circle"
+            fileList={fileList}
             style={{ position: "relative" }}
+            customRequest={handleUpload}
           >
             {uploadButton}
             <div
@@ -92,18 +147,23 @@ const InfoForm = () => {
               }}
             >
               <PlusOutlined />
-              <div>{avatar ? "Edit" : "Upload"}</div>
+              <div>{userInfo?.avatar ? "Edit" : "Upload"}</div>
             </div>
           </Upload>
         </Form.Item>
         <Flex style={{ width: "100%" }} justify="space-between">
-          <Form.Item style={{ width: "45%" }}>
-            <div>Họ và tên</div>
-            <Input />
+          <Form.Item
+            style={{ width: "45%" }}
+            name="fullname"
+            label="Họ tên"
+            rules={[{ required: true, message: "Trường không được bỏ trống" }]}
+          >
+            <Input
+            />
           </Form.Item>
-          <Form.Item style={{ width: "45%" }}>
-            <div>Mã số thuế cá nhân</div>
-            <Input />
+          <Form.Item style={{ width: "45%" }} name="taxCode" label="Mã số thuế">
+            <Input
+            />
           </Form.Item>
         </Flex>
         <div
@@ -117,17 +177,19 @@ const InfoForm = () => {
       <p style={{ fontSize: "16px", margin: "30px 0px", fontWeight: "500" }}>
         Thông tin liên hệ
       </p>
-      <Form.Item>
-        <span>Số điện thoại</span>
-        <div>
-          <Input style={{ width: "40%" }} />
-        </div>
+      <Form.Item
+        name={"phoneNumber"}
+        label="Số điện thoại"
+        rules={[{ required: true, message: "Trường không được bỏ trống" }]}
+      >
+        <Input
+          style={{ width: "40%" }}
+        />
       </Form.Item>
-      <Form.Item>
-        <span>Email</span>
-        <div>
-          <Input style={{ width: "80%" }} />
-        </div>
+      <Form.Item name="email" label="Email">
+        <Input
+          style={{ width: "80%" }}
+        />
       </Form.Item>
       <Form.Item
         style={{
@@ -144,6 +206,7 @@ const InfoForm = () => {
             backgroundColor: "#e03c31",
             color: "#f1f1f1",
           }}
+          htmlType="submit"
         >
           Lưu thay đổi
         </Button>

@@ -22,8 +22,10 @@ namespace RealEstate.ApplicationService.BankAccountModule.Implements
         public void CreateBankAccount(CreateBankAccount input)
         {
             var currentUserId = _httpContext.GetCurrentUserId();
-            var checkBank = _dbContext.BankAccounts.FirstOrDefault(c => c.BankName == input.BankName || c.BankCode == input.BankCode)
-                            ?? throw new UserFriendlyException(ErrorCode.BankAccountTypeIsExist);
+            if (_dbContext.BankAccounts.FirstOrDefault(c => c.BankName == input.BankName || c.BankCode == input.BankCode) != null) { 
+                throw new UserFriendlyException(ErrorCode.BankAccountTypeIsExist); 
+            }
+
             var bankAccount = new BankAccount()
             {
                 BankCode = input.BankCode,
@@ -45,7 +47,7 @@ namespace RealEstate.ApplicationService.BankAccountModule.Implements
                         {
                             Id = c.Id,
                             BankName = c.BankName,
-                            BankCode = c.BankName,
+                            BankCode = c.BankCode,
                         });
 
             var result = new PagingResult<BankAccountDto>()

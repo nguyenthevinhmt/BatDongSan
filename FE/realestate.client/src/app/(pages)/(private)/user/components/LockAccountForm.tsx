@@ -1,9 +1,28 @@
+import { useLogoutMutation } from "@/app/(auth)/auth/_services/auth.service";
+import { deactiveAccount, logout } from "@/services/user/user.service";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
+import { Modal, message } from "antd";
 import { Button, Flex, Input } from "antd/lib";
 import Form from "antd/lib/form";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const LockAccountForm = () => {
   const [form] = Form.useForm();
+  const router = useRouter()
+  const handleSubmit = async () => {
+    const response = await deactiveAccount(form.getFieldValue('password'));
+    if (response?.code === 1003) {
+      message.error("Mật khẩu không đúng");
+    }
+    else if (response?.code === HTTP_STATUS_CODE.OK) {
+      logout();
+      router.replace("/");
+    }
+    else {
+      message.error("Có lỗi xảy ra");
+    }
+  }
   return (
     <div style={{ marginLeft: "24px" }}>
       <Form
@@ -12,7 +31,19 @@ const LockAccountForm = () => {
         style={{ marginTop: "5px" }}
         layout="vertical"
         onFinish={(formValue) => {
-          console.log("formValue", formValue);
+          Modal.confirm({
+            title: 'Xác nhận khóa tài khoản',
+            content: <div>
+              <div>Quý khách sẽ không thể đăng nhập lại vào tài khoản này sau khi khóa.</div>
+              <div>Vui lòng liên hệ hotline 19001881 hoặc email hotro@batdongsan.com.vn nếu bạn cần hỗ trợ</div>
+            </div>,
+            onOk() {
+              handleSubmit()
+            },
+            onCancel() {
+              console.log("cancel")
+            }
+          })
         }}
       >
         <Flex align="center" gap={10}>

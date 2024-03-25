@@ -266,6 +266,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         public void PublishPost(PublishPostDto input)
         {
             var currentUserId = _httpContext.GetCurrentUserId();
+            var transactions = _dbContext.Database.BeginTransaction();
             var post = _dbContext.Posts.FirstOrDefault(p => p.Id == input.Id 
                                                             && (p.Status == PostStatuses.REMOVED)
                                                             && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
@@ -290,6 +291,22 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 post.BackgroundJobOffShowPostId = jobId;
             }
 
+            _dbContext.SaveChanges();
+
+            var payloadToTransaction = new Transaction()
+            {
+                Amount = TotalAmount,
+                Description = $"Thanh toan dang bai. So tien giao dich {TotalAmount}",
+                TransactionFrom = wallet.WalletNumber,
+                TransactionType = TransactionType.OUTPUT,
+                TransactionNumber = DateTime.Now.ToString("yyyyMMddHHmmss"),
+                TransactionTo = "Tai khoan he thong",
+                WalletID = wallet.Id,
+                CreateDate = DateTime.Now,
+                PostId = post.Id
+            };
+            _dbContext.Transactions.Add(payloadToTransaction);
+            transactions.Commit();
             _dbContext.SaveChanges();
         }
 
@@ -490,6 +507,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             };
             _dbContext.Transactions.Add(payloadToTransaction);
             transactions.Commit();
+            _dbContext.SaveChanges();
 
         }
 

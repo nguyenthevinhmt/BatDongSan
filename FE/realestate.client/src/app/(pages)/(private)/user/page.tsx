@@ -1,28 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "@/app/(pages)/(private)/styles/style.layout.css";
-import Image from "next/image";
-import Button from "antd/es/button";
-import Collapse from "antd/es/collapse";
-import Form from "antd/es/form";
-import Input from "antd/es/input";
-import Modal from "antd/es/modal";
-import Upload from "antd/es/upload";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import {
-  getUserInfo,
-  updateUserInfo,
-  changePassword,
-  removeAccount,
-} from "../../../../services/user/user.service";
-import { useLogoutMutation } from "@/app/(auth)/auth/_services/auth.service";
-import { Flex, GetProp, TabsProps, UploadProps } from "antd/lib";
-import { apiUploadImage } from "@/services/post/post.service";
-import { Divider, Tabs } from "antd";
+import { Flex, TabsProps } from "antd/lib";
+import { Badge, Tabs } from "antd";
 import InfoForm from "./components/InfoForm";
 import AccountSetting from "./components/AccountSetting";
+import VerificationForm from "./components/VerificationForm";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const UserPage = () => {
+
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
+  console.log("userSelector", userSelector)
+
   const items: TabsProps["items"] = [
     {
       label: (
@@ -41,6 +34,15 @@ const UserPage = () => {
       ),
       key: "2",
       children: <AccountSetting />,
+    },
+    {
+      label: (
+        <Badge dot={!(useSelector as any)?.isConfirm} style={{ fontSize: "14px", fontWeight: "normal" }}>
+          Xác thực
+        </Badge>
+      ),
+      key: "3",
+      children: <VerificationForm />,
     },
   ];
 

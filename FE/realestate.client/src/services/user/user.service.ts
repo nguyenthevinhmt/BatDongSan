@@ -15,7 +15,7 @@ export const getUserInfo = async () => {
       }
     );
     if (response.status == 200) {
-      return response;
+      return response?.data;
     }
   } catch (error) {
     return null;
@@ -23,19 +23,17 @@ export const getUserInfo = async () => {
 };
 
 //update thông tin người dùng hiện tại
-export const updateUserInfo = async (email: string, phone: string, fullname: string, id: number, status: number) => {
+export const updateUserInfo = async (payload: any) => {
   try {
     const response = await axiosInstance.put(`${environment.baseUrl}/api/user/update`, {
-      username: "",
-      password: "",
-      email: email,
-      phone: phone,
-      fullname: fullname,
-      status: status,
-      id: id
+      email: payload?.email,
+      phone: payload?.phoneNumber,
+      fullname: payload?.fullname,
+      status: payload?.status,
+      taxCode: payload?.taxCode
     });
     if (response.status === 200) {
-      return response;
+      return response?.data;
     }
   } catch (error) {
     console.log("Error: api thay đổi thông tin người dùng bị lỗi!!!");
@@ -44,14 +42,14 @@ export const updateUserInfo = async (email: string, phone: string, fullname: str
 }
 
 //thay đổi mật khẩu
-export const changePassword = async (oldPass: string, newPass: string) => {
+export const changePassword = async (payload: any) => {
   try {
     const response = await axiosInstance.put(`${environment.baseUrl}/api/user/change-password`, {
-      oldPassword: oldPass,
-      newPassword: newPass
+      oldPassword: payload?.oldPassword,
+      newPassword: payload?.newPassword
     });
     if (response.status === 200) {
-      return response;
+      return response?.data;
     }
   } catch (error) {
     console.log("Error: api thay đổi mật khảu lỗi!!!");
@@ -69,5 +67,35 @@ export const removeAccount = async (id: number) => {
   } catch (error) {
     console.log("error: api xóa tài khoản lỗi!!!");
     return null;
+  }
+}
+
+export const deactiveAccount = async (password: string) => {
+  try {
+    const response = await axiosInstance.put(`${environment.baseUrl}/api/user/deactive-account?password=${password}`);
+    if (response.status === 200) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("error: api khóa tài khoản lỗi!!!");
+    return null;
+  }
+}
+
+export const logout = async () => {
+  try {
+    const response = await axiosInstance.post(
+      `${environment.baseUrl}/connect/logout`,
+      null,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+    return response?.data
+  }
+  catch {
+    return null
   }
 }

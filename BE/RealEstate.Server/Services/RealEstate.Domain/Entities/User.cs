@@ -21,6 +21,7 @@ namespace RealEstate.Domain.Entities
         public string Password { get; set; } = null!;
         [MaxLength(15)]
         public string PhoneNumber { get; set; } = null!;
+        public string? TaxCode { get; set; }
         /// <summary>
         /// Đường dẫn link ảnh
         /// </summary>

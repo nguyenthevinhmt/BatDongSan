@@ -7,9 +7,12 @@ import Flex from "antd/lib/flex";
 import Form from "antd/lib/form";
 import Input from "antd/lib/input";
 import message from "antd/lib/message";
+import { changePassword } from "@/services/user/user.service";
+import { CommonStatus } from "@/shared/consts/CommonStatus";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 
 type FormType = {
-  currentPassword: string;
+  oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
 };
@@ -17,11 +20,10 @@ type FormType = {
 const AccountSetting = ({ tab }: { tab?: number }) => {
   const [form] = Form.useForm();
   const [formData, setFormData] = useState<FormType>({
-    currentPassword: "",
+    oldPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
-  const [isMatch, setMatch] = useState(false);
   const collapseItem = [
     {
       key: "1",
@@ -43,6 +45,27 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
     },
   ];
 
+  const handleSubmit = (formValue: any) => {
+    const updatePassword = async () => {
+      const response = await changePassword(formValue);
+      if (response?.code === HTTP_STATUS_CODE.OK) {
+        message.success("Đổi mật khẩu thành công");
+        form.setFieldsValue({
+          oldPassword: '',
+          newPassword: "",
+          confirmNewPassword: "",
+        })
+      }
+      else if (response?.code === 1003) {
+        message.error("Mật khẩu cũ không đúng");
+      }
+      else {
+        message.error("Có lỗi xảy ra");
+      }
+    }
+    updatePassword();
+  }
+
   return (
     <div style={{ paddingBottom: "40px" }}>
       <h1
@@ -61,7 +84,7 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
           autoComplete="off"
           layout="vertical"
           onFinish={(formValue) => {
-            console.log("data", formValue);
+            handleSubmit(formValue)
           }}
           onFinishFailed={(formValue) => {
             console.log("formvalue", formValue);
@@ -69,7 +92,7 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
           }}
         >
           <Form.Item
-            name="currentPassword"
+            name="oldPassword"
             label={<p style={{ fontWeight: "500" }}>Mật khẩu hiện tại</p>}
             rules={[
               {
@@ -82,7 +105,7 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
           </Form.Item>
           <Form.Item
             name="newPassword"
-            dependencies={["currentPassword"]}
+            dependencies={["oldPassword"]}
             label={<p style={{ fontWeight: "500" }}>Mật khẩu mới</p>}
             rules={[
               {
@@ -98,12 +121,12 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
                   value && /\d/.test(value)
                     ? Promise.resolve()
                     : Promise.reject(
-                        new Error("Mật khẩu phải chứa ít nhất một số!")
-                      ),
+                      new Error("Mật khẩu phải chứa ít nhất một số!")
+                    ),
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue("currentPassword") === value) {
+                  if (!value || getFieldValue("oldPassword") === value) {
                     return Promise.reject(
                       new Error("Mật khẩu mới phải khác mật khẩu hiện tại!")
                     );

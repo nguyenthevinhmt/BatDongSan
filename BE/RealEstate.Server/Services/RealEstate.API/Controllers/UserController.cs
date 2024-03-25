@@ -124,5 +124,16 @@ namespace RealEstate.API.Controllers
         {
             return new(_userService.RefreshOTP(username));
         }
+        /// <summary>
+        /// Khóa tài khoản 
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpPut("deactive-account")]
+        public ApiResponse DeactiveAccount(string password)
+        {
+            _userService.DeactiveAccount(password);
+            return new();
+        }
     }
 }

@@ -66,7 +66,6 @@ const WalletHistoryPage = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [change, setChange] = useState(false);
   const [wallet, setWallet] = useState<IWallet>();
-  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -199,170 +198,95 @@ const WalletHistoryPage = () => {
     }
   };
 
-  const handleRecharge = () => {
-    router.push("/wallet/recharge");
-  }
 
   return (
-    <div>
-      <Flex
-        justify='flex-start'
-        align='center'
-        style={{
-          backgroundColor: "#fff",
-          height: 70,
-          marginBottom: 10,
-          paddingLeft: 20,
-          borderRadius: 8,
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-        }}>
-        <div style={{
-          fontSize: 24,
-          fontWeight: "500",
-          marginBottom: 5,
-        }}>Thông tin số dư</div>
-      </Flex>
-      <Flex
-        justify='space-between'
-        gap='small'
-        style={{
-          borderRadius: 8,
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        <Flex style={{ width: '29.5%' }}>
-          <div style={{
+    <Flex
+      justify='space-between'
+      gap='small'
+      style={{
+        borderRadius: 8,
+        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+      }}
+    >
+
+      <Flex justify="center" gap="small" vertical style={{ width: '100%' }}>
+        <div
+          style={{
             width: "100%",
-            height: "100%",
             margin: "auto",
             padding: 20,
             backgroundColor: "#fff",
             borderRadius: 8,
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          }}>
-            <p
-              style={{
-                fontSize: 24,
-                fontWeight: "500",
-                marginBottom: 5,
-              }}
-            >
-              Thông tin ví
-            </p>
-            <List
-              itemLayout="vertical"
-              dataSource={wallet ? [wallet] : []}
-              renderItem={(item, index) => (
-                <List.Item key={item.id}>
-                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, fontSize: 16 }}>
-                    <div style={{ fontWeight: 'bold' }}>Tên:</div>
-                    <div>{item.userName}</div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, fontSize: 16 }}>
-                    <div style={{ fontWeight: 'bold' }}>Số ví:</div>
-                    <div>{item.walletNumber}</div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, fontSize: 16 }}>
-                    <div style={{ fontWeight: 'bold' }}>Balance</div>
-                    <div>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'VND' }).format(item.balance)}</div>
-                  </div>
-                </List.Item>
-              )}
-            />
-            {
-              wallet?.id ?
-                <Button
-                  type="primary"
-                  style={{
-                    width: "100%",
-                  }}
-                  onClick={handleRecharge}
-                > <WalletOutlined /> Nạp tiền</Button>
-                : null
-            }
-
-          </div>
-        </Flex>
-        <Flex justify="center" gap="small" vertical style={{ width: '70%' }}>
-          <div
+          }}
+        >
+          <p
             style={{
-              width: "100%",
-              margin: "auto",
-              padding: 20,
-              backgroundColor: "#fff",
-              borderRadius: 8,
-              boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+              fontSize: 24,
+              fontWeight: "500",
+              marginBottom: 5,
             }}
           >
-            <p
-              style={{
-                fontSize: 24,
-                fontWeight: "500",
-                marginBottom: 5,
+            Lịch sử giao dịch
+          </p>
+          <Form
+            form={form}
+            layout="horizontal"
+            autoComplete="off"
+            onFinish={handleSearch}
+          >
+            <Flex justify="flex-start" align="flex-end">
+              <Form.Item
+                name="transactionType"
+                label={<strong>Loại giao dịch</strong>}
+                style={{ marginRight: 10 }}
+              >
+                <Select
+                  allowClear={true}
+                  placeholder="Tất cả"
+                  options={transactionType}
+                  onChange={() => setChange(!change)}
+                />
+              </Form.Item>
+            </Flex>
+          </Form>
+
+          <div>
+            <Table
+              // style={{
+              //   maxHeight: '300px',
+              // }}
+              columns={columns}
+              pagination={{
+                position: ["none", "bottomCenter"],
+                pageSize: pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ["10", "20", "30", "40"],
+                total: totalItems,
+                showTotal: (total, range) =>
+                  `${range[0]}-${range[1]} of ${total} items`, // Show total number of records and current display range
+                itemRender: (current, type, originalElement) => {
+                  if (type === "prev") {
+                    return <a>Previous</a>;
+                  }
+                  if (type === "next") {
+                    return <a>Next</a>;
+                  }
+                  return originalElement;
+                },
+                onChange: (pageNumber, pageSize) => {
+                  setPageNumber(pageNumber);
+                  setPageSize(pageSize);
+                  handleSearch(pageNumber, pageSize);
+                },
               }}
-            >
-              Lịch sử giao dịch
-            </p>
-            <Form
-              form={form}
-              layout="horizontal"
-              autoComplete="off"
-              onFinish={handleSearch}
-            >
-              <Flex justify="flex-start" align="flex-end">
-                <Form.Item
-                  name="transactionType"
-                  label={<strong>Loại giao dịch</strong>}
-                  style={{ marginRight: 10 }}
-                >
-                  <Select
-                    allowClear={true}
-                    placeholder="Tất cả"
-                    options={transactionType}
-                    onChange={() => setChange(!change)}
-                  />
-                </Form.Item>
-              </Flex>
-            </Form>
-
-            <div>
-              <Table
-                // style={{
-                //   maxHeight: '300px',
-                // }}
-                columns={columns}
-                pagination={{
-                  position: ["none", "bottomCenter"],
-                  pageSize: pageSize,
-                  showSizeChanger: true,
-                  pageSizeOptions: ["10", "20", "30", "40"],
-                  total: totalItems,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${total} items`, // Show total number of records and current display range
-                  itemRender: (current, type, originalElement) => {
-                    if (type === "prev") {
-                      return <a>Previous</a>;
-                    }
-                    if (type === "next") {
-                      return <a>Next</a>;
-                    }
-                    return originalElement;
-                  },
-                  onChange: (pageNumber, pageSize) => {
-                    setPageNumber(pageNumber);
-                    setPageSize(pageSize);
-                    handleSearch(pageNumber, pageSize);
-                  },
-                }}
-                dataSource={listTransaction}
-                scroll={{ x: window.innerWidth * 0.7, y: 300 }}
-              />
-            </div>
+              dataSource={listTransaction}
+              scroll={{ x: window.innerWidth * 0.7 }}
+            />
           </div>
-        </Flex>
+        </div>
       </Flex>
-    </div>
-
+    </Flex>
   );
 };
 

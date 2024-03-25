@@ -134,10 +134,12 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var userId = CommonUtils.GetCurrentUserId(_httpContext);
             _logger.LogInformation($"{nameof(Update)}: input = {JsonSerializer.Serialize(input)}, userId = {userId}");
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == input.Id && u.Status == UserStatus.ACTIVE && !u.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserNotFound); ;
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId && u.Status == UserStatus.ACTIVE && !u.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserNotFound); ;
             user.Email = input.Email;
             user.PhoneNumber = input.Phone;
-            user.Fullname = input.FullName;
+            user.Fullname = input.Fullname;
+            user.TaxCode = input.TaxCode ?? "";
+            user.AvatarUrl = input.AvatarUrl;
 
             _dbContext.SaveChanges();
             return _mapper.Map<UserDetailDto>(user);
@@ -257,7 +259,19 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var userInfo = _dbContext.Users.FirstOrDefault(u => u.Id == currentUserId)
                                     ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
 
-                return _mapper.Map<UserDetailDto>(userInfo);
+                return new UserDetailDto
+                {
+                    Id = userInfo.Id,
+                    TaxCode = userInfo.TaxCode,
+                    AvatarUrl = userInfo.AvatarUrl,
+                    Email = userInfo.Email,
+                    Fullname = userInfo.Fullname,
+                    isConfirm = userInfo.IsConfirm,
+                    PhoneNumber = userInfo.PhoneNumber,
+                    Status = userInfo.Status,
+                    Username = userInfo.Username,
+                    UserType = userInfo.UserType
+                };
         }
 
         public UserDto RefreshOTP(string username)
@@ -323,6 +337,19 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             {
                 Console.WriteLine("Failed to send email: " + ex.Message);
             }
+        }
+
+        public void DeactiveAccount(string Password)
+        {
+            var userId = _httpContext.GetCurrentUserId();
+            var account = _dbContext.Users.FirstOrDefault(u => u.Id == userId) 
+                            ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            if(account.Password != CryptographyUtils.CreateMD5(Password))
+            {
+                throw new UserFriendlyException(ErrorCode.UserOldPasswordIncorrect);
+            }
+            account.Status = UserStatus.DEACTIVE;
+            _dbContext.SaveChanges();
         }
     }
 }
