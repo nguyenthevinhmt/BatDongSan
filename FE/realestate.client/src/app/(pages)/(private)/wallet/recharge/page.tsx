@@ -301,8 +301,9 @@ const RechangePage = () => {
                     >
                         <Radio.Group>
                             {
-                                quickChoice.map((item) => {
+                                quickChoice.map((item, index) => {
                                     return <Radio.Button
+                                        key={index}
                                         value={item.value}
                                         style={{
                                             width: '33%',
@@ -330,57 +331,57 @@ const RechangePage = () => {
                             justifyContent: 'flex-start',
                             alignItems: 'center',
                         }}>
-                        <Form.Item
-                            name="radioGroup"
-                            label="Chọn hình thức nạp"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: "Hình thức nạp không được bỏ trống!",
-                                    validator: (_, value) => {
-                                        if (!value) {
-                                            console.log(value);
-                                            return Promise.reject("Hình thức nạp không được bỏ trống!");
-                                        }
-                                        return Promise.resolve();
-                                    },
+                            <Form.Item
+                                name="radioGroup"
+                                label="Chọn hình thức nạp"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Hình thức nạp không được bỏ trống!",
+                                        validator: (_, value) => {
+                                            if (!value) {
+                                                console.log(value);
+                                                return Promise.reject("Hình thức nạp không được bỏ trống!");
+                                            }
+                                            return Promise.resolve();
+                                        },
 
-                                },
-                            ]}
-                        >
-                            <Segmented
-                                options={[
-                                    {
-                                        label: (
-                                            <div style={{ padding: 4 }}>
-                                                <QrcodeOutlined />
-                                                <div>QR Code</div>
-                                            </div>
-                                        ),
-                                        value: vnp_BankCode.VNPAYQR,
-                                        disabled: true,
-                                    },
-                                    {
-                                        label: (
-                                            <div style={{ padding: 4 }}>
-                                                <CreditCardOutlined />
-                                                <div>Thẻ nội địa</div>
-                                            </div>
-                                        ),
-                                        value: vnp_BankCode.VNBANK,
-                                    },
-                                    {
-                                        label: (
-                                            <div style={{ padding: 4 }}>
-                                                <CreditCardOutlined />
-                                                <div>Thẻ Visa</div>
-                                            </div>
-                                        ),
-                                        value: vnp_BankCode.INTCARD,
                                     },
                                 ]}
-                            />
-                        </Form.Item>
+                            >
+                                <Segmented
+                                    options={[
+                                        {
+                                            label: (
+                                                <div style={{ padding: 4 }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M24.3074 22.4922H22.4908V24.3088H24.3074V22.4922Z" fill="#999999"></path><path d="M18.8578 17.042H17.0413V18.8586H18.8578V17.042Z" fill="#999999"></path><path d="M20.6744 18.8584H18.8578V20.675H20.6744V18.8584Z" fill="#999999"></path><path d="M18.8577 20.6748H17.0411V22.4914H18.8577V20.6748Z" fill="#999999"></path><path d="M20.6744 22.4922H18.8578V24.3088H20.6744V22.4922Z" fill="#999999"></path><path d="M22.491 20.6748H20.6744V22.4914H22.491V20.6748Z" fill="#999999"></path><path d="M22.491 17.042H20.6744V18.8586H22.491V17.042Z" fill="#999999"></path><path d="M24.3074 18.8584H22.4908V20.675H24.3074V18.8584Z" fill="#999999"></path><rect x="8.61536" y="8.61523" width="5.53846" height="5.53846" stroke="#999999" stroke-width="1.7" stroke-linejoin="round"></rect><rect x="8.61523" y="17.8457" width="5.53846" height="5.53846" stroke="#999999" stroke-width="1.7" stroke-linejoin="round"></rect><rect x="17.8461" y="8.61523" width="5.53846" height="5.53846" stroke="#999999" stroke-width="1.7" stroke-linejoin="round"></rect><path d="M10.4615 4H4V10.4615" stroke="#CCCCCC" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21.5385 28H28V21.5385" stroke="#CCCCCC" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21.5385 4H28V10.4615" stroke="#CCCCCC" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path><path d="M10.4615 28H4V21.5385" stroke="#CCCCCC" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                                    <div>QR Code</div>
+                                                </div>
+                                            ),
+                                            value: vnp_BankCode.VNPAYQR,
+                                            disabled: true,
+                                        },
+                                        {
+                                            label: (
+                                                <div style={{ padding: 4 }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M27.2667 25H4.73333C3.77653 25 3 24.2669 3 23.3636V8.63636C3 7.73309 3.77653 7 4.73333 7H27.2667C28.2235 7 29 7.73309 29 8.63636V23.3636C29 24.2669 28.2235 25 27.2667 25Z" fill="#E3AA49"></path><rect x="3" y="11" width="26" height="3" fill="#FAD48D"></rect><path d="M15.2174 20.8359H13.2972L12.8954 22H12L13.8726 17H14.6454L16.5214 22H15.6226L15.2174 20.8359ZM13.5389 20.1353H14.9757L14.2573 18.0611L13.5389 20.1353Z" fill="#FFFFFF"></path><path d="M20.2597 17.7005H18.714V22H17.8594V17.7005H16.3273V17H20.2597V17.7005Z" fill="#FFFFFF"></path><path d="M22.0302 17L23.4601 20.8324L24.8867 17H26V22H25.142V20.3516L25.2271 18.147L23.7631 22H23.1469L21.6863 18.1504L21.7714 20.3516V22H20.9134V17H22.0302Z" fill="#FFFFFF"></path></svg>
+                                                    <div>Thẻ nội địa</div>
+                                                </div>
+                                            ),
+                                            value: vnp_BankCode.VNBANK,
+                                        },
+                                        {
+                                            label: (
+                                                <div style={{ padding: 4 }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M27.2667 25H4.73333C3.77653 25 3 24.2669 3 23.3636V8.63636C3 7.73309 3.77653 7 4.73333 7H27.2667C28.2235 7 29 7.73309 29 8.63636V23.3636C29 24.2669 28.2235 25 27.2667 25Z" fill="#999999"></path><rect x="3" y="11" width="26" height="3" fill="#FFFFFF"></rect><path opacity="0.9" d="M24 23C25.6569 23 27 21.6569 27 20C27 18.3431 25.6569 17 24 17C22.3431 17 21 18.3431 21 20C21 21.6569 22.3431 23 24 23Z" fill="#FFFFFF"></path><path opacity="0.9" d="M20 23C21.6569 23 23 21.6569 23 20C23 18.3431 21.6569 17 20 17C18.3431 17 17 18.3431 17 20C17 21.6569 18.3431 23 20 23Z" fill="#FFFFFF"></path></svg>
+                                                    <div>Thẻ Visa</div>
+                                                </div>
+                                            ),
+                                            value: vnp_BankCode.INTCARD,
+                                        },
+                                    ]}
+                                />
+                            </Form.Item>
                         </div>
                     </ConfigProvider>
 
@@ -399,17 +400,16 @@ const RechangePage = () => {
                     >
                         <Radio.Group disabled={true}>
                             {
-                                listBankDetail.map((item) => {
+                                listBankDetail.map((item, index) => {
                                     return <Radio.Button
+                                        key={index}
                                         value={item.value}
                                         style={{
                                             width: 'auto',
                                             height: 'auto',
                                             lineHeight: 'initial',
-                                            paddingTop: 5,
-                                            paddingBottom: 5,
-                                            paddingLeft: 5,
-                                            paddingRight: 5,
+                                            padding: 5,
+                                            backgroundColor: '#fff'
                                         }}
                                     >{item.img}</Radio.Button>
                                 })

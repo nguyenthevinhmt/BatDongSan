@@ -310,7 +310,7 @@ const ListBankPage = () => {
                                 >
                                     <Row gutter={[16, 10]}>
                                         {listBank?.map((item, index) => {
-                                            return <Col span={6}>
+                                            return <Col span={6} key={index}>
                                                 <Card
                                                     hoverable={true}
                                                     title={<div
@@ -337,7 +337,7 @@ const ListBankPage = () => {
 
                                                     }}
                                                     actions={[
-                                                        <TiDeleteOutline style={{ width: 20, height: 20 }} onClick={() => {
+                                                        <TiDeleteOutline key={index} style={{ width: 20, height: 20 }} onClick={() => {
                                                             Modal.confirm({
                                                                 title: "Bạn có chắc chắn muốn xóa ngân hàng?",
                                                                 content: "Các thay đổi của bạn sẽ được lưu và không thể hoàn tác.",
@@ -463,8 +463,9 @@ const ListBankPage = () => {
                                 >
                                     <Radio.Group>
                                         {
-                                            listBankDetail.map((item) => {
+                                            listBankDetail.map((item, index) => {
                                                 return <Radio.Button
+                                                    key={index}
                                                     value={item.value}
                                                     style={{
                                                         width: 'auto',

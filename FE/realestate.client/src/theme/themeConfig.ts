@@ -23,6 +23,7 @@ const theme: ThemeConfig = {
     Segmented: {
       itemHoverBg: '#ff4d4f',
       itemSelectedColor: '#ff4d4f',
+      itemHoverColor: '#fff'
     },
     Card: {
       headerFontSize: 18,
