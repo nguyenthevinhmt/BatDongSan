@@ -155,13 +155,13 @@ const InfoForm = () => {
           <Form.Item
             style={{ width: "45%" }}
             name="fullname"
-            label="Họ tên"
+            label={<div style={{ fontWeight: '500' }}>Họ tên</div>}
             rules={[{ required: true, message: "Trường không được bỏ trống" }]}
           >
             <Input
             />
           </Form.Item>
-          <Form.Item style={{ width: "45%" }} name="taxCode" label="Mã số thuế">
+          <Form.Item style={{ width: "45%" }} name="taxCode" label={<div style={{ fontWeight: '500' }}>Mã số thuế</div>}>
             <Input
             />
           </Form.Item>
@@ -179,14 +179,14 @@ const InfoForm = () => {
       </p>
       <Form.Item
         name={"phoneNumber"}
-        label="Số điện thoại"
+        label={<div style={{ fontWeight: '500' }}>Số điện thoại</div>}
         rules={[{ required: true, message: "Trường không được bỏ trống" }]}
       >
         <Input
           style={{ width: "40%" }}
         />
       </Form.Item>
-      <Form.Item name="email" label="Email">
+      <Form.Item name="email" label={<div style={{ fontWeight: '500' }}>Email</div>}>
         <Input
           style={{ width: "80%" }}
         />

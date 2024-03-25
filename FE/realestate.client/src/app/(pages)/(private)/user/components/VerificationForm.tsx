@@ -4,6 +4,7 @@ import { Table } from 'antd';
 import { TableColumnsType } from 'antd/lib';
 import Button from 'antd/lib/button'
 import React, { useEffect, useState } from 'react'
+import AddIdentificationModal from './AddIdentificationModal';
 
 const VerificationForm = () => {
     const [data, setData] = useState([{
@@ -13,10 +14,17 @@ const VerificationForm = () => {
         backward: 'https://res.cloudinary.com/deurdoich/image/upload/v1711342331/DATN/bufqlqobakww5tavqn8s.jpg'
 
     }]);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
     useEffect(() => {
 
     }, []);
+
+    const showModal = () => {
+        setIsOpenModal(true);
+        return <AddIdentificationModal isOpen={true} />
+    }
+
     const columns: TableColumnsType<any> = [
         {
             title: '#ID',
@@ -104,9 +112,12 @@ const VerificationForm = () => {
     return (
         <div>
             <Flex justify='flex-end' style={{ marginBottom: '20px' }}>
-                <Button style={{ backgroundColor: '#FF4D4F', color: '#fff' }}>Thêm mới</Button>
+                <Button onClick={() => {
+                    setIsOpenModal(true)
+                }} style={{ backgroundColor: '#FF4D4F', color: '#fff' }}>Thêm mới</Button>
             </Flex>
             <Table columns={columns} dataSource={data} />
+            <AddIdentificationModal isOpen={isOpenModal} />
         </div>
     )
 }
