@@ -109,13 +109,7 @@ const PostHorizon = ({
         <div style={{ width: "720px", height: "150px", marginBottom: "60px" }}>
           <Flex>
             <Link href={`/home/post/detail/${data?.id}`} style={{ flex: 3 }}>
-              <img
-                src={data?.firstImageUrl}
-                alt="#"
-                width={200}
-                height={150}
-                style={{ objectFit: "cover" }}
-              />
+              <img src={data?.firstImageUrl} alt="#" width={200} height={150} />
             </Link>
             <div style={{ flex: 7 }}>
               <Link href={`/home/post/detail/${data?.id}`}>
@@ -126,14 +120,7 @@ const PostHorizon = ({
               <p
                 style={{ margin: "10px 0px", color: "rgba(0, 0,0, 0.6)" }}
               >{`${data?.district}. ${data?.province}`}</p>
-              <Flex
-                align="center"
-                style={{
-                  width: "140px",
-                  fontWeight: "500",
-                  color: "rgba(0, 0,0, 0.6)",
-                }}
-              >
+              <Flex align="center" style={{ width: "140px" }}>
                 <div>{data?.area} m²</div>
               </Flex>
               <Flex justify="space-between" style={{ marginTop: "40px" }}>
@@ -143,16 +130,24 @@ const PostHorizon = ({
                 <Flex>
                   <Flex
                     style={{
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      color: "#444",
                       marginRight: "10px",
                     }}
                   >
-                    <div style={{ marginRight: "10px" }}>
+                    <div style={{
+                      fontSize: "18px",
+                      fontFamily: '__Lexend_126e48',
+                      fontWeight: "600",
+                      color: "#444",
+                      marginRight: "10px",
+                    }}>
                       {formatCurrency(data?.price)}
                     </div>
-                    <div>{data?.area} m²</div>
+                    <div style={{
+                      fontSize: "18px",
+                      fontFamily: '__Lexend_126e48',
+                      fontWeight: "600",
+                      color: "#444",
+                    }}>{data?.area} m²</div>
                   </Flex>
                   <Tooltip title={isSave ? "Bỏ lưu" : "Lưu bài viết"}>
                     <Button
