@@ -72,3 +72,22 @@ export const rechangeWallet = async (payload: IWalletRecharge) => {
         console.log("Gọi api nạp tiền vào ví bị lỗi", error);
     }
 };
+
+interface IWalletWithdraw {
+    walletNumber: string;
+    transactionAmount: number;
+    transactionTo: string;
+};
+
+export const withdrawWallet = async (payload: IWalletWithdraw) => {
+    try {
+        const response = await axiosInstance.post(
+            `${environment.baseUrl}/api/wallet/withdraw`, payload
+        );
+        if (response.status === HTTP_STATUS_CODE.OK) {
+            return response?.data;
+        }
+    } catch (error) {
+        console.log("Gọi api rút tiền từ ví bị lỗi", error);
+    }
+};

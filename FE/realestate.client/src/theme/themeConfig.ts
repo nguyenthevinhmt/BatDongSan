@@ -20,6 +20,13 @@ const theme: ThemeConfig = {
       cardBg: "rgba(0, 0, 0, 0)",
       titleFontSize: 16,
     },
+    Segmented: {
+      itemHoverBg: '#ff4d4f',
+      itemSelectedColor: '#ff4d4f',
+    },
+    Card: {
+      headerFontSize: 18,
+    }
   },
 };
 

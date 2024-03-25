@@ -1,6 +1,6 @@
 'use client';
 import isAuth from '@/app/isAuth';
-import { createBank, getAllBank } from '@/services/bank/bank.service';
+import { createBank, getAllBank, removeBank } from '@/services/bank/bank.service';
 import { UserType } from '@/shared/consts/userType';
 import Button from 'antd/es/button';
 import Card from 'antd/es/card';
@@ -50,6 +50,9 @@ import DatePicker from 'antd/es/date-picker';
 import { Col, Row } from 'antd/es/grid';
 import { TiDeleteOutline } from 'react-icons/ti';
 import { MdAddCard } from 'react-icons/md';
+import Modal from 'antd/es/modal';
+import ConfigProvider from 'antd/es/config-provider';
+import theme from '@/theme/themeConfig';
 
 interface IBank {
     id: number;
@@ -222,6 +225,7 @@ const ListBankPage = () => {
     const [listBank, setListBank] = useState<IBank[]>([]);
     const [isAddBank, setIsAddBank] = useState<boolean>(false);
     const [isChange, setIsChange] = useState<boolean>(false);
+    const [hover, setHover] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -255,6 +259,13 @@ const ListBankPage = () => {
         setIsAddBank(false);
         setIsChange(!isChange);
     };
+
+    const handleRemoveBank = async (id: number) => {
+        //xóa ngân hàng
+        const response = await removeBank(id);
+        console.log("response", response);
+        setIsChange(!isChange);
+    }
     return (
         <div>
             {!isAddBank ?
@@ -294,19 +305,71 @@ const ListBankPage = () => {
                                 marginBottom: 10
                             }}>
 
-                                <Row gutter={[16, 10]}>
-                                    {listBank?.map((item, index) => {
-                                        return <Col span={6}>
-                                            <Card 
-                                                hoverable={true}
-                                                title={<div
+                                <ConfigProvider
+                                    theme={theme}
+                                >
+                                    <Row gutter={[16, 10]}>
+                                        {listBank?.map((item, index) => {
+                                            return <Col span={6}>
+                                                <Card
+                                                    hoverable={true}
+                                                    title={<div
+                                                        style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row',
+                                                            justifyContent: 'center',
+                                                        }}
+                                                    >{item.bankName}</div>
+                                                    }
+                                                    bordered={false}
                                                     style={{
+                                                        border: '1px solid #aaa',
+                                                        boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+                                                    }}
+                                                    headStyle={{
+                                                        borderBottom: '1px solid #aaa',
                                                         display: 'flex',
-                                                        flexDirection: 'row',
+                                                        flexDirection: 'column',
                                                         justifyContent: 'center',
                                                     }}
-                                                >{item.bankName}</div>
-                                                } 
+                                                    bodyStyle={{
+                                                        borderBottom: '1px solid #aaa',
+
+                                                    }}
+                                                    actions={[
+                                                        <TiDeleteOutline style={{ width: 20, height: 20 }} onClick={() => {
+                                                            Modal.confirm({
+                                                                title: "Bạn có chắc chắn muốn xóa ngân hàng?",
+                                                                content: "Các thay đổi của bạn sẽ được lưu và không thể hoàn tác.",
+                                                                okText: "Đồng ý",
+                                                                cancelText: "Hủy",
+                                                                onOk() {
+                                                                    handleRemoveBank(item.id);
+                                                                },
+                                                                onCancel() {
+                                                                    console.log("cancel");
+                                                                },
+                                                            });
+                                                        }} />
+                                                    ]}
+                                                >
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'space-between',
+                                                    }}>
+                                                        <span>Số thẻ: </span>
+                                                        <div>{item.bankCode}</div>
+                                                    </div>
+
+                                                </Card>
+                                            </Col>
+                                        })}
+
+                                        <Col span={6} onClick={() => setIsAddBank(true)}>
+                                            <Card
+                                                title="Thêm ngân hàng mới"
+                                                hoverable={true}
                                                 bordered={false}
                                                 style={{
                                                     border: '1px solid #aaa',
@@ -314,53 +377,21 @@ const ListBankPage = () => {
                                                 }}
                                                 headStyle={{
                                                     borderBottom: '1px solid #aaa', // Đường viền dưới của title
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
                                                 }}
                                                 bodyStyle={{
                                                     borderBottom: '1px solid #aaa', // Đường viền trên của nội dung
-                                                    
-                                                }}
-                                                actions={[
-                                                    <TiDeleteOutline style={{width: 20, height: 20}}/>
-                                                  ]}
-                                            >
-                                                <div style={{
                                                     display: 'flex',
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'space-between',
-                                                }}>
-                                                <span>Số thẻ: </span>
-                                                <div>{item.bankCode}</div>
-                                                </div>
-                                                
+                                                    justifyContent: 'center'
+                                                }}
+                                                onMouseEnter={() => setHover(true)}
+                                                onMouseLeave={() => setHover(false)}
+                                            >
+                                                <MdAddCard style={{ width: 30, height: 30, color: hover ? '#ff4d4f' : 'black' }} />
                                             </Card>
                                         </Col>
-                                    })}
-
-                                    <Col span={6} onClick={() => setIsAddBank(true)}>
-                                        <Card
-                                            title="Thêm ngân hàng mới"
-                                            bordered={false}
-                                            style={{
-                                                border: '1px solid #aaa',
-                                                boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-                                            }}
-                                            headStyle={{
-                                                borderBottom: '1px solid #aaa', // Đường viền dưới của title
-                                                alignItems: 'center',
-                                            }}
-                                            bodyStyle={{
-                                                borderBottom: '1px solid #aaa', // Đường viền trên của nội dung
-                                                display: 'flex',
-                                                justifyContent: 'center'
-                                            }}
-                                        >
-                                            <MdAddCard style={{ width: 30, height: 30 }} />
-                                        </Card>
-                                    </Col>
-                                </Row>
+                                    </Row>
+                                </ConfigProvider>
                             </div>
                         </Flex>
                     </div>
@@ -386,7 +417,7 @@ const ListBankPage = () => {
                             align='flex-start'
 
                         >
-                            <Form 
+                            <Form
                                 form={form}
                                 onFinish={() => handleCreate(form.getFieldsValue())}
                             >
@@ -413,8 +444,8 @@ const ListBankPage = () => {
                                     />
                                 </Form.Item>
 
-                                <Form.Item 
-                                    name="releaseDate" 
+                                <Form.Item
+                                    name="releaseDate"
                                     label="Ngày phát hành"
                                     labelCol={{ span: 24 }}
                                     wrapperCol={{ span: 24 }}

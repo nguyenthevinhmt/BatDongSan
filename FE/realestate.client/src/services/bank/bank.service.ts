@@ -38,3 +38,15 @@ export const getAllBank = async (search: ISearch) => {
         return error;
     }
 };
+
+export const removeBank = async (id: number) => {
+    try {
+        const response = await axiosInstance.delete(`${environment.baseUrl}/api/bank-account/remove?id=${id}`);
+        if (response.status === HTTP_STATUS_CODE.OK) {
+            return response;
+        }
+    } catch (error) {
+        console.log("gọi api xóa tài khoản ngân hàng bị lỗi.", error);
+        return error;
+    }
+};
