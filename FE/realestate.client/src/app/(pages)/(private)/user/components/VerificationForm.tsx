@@ -5,20 +5,28 @@ import { TableColumnsType } from 'antd/lib';
 import Button from 'antd/lib/button'
 import React, { useEffect, useState } from 'react'
 import AddIdentificationModal from './AddIdentificationModal';
+import type { MenuProps } from 'antd';
+import { getAllUserIdentification } from '@/services/user/user.service';
 
 const VerificationForm = () => {
-    const [data, setData] = useState([{
-        id: 1,
-        idNo: '019202000120',
-        front: 'https://res.cloudinary.com/deurdoich/image/upload/v1711342300/DATN/tbxg0o5zp2gcctcdw9mo.jpg',
-        backward: 'https://res.cloudinary.com/deurdoich/image/upload/v1711342331/DATN/bufqlqobakww5tavqn8s.jpg'
-
-    }]);
+    const [data, setData] = useState([]);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
     useEffect(() => {
-
+        const fetchUserIdentification = async () => {
+            const res = await getAllUserIdentification();
+            setData(res?.data)
+            console.log("data", res?.data)
+        }
+        fetchUserIdentification();
     }, []);
+
+    const items: MenuProps['items'] = [
+        {
+            label: 'Thông tin chi tiết',
+            key: '1',
+        },
+    ];
 
     const showModal = () => {
         setIsOpenModal(true);
@@ -39,16 +47,16 @@ const VerificationForm = () => {
         },
         {
             title: 'Mặt trước',
-            dataIndex: 'front',
-            key: 'front',
+            dataIndex: 'frontImageUrl',
+            key: 'frontImageUrl',
             render: (index, record) => {
                 const isAbsoluteUrl = /^https?:\/\//i.test(record?.front || "");
                 const imageUrl = isAbsoluteUrl
-                    ? record?.front || ""
+                    ? record?.frontImageUrl
                     : "https://res.cloudinary.com/deurdoich/image/upload/v1710429504/DATN/g5flsesusjkanoa6fg0q.jpg";
                 return (
                     <img
-                        src={imageUrl}
+                        src={record?.frontImageUrl}
                         alt="Mô tả ảnh"
                         width={100}
                         height={80}
@@ -59,16 +67,16 @@ const VerificationForm = () => {
         },
         {
             title: 'Mặt sau',
-            dataIndex: 'backward',
-            key: 'backward',
+            dataIndex: 'backwardImageUrl',
+            key: 'backwardImageUrl',
             render: (index, record) => {
                 const isAbsoluteUrl = /^https?:\/\//i.test(record?.backward || "");
                 const imageUrl = isAbsoluteUrl
-                    ? record?.backward || ""
+                    ? record?.backwardImageUrl
                     : "https://res.cloudinary.com/deurdoich/image/upload/v1710429504/DATN/g5flsesusjkanoa6fg0q.jpg";
                 return (
                     <img
-                        src={imageUrl}
+                        src={record?.backwardImageUrl}
                         alt="Mô tả ảnh"
                         width={100}
                         height={80}
@@ -92,14 +100,9 @@ const VerificationForm = () => {
                 // </Menu>
                 return (
                     <Space size="middle">
-                        <Dropdown overlay={<Menu>
-                            <Menu.Item
-                                key={index}
-                            //onClick={() => item && item.onClick && item.onClick(record.id)}
-                            >
-                                Thông tin chi tiết
-                            </Menu.Item>
-                        </Menu>} placement="bottomRight">
+                        <Dropdown
+                            menu={{ items }}
+                            placement="bottomRight">
                             <a>
                                 <EllipsisOutlined style={{ fontSize: 25 }} />
                             </a>
@@ -112,12 +115,12 @@ const VerificationForm = () => {
     return (
         <div>
             <Flex justify='flex-end' style={{ marginBottom: '20px' }}>
-                <Button onClick={() => {
+                {!!data && <Button size='large' onClick={() => {
                     setIsOpenModal(true)
-                }} style={{ backgroundColor: '#FF4D4F', color: '#fff' }}>Thêm mới</Button>
+                }} style={{ backgroundColor: '#FF4D4F', color: '#fff' }}>Thêm mới</Button>}
             </Flex>
             <Table columns={columns} dataSource={data} />
-            <AddIdentificationModal isOpen={isOpenModal} />
+            <AddIdentificationModal isOpen={isOpenModal} handleShowModal={() => { setIsOpenModal(!isOpenModal) }} />
         </div>
     )
 }

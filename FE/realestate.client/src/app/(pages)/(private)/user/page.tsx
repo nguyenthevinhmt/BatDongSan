@@ -37,7 +37,7 @@ const UserPage = () => {
     },
     {
       label: (
-        <Badge dot={!(useSelector as any)?.isConfirm} style={{ fontSize: "14px", fontWeight: "normal" }}>
+        <Badge dot={!!(!useSelector as any)?.isConfirm} style={{ fontSize: "14px", fontWeight: "normal" }}>
           Xác thực
         </Badge>
       ),

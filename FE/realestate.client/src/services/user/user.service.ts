@@ -1,7 +1,6 @@
 import axios from "axios";
 import axiosInstance from "@/shared/configs/axiosInstance";
 import { environment } from "@/shared/environment/environment";
-import { headers } from "next/headers";
 
 //lấy thông tin người dùng hiện tại
 export const getUserInfo = async () => {
@@ -97,5 +96,54 @@ export const logout = async () => {
   }
   catch {
     return null
+  }
+}
+
+export const getFrontIdentificationCardInfo = async (formData: any) => {
+  try {
+    const response = await axios.post(
+      `${environment.OcrUrl}?type=1`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data
+  }
+  catch (error) {
+    console.log(error)
+    return error
+  }
+}
+
+export const getBackwardIdentificationCardInfo = async (formData: any) => {
+  try {
+    const response = await axios.post(
+      `${environment.OcrUrl}?type=2`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response?.data
+  }
+  catch (error) {
+    console.log(error)
+    return error
+  }
+}
+
+export const getAllUserIdentification = async () => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/user/user-identification/find-all`);
+    return response?.data
+  }
+  catch (error) {
+    console.log(error)
+    return error
   }
 }

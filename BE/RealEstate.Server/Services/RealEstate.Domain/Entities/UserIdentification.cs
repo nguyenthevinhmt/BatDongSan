@@ -24,9 +24,13 @@ namespace RealEstate.Domain.Entities
         public string PlaceOfOrigin { get; set; } = null!;
         [MaxLength(250)]
         public string PlaceOfResidence { get; set; } = null!;
-        public DateTime ExpiredDate { get; set; }
+        public DateTime IdIssueExpDate { get; set; }
+        public DateTime IdDate { get; set; }
+        public string IdIssuer { get; set; } = null!;
+        public string FrontUserIdentification {  get; set; } = null!;
+        public string BackwardUserIdentification {  get; set; } = null!;
         public int UserId { get; set; }
-        public User User { get; set; } = new();
+        public User User { get; set; } = null!;
         public DateTime CreateDate { get; set; }
         public int CreateBy { get; set; }
         public bool Deleted { get; set; }

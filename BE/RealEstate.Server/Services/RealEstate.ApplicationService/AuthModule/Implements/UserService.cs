@@ -351,5 +351,65 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             account.Status = UserStatus.DEACTIVE;
             _dbContext.SaveChanges();
         }
+
+        public void AddUserIdentification(CreateUserIdentificationDto input)
+        {
+            var userId = _httpContext.GetCurrentUserId();
+            var user = _dbContext.Users.FirstOrDefault(c => c.Id == userId)
+                            ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            user.IsConfirm = true;
+            var newUserIdentification = new UserIdentification()
+            {
+                IdNo = input.IdNo,
+                IdDate = input.IdDate,
+                Fullname = input.Fullname,
+                DateOfBirth = input.DateOfBirth,
+                IdIssueExpDate = input.IdIssueExpDate,
+                IdIssuer = "CỤC TRƯỞNG CỤC CẢNH SÁT QUẢN LÝ HÀNH CHÍNH VỀ TRẬT TỰ XÃ HỘI",
+                Nationality = input.Nationality,
+                PlaceOfOrigin = input.PlaceOfOrigin,
+                PlaceOfResidence = input.PlaceOfResidence,
+                Sex = input.Sex,
+                UserId = userId,
+                BackwardUserIdentification = input.BackwardUserIdentification,
+                FrontUserIdentification = input.FrontUserIdentification,
+            };
+            _dbContext.UserIdentification.Add(newUserIdentification);
+            _dbContext.SaveChanges();
+        }
+
+        public List<UserIdentificationDto> FindAllUserIdentification()
+        {
+            var userId = _httpContext.GetCurrentUserId();
+            var listInfo = _dbContext.UserIdentification.Where(c => !c.Deleted && c.UserId == userId).Select(x => new UserIdentificationDto
+            {
+                Id = x.Id,
+                BackwardImageUrl = x.BackwardUserIdentification,
+                FrontImageUrl = x.FrontUserIdentification,
+                IdNo = x.IdNo
+            }).ToList();
+            return listInfo;
+        }
+
+        public DetailUserIdentificationDto FindUserIdenticationById(int id)
+        {
+            var info = _dbContext.UserIdentification.FirstOrDefault(x => x.Id == id && !x.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserIdentificationNotFound);
+            return new DetailUserIdentificationDto
+            {
+                Id = info.Id,
+                BackwardImageUrl = info.BackwardUserIdentification,
+                FrontImageUrl = info.FrontUserIdentification,
+                IdNo = info.IdNo,
+                DateOfBirth = info.DateOfBirth,
+                Fullname = info.Fullname,
+                IdDate = info.IdDate,
+                IdIssueExpDate = info.IdIssueExpDate,
+                IdIssuer = info.IdIssuer,
+                Nationality = info.Nationality,
+                PlaceOfOrigin = info.PlaceOfOrigin,
+                PlaceOfResidence = info.PlaceOfResidence,
+                Sex = info.Sex
+            };
+        }
     }
 }

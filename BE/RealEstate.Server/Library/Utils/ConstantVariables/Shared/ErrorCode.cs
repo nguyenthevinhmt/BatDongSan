@@ -20,6 +20,7 @@
         AccountIsNotVerifiedOtp = 1007, 
         UsernameIsExist = 1008,
         EmailIsExist = 1009,
+        UserIdentificationNotFound = 1010,
 
 
         // Image && File 2xxx

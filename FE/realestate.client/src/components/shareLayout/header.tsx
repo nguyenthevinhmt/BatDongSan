@@ -104,7 +104,7 @@ const HeaderComponent = () => {
       key: "1",
       label: (
         <Badge
-          dot={!userInfo?.isConfirm}
+          dot={!!(userInfo?.isConfirm)}
           style={{ fontFamily: "__Lexend_126e48 " }}
         >
           <span style={{ fontFamily: "__Lexend_126e48 " }}>
@@ -278,7 +278,7 @@ const HeaderComponent = () => {
                 <div>
                   {!avatarUrl ? (
                     <Badge
-                      dot={!userInfo?.isConfirm}
+                      dot={!!(userInfo?.isConfirm)}
                       style={{
                         width: "10px",
                         height: "10px",
@@ -297,7 +297,7 @@ const HeaderComponent = () => {
                     </Badge>
                   ) : (
                     <Badge
-                      dot={!userInfo?.isConfirm}
+                      dot={!!(userInfo?.isConfirm)}
                       style={{
                         width: "10px",
                         height: "10px",

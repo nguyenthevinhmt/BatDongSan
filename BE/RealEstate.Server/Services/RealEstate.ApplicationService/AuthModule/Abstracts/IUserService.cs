@@ -90,5 +90,22 @@ namespace RealEstate.ApplicationService.AuthModule.Abstracts
         /// </summary>
         /// <param name="Password"></param>
         void DeactiveAccount(string Password);
+
+        /// <summary>
+        /// Thêm mới thông tin căn cước
+        /// </summary>
+        /// <param name="input"></param>
+        void AddUserIdentification(CreateUserIdentificationDto input);
+        /// <summary>
+        /// Danh sách thẻ căn cước
+        /// </summary>
+        /// <returns></returns>
+        List<UserIdentificationDto> FindAllUserIdentification();
+        /// <summary>
+        /// Chi tiết thông tin giấy tờ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        DetailUserIdentificationDto FindUserIdenticationById(int id);
     }
 }
