@@ -1,6 +1,7 @@
 'use client';
+import { v4 as uuidv4 } from 'uuid';
 import isAuth from '@/app/isAuth';
-import { UserType } from '@/shared/consts/userType';
+import UserType from '@/shared/consts/userType';
 import Button from 'antd/es/button';
 import ConfigProvider from 'antd/es/config-provider';
 import Flex from 'antd/es/flex';
@@ -47,7 +48,6 @@ import ncbank from '@/assets/image/ncbank.jpg';
 import ocbank from '@/assets/image/ocbank.jpg';
 import seabank from '@/assets/image/seabank.jpg';
 import vietabank from '@/assets/image/vietabank.jpg';
-import { vnp_BankCode } from '@/shared/consts/vnp_BankCode';
 import { useRouter } from 'next/navigation';
 import { getAllBank } from '@/services/bank/bank.service';
 import { walletInfo, withdrawWallet } from '@/services/wallet/wallet.service';
@@ -248,7 +248,7 @@ interface IWallet {
     userName: string;
 }
 
-const withdrawPage = () => {
+const WithDrawPage = () => {
     // Add your component logic here
     const router = useRouter();
     const [listBank, setListBank] = useState<IBank[]>([]);
@@ -345,12 +345,12 @@ const withdrawPage = () => {
                                     name="currentBalance"
                                     label="Số dư hiện tại: "
                                 >
-                                    <InputNumber 
-                                        disabled={true} 
-                                        addonAfter="đ" 
-                                        style={{ width: '50%' }} 
+                                    <InputNumber
+                                        disabled={true}
+                                        addonAfter="đ"
+                                        style={{ width: '50%' }}
                                         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                        parser={(value) => parseFloat(value!.replace(/\$\s?|(,*)/g, ''))} 
+                                        parser={(value) => parseFloat(value!.replace(/\$\s?|(,*)/g, ''))}
                                     />
                                 </Form.Item>
 
@@ -385,6 +385,7 @@ const withdrawPage = () => {
                                         {
                                             quickChoice.map((item) => {
                                                 return <Radio.Button
+                                                    key={uuidv4()}
                                                     value={item.value}
                                                     style={{
                                                         width: '33%',
@@ -454,6 +455,7 @@ const withdrawPage = () => {
                                         {
                                             listBankDetail.map((item) => {
                                                 return <Radio.Button
+                                                    key={uuidv4()}
                                                     value={item.value}
                                                     style={{
                                                         width: 'auto',
@@ -500,4 +502,4 @@ const withdrawPage = () => {
 
 };
 
-export default isAuth(withdrawPage, [UserType.ADMIN, UserType.CUSTOMER]);
+export default isAuth(WithDrawPage, [UserType.ADMIN, UserType.CUSTOMER]);

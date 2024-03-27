@@ -103,8 +103,13 @@ const HeaderComponent = () => {
     {
       key: "1",
       label: (
-        <Badge dot={!userInfo?.isConfirm}>
-          <>Thông tin cá nhân</>
+        <Badge
+          dot={!userSelector?.isConfirm}
+          style={{ fontFamily: "__Lexend_126e48 " }}
+        >
+          <span style={{ fontFamily: "__Lexend_126e48 " }}>
+            Thông tin cá nhân
+          </span>
         </Badge>
       ),
       icon: (
@@ -196,7 +201,7 @@ const HeaderComponent = () => {
             alt="batdongsan"
             width={164}
             height={48}
-            priority={true}
+          // priority={true}
           />
         </Link>
       </div>
@@ -273,7 +278,7 @@ const HeaderComponent = () => {
                 <div>
                   {!avatarUrl ? (
                     <Badge
-                      dot={!userInfo?.isConfirm}
+                      dot={!userSelector?.isConfirm}
                       style={{
                         width: "10px",
                         height: "10px",
@@ -292,7 +297,7 @@ const HeaderComponent = () => {
                     </Badge>
                   ) : (
                     <Badge
-                      dot={!userInfo?.isConfirm}
+                      dot={!userSelector?.isConfirm}
                       style={{
                         width: "10px",
                         height: "10px",
@@ -307,7 +312,7 @@ const HeaderComponent = () => {
                         }}
                         size={"large"}
                         src={
-                          <Image
+                          <img
                             src={avatarUrl}
                             alt="avatar"
                             height={44}

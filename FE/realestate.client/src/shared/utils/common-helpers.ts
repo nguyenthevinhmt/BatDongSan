@@ -59,14 +59,14 @@ export function formatDate(timestamp: any) {
 
 export function classificationPostType(type: any) {
   switch (type) {
-    case type = 1 || '1':
-      return "Tin thường"
-    case type = 2 || '2':
-      return "Tin VIP bạc"
-    case type = 3 || '3':
-      return "Tin VIP vàng"
-    case type = 4 || '4':
-      return "Tin VIP Kim cương"
+    case (type = 1 || "1"):
+      return "Tin thường";
+    case (type = 2 || "2"):
+      return "Tin VIP bạc";
+    case (type = 3 || "3"):
+      return "Tin VIP vàng";
+    case (type = 4 || "4"):
+      return "Tin VIP Kim cương";
   }
 }
 function isInteger(number: any) {
@@ -76,7 +76,15 @@ export function formatCurrency(amount?: any) {
   if (!amount) {
     return null;
   }
-  const suffixes = ["", "nghìn", "triệu", "tỷ", "nghìn tỷ", "triệu tỷ", "nghìn triệu tỷ"];
+  const suffixes = [
+    "",
+    "nghìn",
+    "triệu",
+    "tỷ",
+    "nghìn tỷ",
+    "triệu tỷ",
+    "nghìn triệu tỷ",
+  ];
   let suffixIndex = 0;
 
   while (amount >= 1000 && suffixIndex < suffixes.length - 1) {
@@ -84,6 +92,12 @@ export function formatCurrency(amount?: any) {
     suffixIndex++;
   }
 
-  const formattedAmount = isInteger(amount) ? amount.toFixed(0) : amount.toFixed(2);
+  const formattedAmount = isInteger(amount)
+    ? amount.toFixed(0)
+    : amount.toFixed(2);
   return `${formattedAmount} ${suffixes[suffixIndex]}`;
+}
+
+export function CheckPasswordMatch(oldPassword: string, newPassword: string) {
+  return oldPassword === newPassword;
 }

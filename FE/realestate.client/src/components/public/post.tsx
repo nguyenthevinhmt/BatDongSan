@@ -16,7 +16,7 @@ import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
 const PostCard = ({
   option,
   loading,
-  data
+  data,
 }: {
   option: number;
   loading: boolean;
@@ -34,7 +34,7 @@ const PostCard = ({
           loading ? (
             <div className="custom-skeleton-image"></div>
           ) : (
-            <Image
+            <img
               height={200}
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
@@ -64,14 +64,19 @@ const PostCard = ({
             fontWeight: 500,
           }}
         >
-          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} - <span>{data?.area} m²</span>
+          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
+          <span>{data?.area} m²</span>
         </span>
-        <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px" }}>
+        <p style={{ marginTop: "4px", marginBottom: "16px", fontSize: "13px" }}>
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           {`${data.district}, ${data.province}`}
         </p>
         <Flex justify="space-between" align="center">
-          <Tooltip placement="bottom" title={dayjs(data?.createdDate).format("DD/MM/YYYY")} color={"#423e3e"}>
+          <Tooltip
+            placement="bottom"
+            title={dayjs(data?.createdDate).format("DD/MM/YYYY")}
+            color={"#423e3e"}
+          >
             <span
               style={{
                 color: "#999",
@@ -87,9 +92,11 @@ const PostCard = ({
             color={"#423e3e"}
             title={"Bấm để lưu tin"}
           >
-            <FaRegHeart onClick={() => {
-              console.log("click")
-            }} />
+            <FaRegHeart
+              onClick={() => {
+                console.log("click");
+              }}
+            />
           </Tooltip>
         </Flex>
       </Card>
@@ -112,7 +119,7 @@ const PostCard = ({
           loading ? (
             <div className="custom-skeleton-image"></div>
           ) : (
-            <Image
+            <img
               height={200}
               width={300}
               style={{ objectFit: "cover", width: "100%" }}
@@ -142,20 +149,32 @@ const PostCard = ({
             fontWeight: 500,
           }}
         >
-          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} - <span>{data?.area} m²</span>
+          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
+          <span>{data?.area} m²</span>
         </span>
-        <p style={{ marginTop: "4px", marginBottom: '16px', fontSize: "13px", fontFamily: '__Lexend_126e48, __Lexend_Fallback_126e48' }}>
+        <p
+          style={{
+            marginTop: "4px",
+            marginBottom: "16px",
+            fontSize: "13px",
+            fontFamily: "__Lexend_126e48, __Lexend_Fallback_126e48",
+          }}
+        >
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           {`${data.district}, ${data.province}`}
         </p>
         <Flex justify="space-between" align="center">
-          <Tooltip placement="bottom" title={dayjs(data?.createdDate).format("DD/MM/YYYY")} color={"#423e3e"}>
+          <Tooltip
+            placement="bottom"
+            title={dayjs(data?.createdDate).format("DD/MM/YYYY")}
+            color={"#423e3e"}
+          >
             <span
               style={{
                 color: "#999",
                 fontSize: "13px",
                 marginBottom: "4px",
-                fontFamily: '__Lexend_126e48, __Lexend_Fallback_126e48'
+                fontFamily: "__Lexend_126e48, __Lexend_Fallback_126e48",
               }}
             >
               {formatDate(dayjs(data?.createdDate))}
@@ -166,9 +185,11 @@ const PostCard = ({
             color={"#423e3e"}
             title={"Bấm để lưu tin"}
           >
-            <FaRegHeart onClick={() => {
-              console.log("click")
-            }} />
+            <FaRegHeart
+              onClick={() => {
+                console.log("click");
+              }}
+            />
           </Tooltip>
         </Flex>
       </Card>

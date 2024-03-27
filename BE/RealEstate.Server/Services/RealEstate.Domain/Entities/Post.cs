@@ -71,24 +71,24 @@ namespace RealEstate.Domain.Entities
         /// Trạng thái
         /// <see cref="PostStatuses"/>
         /// </summary>
-        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.INIT, PostStatuses.CANCEL, PostStatuses.PENDING})]
+        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.INIT, PostStatuses.CANCEL, PostStatuses.PENDING })]
         public int Status { get; set; }
         /// <summary>
         /// Option cho bài viết (thường, bạc, vàng, kim cương)
         /// <see cref="PostOptions"/>
         /// </summary>
         [IntegerRange(AllowableValues = new int[] { PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
-        public int Options {  get; set; }
+        public int Options { get; set; }
         /// <summary>
         /// Id off show post backgroud job
         /// </summary>
         [MaxLength(256)]
-        public string? BackgroundJobOffShowPostId {  get; set; }
+        public string? BackgroundJobOffShowPostId { get; set; }
         /// <summary>
         /// Id show on bgj
         /// </summary>
         [MaxLength(256)]
-        public string? BackgroundJobOnShowPostId {  get; set; }
+        public string? BackgroundJobOnShowPostId { get; set; }
         /// <summary>
         /// Ngày bắt đầu đăng bài
         /// </summary>
@@ -100,11 +100,15 @@ namespace RealEstate.Domain.Entities
         /// <summary>
         /// Số ngày đăng bài
         /// </summary>
-        public int LifeTime {  get; set; }
+        public int LifeTime { get; set; }
         /// <summary>
         /// Check thanh toán
         /// </summary>
-        public bool IsPayment {  get; set; }
+        public bool IsPayment { get; set; }
+        /// <summary>
+        /// Check admin duyệt
+        /// </summary>
+        public bool IsAdminApproved {  get; set; }
         public int UserId { get; set; }
         public User User { get; set; } = null!;
         /// <summary>

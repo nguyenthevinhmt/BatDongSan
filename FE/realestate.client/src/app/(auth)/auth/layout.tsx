@@ -24,7 +24,7 @@ const AuthLayout = ({ children }: { children: React.ReactElement }) => {
                 src={loginBg}
                 alt="batdongsan.com"
                 style={{ objectFit: "cover" }}
-                priority={true}
+                // priority={true}
                 width={400}
                 height={650}
               />

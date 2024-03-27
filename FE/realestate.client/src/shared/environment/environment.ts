@@ -1,5 +1,6 @@
 export const environment = {
   baseUrl: "http://localhost:5083",
+  OcrUrl: "http://localhost:8080/ocr-id",
   authBaseUrl: "http://localhost:5083/connect/token",
   logoutUrl: "http://localhost:5083/connect/logout",
   CLOUDINARY_NAME: "deurdoich",

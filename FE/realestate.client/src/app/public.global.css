@@ -4,10 +4,35 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100vh;
+}
+
 body {
-  height: 100%;
+  height: 100vh;
   width: 100%;
   background-color: #fff;
+}
+
+.ant-table-wrapper {
+  height: 100%;
+  overflow: hidden;
+}
+
+.ant-spin-nested-loading {
+  height: 75%;
+}
+
+.ant-spin-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.ant-table {
+  max-height: 85%;
+  overflow: auto;
 }
 
 .custom-skeleton-image {
@@ -41,12 +66,13 @@ body {
 
 .ellipsis-multiline2 {
   display: -webkit-box;
-  -webkit-line-clamp: 3; 
-  -webkit-box-orient: vertical;  
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
 }
+
 .hide-copy-icon .ant-typography-copy {
   display: none !important;
 }
@@ -62,7 +88,7 @@ body {
   border: 0px solid #fff;
 }
 
-.hover-card:hover{
-  border-color: #FCFCFC; 
+.hover-card:hover {
+  border-color: #FCFCFC;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.12)
 }

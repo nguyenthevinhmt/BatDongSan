@@ -1,7 +1,7 @@
 "use client";
 import isAuth from '@/app/isAuth';
 import { getAllTransaction, walletInfo } from '@/services/wallet/wallet.service';
-import { UserType } from '@/shared/consts/userType';
+import UserType from '@/shared/consts/userType';
 import Button from 'antd/es/button';
 import Flex from 'antd/es/flex';
 import Form from 'antd/es/form';
@@ -284,17 +284,17 @@ const WalletDetail = () => {
                                             marginBottom: 10,
                                         }}
                                         onClick={handleRecharge}
-                                    > <AiFillWallet style={{width: 20, height: 20, marginRight: 4}}/> Nạp tiền</Button>
+                                    > <AiFillWallet style={{ width: 20, height: 20, marginRight: 4 }} /> Nạp tiền</Button>
                                     <Button
                                         type="primary"
                                         style={{
                                             width: "100%",
-                                            backgroundColor: "#fff", 
+                                            backgroundColor: "#fff",
                                             color: "#ff4d4f",
                                             border: "1px solid #ff4d4f"
                                         }}
                                         onClick={handleWithdraw}
-                                    > <GiWallet style={{width: 20, height: 20, marginRight: 4}}/> Rút tiền</Button>
+                                    > <GiWallet style={{ width: 20, height: 20, marginRight: 4 }} /> Rút tiền</Button>
                                 </div>
 
                                 : null

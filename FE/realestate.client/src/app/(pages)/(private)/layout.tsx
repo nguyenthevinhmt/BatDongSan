@@ -1,8 +1,5 @@
 "use client";
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import AppstoreOutlined from "@ant-design/icons/AppstoreOutlined";
 import ContainerOutlined from "@ant-design/icons/ContainerOutlined";
 import DesktopOutlined from "@ant-design/icons/DesktopOutlined";
@@ -93,7 +90,9 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
   return (
     <ConfigProvider theme={theme}>
       <div style={{ height: "100vh", width: "100%" }}>
-        <div style={{ boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.5)' }}><HeaderComponent /></div>
+        <div style={{ boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)" }}>
+          <HeaderComponent />
+        </div>
         <Layout style={{ backgroundColor: "#fff", height: "100%" }}>
           <Layout hasSider style={{ position: "relative" }}>
             <Sider

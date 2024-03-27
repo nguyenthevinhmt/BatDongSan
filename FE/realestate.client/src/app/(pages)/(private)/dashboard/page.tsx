@@ -2,7 +2,7 @@
 import isAuth from "@/app/isAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { UserType } from "@/shared/consts/userType";
+import UserType from "@/shared/consts/userType";
 
 const DashboardPage = () => {
   const router = useRouter();

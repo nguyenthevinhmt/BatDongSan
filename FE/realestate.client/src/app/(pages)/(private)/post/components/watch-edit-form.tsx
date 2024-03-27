@@ -895,7 +895,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         footer={null}
                                         onCancel={handleCancel}
                                     >
-                                        <Image
+                                        <img
                                             alt="example"
                                             style={{ width: "100%", height: "100%" }}
                                             width={100}

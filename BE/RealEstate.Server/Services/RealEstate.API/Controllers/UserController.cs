@@ -124,5 +124,47 @@ namespace RealEstate.API.Controllers
         {
             return new(_userService.RefreshOTP(username));
         }
+        /// <summary>
+        /// Khóa tài khoản 
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        [HttpPut("deactive-account")]
+        public ApiResponse DeactiveAccount(string password)
+        {
+            _userService.DeactiveAccount(password);
+            return new();
+        }
+        /// <summary>
+        /// Thêm mới giấy tờ (Xác thực cấp 2)
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost("user-identification/add")]
+        public ApiResponse AddUserIdentification(CreateUserIdentificationDto input)
+        {
+            _userService.AddUserIdentification(input);
+            return new();
+        }
+        /// <summary>
+        /// Danh sách giấy tờ
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("user-identification/find-all")]
+        public ApiResponse FindAllUserIdentification()
+        {
+            return new(_userService.FindAllUserIdentification());
+        }
+        /// <summary>
+        /// Chi tiết giấy tờ
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("user-identification/find-by-id/{id}")]
+        public ApiResponse FindUserIdentificationById(int id)
+        {
+            return new(_userService.FindUserIdenticationById(id));
+        }
+
     }
 }

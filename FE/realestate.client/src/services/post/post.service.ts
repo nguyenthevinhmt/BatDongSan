@@ -442,8 +442,8 @@ export const findAllPersonal = async (info: IFindAllPost) => {
   }
 }
 
-interface IRepublishPost {
-  id: number,
+export interface IRepublishPost {
+  id: number | undefined,
   lifeTime: number,
   options: number,
   walletNumber: string,

@@ -1,6 +1,6 @@
 "use client";
 import isAuth from "@/app/isAuth";
-import { UserType } from "@/shared/consts/userType";
+import UserType from "@/shared/consts/userType";
 import Dropdown from "antd/es/dropdown/dropdown";
 import Flex from "antd/es/flex";
 import Form from "antd/es/form";
@@ -22,11 +22,9 @@ import type { TableColumnsType } from "antd";
 import {
   findAll,
   approvedPost,
-  updateStatus,
   findAllPersonal,
   cancelRequest,
 } from "@/services/post/post.service";
-import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
@@ -252,7 +250,7 @@ const ManagePost = () => {
           ? record?.mediaUrl || ""
           : "https://res.cloudinary.com/deurdoich/image/upload/v1710429504/DATN/g5flsesusjkanoa6fg0q.jpg";
         return (
-          <Image
+          <img
             src={imageUrl}
             alt="Mô tả ảnh"
             width={100}
@@ -459,7 +457,7 @@ const ManagePost = () => {
       <div
         style={{
           width: "100%",
-          height: "95vh",
+          height: "100vh",
           margin: "auto",
           padding: 20,
           backgroundColor: "#fff",
@@ -545,36 +543,37 @@ const ManagePost = () => {
           </Flex>
         </Form>
 
-        <div style={{ height: "90%" }}>
-          <Table
-            columns={columns}
-            pagination={{
-              position: ["none", "bottomCenter"],
-              pageSize: pageSize,
-              showSizeChanger: true,
-              pageSizeOptions: ["10", "20", "30", "40"],
-              total: totalItems,
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${total} items`, // Show total number of records and current display range
-              itemRender: (current, type, originalElement) => {
-                if (type === "prev") {
-                  return <a>Previous</a>;
-                }
-                if (type === "next") {
-                  return <a>Next</a>;
-                }
-                return originalElement;
-              },
-              onChange: (pageNumber, pageSize) => {
-                setPageNumber(pageNumber);
-                setPageSize(pageSize);
-                handleSearch(pageNumber, pageSize);
-              },
-            }}
-            dataSource={listPost}
-            scroll={{ x: 1500, y: 400 }}
-          />
-        </div>
+        <Table
+          columns={columns}
+          tableLayout="auto"
+
+          pagination={{
+
+            position: ["none", "bottomCenter"],
+            pageSize: pageSize,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "30", "40"],
+            total: totalItems,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`, // Show total number of records and current display range
+            itemRender: (current, type, originalElement) => {
+              if (type === "prev") {
+                return <a>Previous</a>;
+              }
+              if (type === "next") {
+                return <a>Next</a>;
+              }
+              return originalElement;
+            },
+            onChange: (pageNumber, pageSize) => {
+              setPageNumber(pageNumber);
+              setPageSize(pageSize);
+              handleSearch(pageNumber, pageSize);
+            },
+          }}
+          dataSource={listPost}
+          scroll={{ x: 1500, y: 900 }}
+        />
       </div>
     </Flex>
   );

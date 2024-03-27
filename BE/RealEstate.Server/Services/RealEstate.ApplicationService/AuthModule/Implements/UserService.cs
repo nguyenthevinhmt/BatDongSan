@@ -134,10 +134,12 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var userId = CommonUtils.GetCurrentUserId(_httpContext);
             _logger.LogInformation($"{nameof(Update)}: input = {JsonSerializer.Serialize(input)}, userId = {userId}");
 
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == input.Id && u.Status == UserStatus.ACTIVE && !u.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserNotFound); ;
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId && u.Status == UserStatus.ACTIVE && !u.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserNotFound); ;
             user.Email = input.Email;
             user.PhoneNumber = input.Phone;
-            user.Fullname = input.FullName;
+            user.Fullname = input.Fullname;
+            user.TaxCode = input.TaxCode ?? "";
+            user.AvatarUrl = input.AvatarUrl;
 
             _dbContext.SaveChanges();
             return _mapper.Map<UserDetailDto>(user);
@@ -257,7 +259,19 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             var userInfo = _dbContext.Users.FirstOrDefault(u => u.Id == currentUserId)
                                     ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
 
-                return _mapper.Map<UserDetailDto>(userInfo);
+                return new UserDetailDto
+                {
+                    Id = userInfo.Id,
+                    TaxCode = userInfo.TaxCode,
+                    AvatarUrl = userInfo.AvatarUrl,
+                    Email = userInfo.Email,
+                    Fullname = userInfo.Fullname,
+                    isConfirm = userInfo.IsConfirm,
+                    PhoneNumber = userInfo.PhoneNumber,
+                    Status = userInfo.Status,
+                    Username = userInfo.Username,
+                    UserType = userInfo.UserType
+                };
         }
 
         public UserDto RefreshOTP(string username)
@@ -323,6 +337,79 @@ namespace RealEstate.ApplicationService.AuthModule.Implements
             {
                 Console.WriteLine("Failed to send email: " + ex.Message);
             }
+        }
+
+        public void DeactiveAccount(string Password)
+        {
+            var userId = _httpContext.GetCurrentUserId();
+            var account = _dbContext.Users.FirstOrDefault(u => u.Id == userId) 
+                            ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            if(account.Password != CryptographyUtils.CreateMD5(Password))
+            {
+                throw new UserFriendlyException(ErrorCode.UserOldPasswordIncorrect);
+            }
+            account.Status = UserStatus.DEACTIVE;
+            _dbContext.SaveChanges();
+        }
+
+        public void AddUserIdentification(CreateUserIdentificationDto input)
+        {
+            var userId = _httpContext.GetCurrentUserId();
+            var user = _dbContext.Users.FirstOrDefault(c => c.Id == userId)
+                            ?? throw new UserFriendlyException(ErrorCode.UserNotFound);
+            user.IsConfirm = true;
+            var newUserIdentification = new UserIdentification()
+            {
+                IdNo = input.IdNo,
+                IdDate = input.IdDate,
+                Fullname = input.Fullname,
+                DateOfBirth = input.DateOfBirth,
+                IdIssueExpDate = input.IdIssueExpDate,
+                IdIssuer = "CỤC TRƯỞNG CỤC CẢNH SÁT QUẢN LÝ HÀNH CHÍNH VỀ TRẬT TỰ XÃ HỘI",
+                Nationality = input.Nationality,
+                PlaceOfOrigin = input.PlaceOfOrigin,
+                PlaceOfResidence = input.PlaceOfResidence,
+                Sex = input.Sex,
+                UserId = userId,
+                BackwardUserIdentification = input.BackwardUserIdentification,
+                FrontUserIdentification = input.FrontUserIdentification,
+            };
+            _dbContext.UserIdentification.Add(newUserIdentification);
+            _dbContext.SaveChanges();
+        }
+
+        public List<UserIdentificationDto> FindAllUserIdentification()
+        {
+            var userId = _httpContext.GetCurrentUserId();
+            var listInfo = _dbContext.UserIdentification.Where(c => !c.Deleted && c.UserId == userId).Select(x => new UserIdentificationDto
+            {
+                Id = x.Id,
+                BackwardImageUrl = x.BackwardUserIdentification,
+                FrontImageUrl = x.FrontUserIdentification,
+                IdNo = x.IdNo
+            }).ToList();
+            return listInfo;
+        }
+
+        public DetailUserIdentificationDto FindUserIdenticationById(int id)
+        {
+            var info = _dbContext.UserIdentification.FirstOrDefault(x => x.Id == id && !x.Deleted) ?? throw new UserFriendlyException(ErrorCode.UserIdentificationNotFound);
+            return new DetailUserIdentificationDto
+            {
+                Id = info.Id,
+                BackwardImageUrl = info.BackwardUserIdentification,
+                FrontImageUrl = info.FrontUserIdentification,
+                IdNo = info.IdNo,
+                DateOfBirth = info.DateOfBirth,
+                Fullname = info.Fullname,
+                IdDate = info.IdDate,
+                IdIssueExpDate = info.IdIssueExpDate,
+                IdIssuer = info.IdIssuer,
+                Nationality = info.Nationality,
+                PlaceOfOrigin = info.PlaceOfOrigin,
+                PlaceOfResidence = info.PlaceOfResidence,
+                Sex = info.Sex
+            };
         }
     }
 }

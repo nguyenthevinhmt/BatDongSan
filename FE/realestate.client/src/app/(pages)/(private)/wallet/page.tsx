@@ -1,6 +1,6 @@
 'use client';
 import isAuth from '@/app/isAuth';
-import { UserType } from '@/shared/consts/userType';
+import UserType from '@/shared/consts/userType';
 import React from 'react';
 
 interface WalletPageProps {

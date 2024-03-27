@@ -36,5 +36,9 @@ namespace RealEstate.ApplicationService.AuthModule.Dtos
         /// Link avatar
         /// </summary>
         public string? AvatarUrl {  get; set; }
+        /// <summary>
+        /// Mã số thuế
+        /// </summary>
+        public string? TaxCode {  get; set; }
     }
 }
