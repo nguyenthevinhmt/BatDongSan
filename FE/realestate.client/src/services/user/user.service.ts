@@ -1,6 +1,7 @@
 import axios from "axios";
 import axiosInstance from "@/shared/configs/axiosInstance";
 import { environment } from "@/shared/environment/environment";
+import { message } from "antd";
 
 //lấy thông tin người dùng hiện tại
 export const getUserInfo = async () => {
@@ -140,6 +141,46 @@ export const getBackwardIdentificationCardInfo = async (formData: any) => {
 export const getAllUserIdentification = async () => {
   try {
     const response = await axiosInstance.get(`${environment.baseUrl}/api/user/user-identification/find-all`);
+    return response?.data
+  }
+  catch (error) {
+    console.log(error)
+    return error
+  }
+}
+
+export const addUserIdentification = async (body: any) => {
+  try {
+    const response = await axiosInstance.post(`${environment.baseUrl}/api/user/user-identification/add`, body);
+    return response?.data
+  }
+  catch (error) {
+    console.log(error)
+    return error
+  }
+}
+
+export const uploadUserIdentificationImage = async (file: any) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "cm322ypn");
+
+    const response = await fetch(environment.cloudinary_url, {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+  }
+};
+
+export const getDetailUserIdentification = async (id: number) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/user/user-identification/find-by-id/${id}`);
     return response?.data
   }
   catch (error) {

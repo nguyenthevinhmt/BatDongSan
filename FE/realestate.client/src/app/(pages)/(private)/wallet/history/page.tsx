@@ -1,7 +1,7 @@
 "use client";
 import isAuth from '@/app/isAuth';
 import { getAllTransaction, walletInfo } from '@/services/wallet/wallet.service';
-import { UserType } from '@/shared/consts/userType';
+import UserType from '@/shared/consts/userType';
 import Button from 'antd/es/button';
 import Flex from 'antd/es/flex';
 import Form from 'antd/es/form';

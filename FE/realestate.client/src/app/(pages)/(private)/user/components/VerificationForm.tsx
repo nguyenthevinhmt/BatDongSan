@@ -6,33 +6,33 @@ import Button from 'antd/lib/button'
 import React, { useEffect, useState } from 'react'
 import AddIdentificationModal from './AddIdentificationModal';
 import type { MenuProps } from 'antd';
-import { getAllUserIdentification } from '@/services/user/user.service';
+import { getAllUserIdentification, getDetailUserIdentification } from '@/services/user/user.service';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 const VerificationForm = () => {
     const [data, setData] = useState([]);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [dataDetail, setDataDetail] = useState<any>();
 
+
+    const userSelector = useSelector((state: RootState) => {
+        return state.auth.user.data;
+    });
     useEffect(() => {
         const fetchUserIdentification = async () => {
             const res = await getAllUserIdentification();
             setData(res?.data)
-            console.log("data", res?.data)
         }
         fetchUserIdentification();
-    }, []);
+    }, [isOpenModal]);
+    const getDetail = async (id: number) => {
+        const response = await getDetailUserIdentification(id);
+        await setDataDetail(response?.data);
 
-    const items: MenuProps['items'] = [
-        {
-            label: 'Thông tin chi tiết',
-            key: '1',
-        },
-    ];
-
-    const showModal = () => {
         setIsOpenModal(true);
-        return <AddIdentificationModal isOpen={true} />
+        return response?.data;
     }
-
     const columns: TableColumnsType<any> = [
         {
             title: '#ID',
@@ -90,18 +90,22 @@ const VerificationForm = () => {
             dataIndex: 'action',
             key: 'action',
             render: (index, record) => {
-                // return <Menu>
-                //     <Menu.Item
-                //         key={index}
-                //     //onClick={() => item && item.onClick && item.onClick(record.id)}
-                //     >
-                //         action `${index}`
-                //     </Menu.Item>
-                // </Menu>
+                const menu = (
+                    <Menu>
+                        <Menu.Item
+                            key={index}
+                            onClick={() => {
+                                getDetail(record?.id);
+                            }}
+                        >
+                            Thông tin chi tiết
+                        </Menu.Item>
+                    </Menu>
+                );
                 return (
                     <Space size="middle">
                         <Dropdown
-                            menu={{ items }}
+                            overlay={menu}
                             placement="bottomRight">
                             <a>
                                 <EllipsisOutlined style={{ fontSize: 25 }} />
@@ -112,17 +116,19 @@ const VerificationForm = () => {
             }
         },
     ];
+
     return (
         <div>
             <Flex justify='flex-end' style={{ marginBottom: '20px' }}>
-                {!!data && <Button size='large' onClick={() => {
+                {!userSelector?.isConfirm && <Button size='large' onClick={() => {
                     setIsOpenModal(true)
                 }} style={{ backgroundColor: '#FF4D4F', color: '#fff' }}>Thêm mới</Button>}
             </Flex>
             <Table columns={columns} dataSource={data} />
-            <AddIdentificationModal isOpen={isOpenModal} handleShowModal={() => { setIsOpenModal(!isOpenModal) }} />
+            <AddIdentificationModal isOpen={isOpenModal} handleShowModal={() => { setIsOpenModal(!isOpenModal) }} data={dataDetail} />
         </div>
     )
 }
 
 export default VerificationForm
+

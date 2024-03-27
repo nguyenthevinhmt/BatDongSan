@@ -1,7 +1,7 @@
 'use client';
 import isAuth from '@/app/isAuth';
 import { createBank, getAllBank, removeBank } from '@/services/bank/bank.service';
-import { UserType } from '@/shared/consts/userType';
+import UserType from '@/shared/consts/userType';
 import Button from 'antd/es/button';
 import Card from 'antd/es/card';
 import Flex from 'antd/es/flex';

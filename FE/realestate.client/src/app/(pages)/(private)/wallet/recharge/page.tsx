@@ -3,10 +3,8 @@
 import isAuth from '@/app/isAuth';
 import { createPayment } from '@/services/vnpay/vnpay.service';
 import { walletInfo } from '@/services/wallet/wallet.service';
-import { UserType } from '@/shared/consts/userType';
+import UserType from '@/shared/consts/userType';
 import { vnp_BankCode } from '@/shared/consts/vnp_BankCode';
-import CreditCardOutlined from '@ant-design/icons/lib/icons/CreditCardOutlined';
-import QrcodeOutlined from '@ant-design/icons/lib/icons/QrcodeOutlined';
 import Button from 'antd/es/button';
 import Flex from 'antd/es/flex';
 import Form from 'antd/es/form';

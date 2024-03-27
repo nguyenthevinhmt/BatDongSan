@@ -1,12 +1,17 @@
-import { Button, Flex, Modal } from "antd";
+import { Button, Flex, Modal, message } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { Divider, Form, Input, Spin } from "antd/lib";
 import {
+    addUserIdentification,
     getBackwardIdentificationCardInfo,
     getFrontIdentificationCardInfo,
+    uploadUserIdentificationImage,
 } from "@/services/user/user.service";
+import { AiOutlineInfoCircle } from "react-icons/ai";
+import { HTTP_STATUS_CODE } from "@/shared/consts/http";
+import dayjs from "dayjs";
 
-const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
+const AddIdentificationModal = ({ isOpen, handleShowModal, data }: any) => {
     const [form] = Form.useForm();
     const backgroundFrontImg =
         "https://res.cloudinary.com/deurdoich/image/upload/v1711418703/DATN/uo8cbbqzbfleof2apq3n.png";
@@ -23,6 +28,26 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
     const [isShowSaveButton, setIsShowSaveButton] = useState<boolean>(false);
     const [isDisableUpload, setIsDisableUpload] = useState<boolean>(false);
 
+    useEffect(() => {
+        if (data) {
+            setFrontImage(data?.frontImageUrl)
+            setBackwardImage(data?.frontImageUrl)
+            form.setFieldsValue({
+                idNo: data?.idNo,
+                fullname: data?.fullname,
+                dateOfBirth: dayjs(data?.dateOfBirth).format("DD/MM/YYYY"),
+                sex: data?.sex,
+                nationality: data?.nationality,
+                placeOfResidence: data?.placeOfResidence,
+                placeOfOrigin: data?.placeOfOrigin,
+                idIssueExpDate: dayjs(data?.idIssueExpDate).format("DD/MM/YYYY"),
+                idDate: dayjs(data?.idDate).format("DD/MM/YYYY"),
+                idIssuer: data?.idIssuer,
+            });
+            setIsShowSaveButton(true);
+            setIsDisableUpload(true);
+        }
+    }, [data, form]);
     const checkExistImg = (): boolean => {
         return (
             frontImage === backgroundFrontImg && backwardImage === backgroundBackImg
@@ -30,7 +55,29 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
     };
 
     const handleSubmit = async () => {
-        console.log("form", form.getFieldsValue())
+        setIsLoading(true);
+        const formValue = form.getFieldsValue();
+        const uploadFrontImg: any = await uploadUserIdentificationImage(frontImageFile);
+        const uploadBackwardImg: any = await uploadUserIdentificationImage(backwardImageFile);
+        const body = {
+            ...formValue,
+            dateOfBirth: dayjs(formValue?.dateOfBirth, 'DD/MM/YYYY').toDate(),
+            idDate: dayjs(formValue?.idDate, 'DD/MM/YYYY').toDate(),
+            idIssueExpDate: dayjs(formValue?.idIssueExpDate, 'DD/MM/YYYY').toDate(),
+            frontUserIdentification: await uploadFrontImg?.secure_url,
+            backwardUserIdentification: await uploadBackwardImg?.secure_url
+        }
+        const response = await addUserIdentification(body);
+        if (response?.code === HTTP_STATUS_CODE.OK) {
+            message.success("Xác thực giấy tờ thành công");
+        }
+        else {
+            message.error("Có lỗi xảy ra, vui lòng thử lại!");
+
+        }
+        setIsLoading(false);
+        setIsShowSaveButton(false);
+        handleShowModal();
     }
 
     const getCardInfo = async (): Promise<any> => {
@@ -61,6 +108,8 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
             idIssuer: backwardCardResponse?.data?.idIssuer,
         })
         setIsLoading(false)
+        if (frontCardResponse?.status === HTTP_STATUS_CODE.OK && backwardCardResponse?.status === HTTP_STATUS_CODE.OK) {
+        }
     };
 
     return (
@@ -117,34 +166,38 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
                         >
                             Hủy
                         </Button>
-                        {!isShowSaveButton && (
-                            <Button
-                                size="large"
-                                disabled={checkExistImg()}
-                                style={{
-                                    marginLeft: "12px",
-                                    backgroundColor: "#ff4d4f",
-                                    color: "#fff",
-                                }}
-                                onClick={getCardInfo}
-                            >
-                                Lấy thông tin
-                            </Button>
-                        )}
-                        {isShowSaveButton && (
-                            <Button
-                                size="large"
-                                disabled={checkExistImg()}
-                                style={{
-                                    marginLeft: "12px",
-                                    backgroundColor: "#ff4d4f",
-                                    color: "#fff",
-                                }}
-                                onClick={handleSubmit}
-                            >
-                                Lưu
-                            </Button>
-                        )}
+                        <>
+                            {!data &&
+                                !isShowSaveButton && (
+                                    <Button
+                                        size="large"
+                                        disabled={checkExistImg()}
+                                        style={{
+                                            marginLeft: "12px",
+                                            backgroundColor: "#ff4d4f",
+                                            color: "#fff",
+                                        }}
+                                        onClick={getCardInfo}
+                                    >
+                                        Lấy thông tin
+                                    </Button>
+                                )}
+                            {(isShowSaveButton && !data) && (
+                                <Button
+                                    size="large"
+                                    disabled={checkExistImg()}
+                                    style={{
+                                        marginLeft: "12px",
+                                        backgroundColor: "#ff4d4f",
+                                        color: "#fff",
+                                    }}
+                                    onClick={handleSubmit}
+                                >
+                                    Lưu
+                                </Button>
+                            )
+                            }
+                        </>
                     </Flex>
                 </div>
             }
@@ -165,7 +218,6 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
                                     type="file"
                                     style={{ display: "none" }}
                                     onChange={(e: any) => {
-                                        console.log(URL.createObjectURL(e.target.files[0]));
                                         setFrontImage(URL.createObjectURL(e.target.files[0]));
                                         setFrontImageFile(e.target.files[0]);
                                     }}
@@ -196,7 +248,6 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
                                     type="file"
                                     style={{ display: "none" }}
                                     onChange={(e: any) => {
-                                        console.log(URL.createObjectURL(e.target.files[0]));
                                         setBackwardImage(URL.createObjectURL(e.target.files[0]));
                                         setBackwardImageFile(e.target.files[0]);
                                     }}
@@ -218,7 +269,11 @@ const AddIdentificationModal = ({ isOpen, handleShowModal }: any) => {
                     </Flex>
                     {isShowSaveButton && <div style={{ marginTop: "50px" }}>
                         <div style={{ fontSize: "16px", fontWeight: "500" }}>
-                            Thông tin giấy tờ
+                            <span>Thông tin giấy tờ </span>
+                            <Flex align="center" justify="center" style={{ color: 'red', fontWeight: '400', fontSize: '12px', display: "inline-block" }}>
+                                <AiOutlineInfoCircle />
+                                <span>Lưu ý kiểm tra lại thông tin để đảm bảo thông tin chính xác</span>
+                            </Flex>
                         </div>
                         <Form layout="vertical" form={form}>
                             <Flex justify="space-between">

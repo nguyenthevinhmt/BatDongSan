@@ -137,7 +137,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 TotalItems = query.Count(),
             };
-            query = query.OrderDynamic(input.Sort);
+            query = query.OrderByDescending(c => c.ModifiedDate).ThenByDescending(c => c.Id);
             if (input.PageSize != -1)
             {
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
@@ -189,7 +189,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             {
                 TotalItems = query.Count(),
             };
-            query = query.OrderDynamic(input.Sort);
+            query = query.OrderByDescending(c => c.ModifiedDate).ThenByDescending(c => c.Id);
             if (input.PageSize != -1)
             {
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
@@ -318,6 +318,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                                             && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.REMOVED;
             post.IsPayment = false;
+            post.IsAdminApproved = false;
             _dbContext.SaveChanges();
         }
 
@@ -406,9 +407,18 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         {
             var currentUserId = _httpContext.GetCurrentUserId();
             var post = _dbContext.Posts.FirstOrDefault(p => p.Status == PostStatuses.PENDING && p.Id == id && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
-            post.Status = PostStatuses.POSTED;
             post.ApproveAt = DateTime.Now;
             post.ApproveBy = currentUserId;
+            post.IsAdminApproved = true;
+
+            if (post.PostStartDate <= DateTime.Now)
+            {
+                var jobId = BackgroundJob.Schedule<IPostService>(
+                   x => x.ShowOnPost(post.Id),
+                   post.PostStartDate
+                );
+                post.BackgroundJobOnShowPostId = jobId;
+            }
             if (post.PostEndDate.Date >= DateTime.Now.Date)
             {
                 var jobId = BackgroundJob.Schedule<IPostService>(
@@ -476,22 +486,22 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             }
             _dbContext.SaveChanges();
 
-            if (post.PostStartDate <= DateTime.Now)
-            {
-                var jobId = BackgroundJob.Schedule<IPostService>(
-                   x => x.ShowOnPost(post.Id),
-                   post.PostStartDate
-                );
-                post.BackgroundJobOnShowPostId = jobId;
-            }
-            if (post.PostEndDate.Date >= DateTime.Now.Date)
-            {
-                var jobId = BackgroundJob.Schedule<IPostService>(
-                   x => x.ShowOffPost(post.Id),
-                   post.PostEndDate
-                );
-                post.BackgroundJobOffShowPostId = jobId;
-            }
+            //if (post.PostStartDate <= DateTime.Now)
+            //{
+            //    var jobId = BackgroundJob.Schedule<IPostService>(
+            //       x => x.ShowOnPost(post.Id),
+            //       post.PostStartDate
+            //    );
+            //    post.BackgroundJobOnShowPostId = jobId;
+            //}
+            //if (post.PostEndDate.Date >= DateTime.Now.Date)
+            //{
+            //    var jobId = BackgroundJob.Schedule<IPostService>(
+            //       x => x.ShowOffPost(post.Id),
+            //       post.PostEndDate
+            //    );
+            //    post.BackgroundJobOffShowPostId = jobId;
+            //}
 
             var payloadToTransaction = new Transaction()
             {
@@ -744,6 +754,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                         ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.CANCEL;
             post.IsPayment = false;
+            post.IsAdminApproved = true;
+            post.BackgroundJobOnShowPostId = null;
+            post.BackgroundJobOffShowPostId = null;
             var transaction = _dbContext.Transactions.FirstOrDefault(c => c.PostId == id) 
                         ?? throw new UserFriendlyException(ErrorCode.TransactionNotFound);
             var wallet = _dbContext.Wallets.FirstOrDefault(c => c.UserId == post.UserId)

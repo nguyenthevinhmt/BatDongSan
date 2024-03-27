@@ -1,6 +1,6 @@
 "use client";
 import isAuth from "@/app/isAuth";
-import { UserType } from "@/shared/consts/userType";
+import UserType from "@/shared/consts/userType";
 import Dropdown from "antd/es/dropdown/dropdown";
 import Flex from "antd/es/flex";
 import Form from "antd/es/form";
@@ -22,11 +22,9 @@ import type { TableColumnsType } from "antd";
 import {
   findAll,
   approvedPost,
-  updateStatus,
   findAllPersonal,
   cancelRequest,
 } from "@/services/post/post.service";
-import Image from "next/image";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";

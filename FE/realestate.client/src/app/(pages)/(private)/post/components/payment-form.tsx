@@ -1,5 +1,6 @@
 "use client";
 import {
+  IRepublishPost,
   republishPost,
   updatePaymentStatus,
 } from "@/services/post/post.service";
@@ -31,8 +32,8 @@ const PaymentForm = ({
   postId,
   status,
 }: {
-  postId: number;
-  status: number;
+  postId?: number;
+  status?: number;
 }) => {
   const [formData, setFormData] = useState<IForm>({
     options: 1,
@@ -68,7 +69,7 @@ const PaymentForm = ({
   const handleSubmit = async (formValue: any) => {
     if (status === 5) {
       const walletResponse = await walletInfo();
-      const payload = {
+      const payload: IRepublishPost = {
         options: formData.options,
         lifeTime: formData.lifeTime,
         id: postId,
