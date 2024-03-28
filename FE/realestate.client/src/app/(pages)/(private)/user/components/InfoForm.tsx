@@ -1,97 +1,55 @@
+import { updateAvatarUrl } from "@/redux/slices/authSlice";
 import { RootState } from "@/redux/store";
-import { apiUploadImage } from "@/services/post/post.service";
-import { getUserInfo, updateUserInfo } from "@/services/user/user.service";
+import { updateUserInfo, uploadAvatar } from "@/services/user/user.service";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-import PlusOutlined from "@ant-design/icons/PlusOutlined";
+import CloseOutlined from "@ant-design/icons/lib/icons/CloseOutlined";
 import { GetProp, message } from "antd/lib";
 import Button from "antd/lib/button";
 import Flex from "antd/lib/flex";
 import Form from "antd/lib/form";
 import Input from "antd/lib/input";
-import Upload, { UploadProps } from "antd/lib/upload/Upload";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import { useDispatch, useSelector } from "react-redux";
 
 const InfoForm = () => {
-
+  const dispatch = useDispatch();
   const [form] = Form.useForm();
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
   const [userInfo, setUserInfo] = useState({
-    avatar: form.getFieldValue("avatarUrl"),
+    avatarUrl: userSelector.avatarUrl,
     taxCode: "",
     fullname: "",
     phoneNumber: "",
     email: "",
   });
-  const [onFocus, setOnFocus] = useState(false);
 
-  const [fileList, setFileList] = useState<any>([]);
-  const userSelector = useSelector((state: RootState) => {
-    return state.auth.user.data;
-  });
-
-  const handleUpload = async ({ file, onSuccess, onError }: any) => {
-    const response = await apiUploadImage({ file, onSuccess, onError });
-    await form.setFieldValue("avatarUrl", response?.secure_url);
-  };
+  const [file, setFile] = useState<any>();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      await form.setFieldsValue({
-        avatarUrl: userSelector.avatarUrl,
-        taxCode: userSelector.taxCode,
-        fullname: userSelector.fullname,
-        phoneNumber: userSelector.phoneNumber,
-        email: userSelector.email,
-      });
-    }
-    fetchUserInfo();
+    form.setFieldsValue({
+      avatarUrl: userSelector.avatarUrl,
+      taxCode: userSelector.taxCode,
+      fullname: userSelector.fullname,
+      phoneNumber: userSelector.phoneNumber,
+      email: userSelector.email,
+    });
   }, [form]);
-
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-        width: "100px",
-        height: "100px",
-      }}
-      type="button"
-    >
-      {userSelector?.avatar ? (
-        <img
-          src={userInfo?.avatar}
-          alt="avatar"
-          style={{
-            objectFit: "cover",
-            borderRadius: "50%",
-          }}
-          width={100}
-          height={100}
-        />
-      ) : (
-        <>
-          <PlusOutlined />
-          <>Upload</>
-        </>
-      )}
-    </button>
-  );
 
   const handleUpdate = (formValue: any) => {
     const updateUser = async () => {
-      const res = await updateUserInfo(formValue);
+      let body = {
+        ...formValue
+      }
+      if (file) {
+        const uploadReponse: any = await uploadAvatar(file);
+        body.avatarUrl = uploadReponse?.secure_url;
+        form.setFieldValue("avatarUrl", uploadReponse?.secure_url)
+      }
+      const res = await updateUserInfo(form.getFieldsValue());
       if (res?.code === HTTP_STATUS_CODE.OK) {
         message.success("Cập nhật thành công");
-        // userInfo?.avatar = res?.data?.avatarUrl
       }
       else {
         message.success("Có lỗi xảy ra");
@@ -123,33 +81,58 @@ const InfoForm = () => {
         }}
       >
         <Form.Item
-          name={"avatarUrl"}
+          name="avatarUrl"
           style={{
             display: "flex",
             justifyContent: "center",
             marginTop: "10px",
           }}
-        // valuePropName="avatar"
         >
-          <Upload
-            name="avatar"
-            listType="picture-circle"
-            fileList={fileList}
-            style={{ position: "relative" }}
-            customRequest={handleUpload}
-          >
-            {uploadButton}
-            <div
-              style={{
-                position: "absolute",
-                color: "#ccc",
-                display: `${onFocus ? "block" : "none"}`,
-              }}
-            >
-              <PlusOutlined />
-              <div>{userInfo?.avatar ? "Edit" : "Upload"}</div>
+          <Flex style={{ width: "80px", height: "80px", borderRadius: '50%', border: '1px solid #ccc', overflow: 'hidden', position: 'relative' }} justify="center" align="center">
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e: any) => {
+                  setUserInfo((prev) => {
+                    return {
+                      ...prev,
+                      avatarUrl: URL.createObjectURL(e.target.files[0])
+                    }
+                  });
+                  setFile(e.target.files[0]);
+                }}
+                style={{ display: 'none' }}
+                id="upload-avatar-input"
+              />
+              <label htmlFor="upload-avatar-input" style={{ cursor: 'pointer', overflow: 'hidden' }}>
+                {!userInfo?.avatarUrl && <>Tải ảnh lên</>}
+                {userInfo?.avatarUrl && (
+                  <div style={{ overflow: 'hidden', maxWidth: '100%', maxHeight: '100%' }}>
+                    <img src={userInfo?.avatarUrl} alt="Avatar" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
+              </label>
             </div>
-          </Upload>
+          </Flex>
+          {userInfo?.avatarUrl &&
+            <Button size="small"
+              style={{ position: 'absolute', right: '-8px', top: '0px', zIndex: 99, }}
+              shape="circle"
+              icon={<CloseOutlined />}
+              onClick={() => {
+                setFile(null);
+                form.setFieldValue("avatarUrl", null)
+                setUserInfo((prev) => {
+                  return {
+                    ...prev,
+                    avatarUrl: ''
+                  }
+                });
+                dispatch(updateAvatarUrl())
+              }}
+            />
+          }
         </Form.Item>
         <Flex style={{ width: "100%" }} justify="space-between">
           <Form.Item
@@ -178,7 +161,7 @@ const InfoForm = () => {
         Thông tin liên hệ
       </p>
       <Form.Item
-        name={"phoneNumber"}
+        name="phoneNumber"
         label={<div style={{ fontWeight: '500' }}>Số điện thoại</div>}
         rules={[{ required: true, message: "Trường không được bỏ trống" }]}
       >
@@ -191,7 +174,7 @@ const InfoForm = () => {
           style={{ width: "80%" }}
         />
       </Form.Item>
-      <Form.Item
+      <div
         style={{
           display: "flex",
           alignItems: "center",
@@ -210,7 +193,7 @@ const InfoForm = () => {
         >
           Lưu thay đổi
         </Button>
-      </Form.Item>
+      </div>
     </Form>
   );
 };

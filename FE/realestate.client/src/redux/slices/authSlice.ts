@@ -45,6 +45,9 @@ const authSlice = createSlice({
     },
     updateConfirmStatus: (state) => {
       state.user.data.isConfirm = true
+    },
+    updateAvatarUrl: (state) => {
+      state.user.data.avatarUrl = null
     }
   },
   extraReducers(builder) {
@@ -57,7 +60,8 @@ export const {
   clearUserInfo,
   saveUserToken,
   clearUserToken,
-  updateConfirmStatus
+  updateConfirmStatus,
+  updateAvatarUrl
 } = authSlice.actions;
 const authReducer = authSlice.reducer;
 export default authReducer;

@@ -29,7 +29,7 @@ export const updateUserInfo = async (payload: any) => {
       email: payload?.email,
       phone: payload?.phoneNumber,
       fullname: payload?.fullname,
-      status: payload?.status,
+      avatarUrl: payload?.avatarUrl,
       taxCode: payload?.taxCode
     });
     if (response.status === 200) {
@@ -188,3 +188,21 @@ export const getDetailUserIdentification = async (id: number) => {
     return error
   }
 }
+
+export const uploadAvatar = async (file: any) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "cm322ypn");
+
+    const response = await fetch(environment.cloudinary_url, {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error uploading file:", error);
+  }
+};

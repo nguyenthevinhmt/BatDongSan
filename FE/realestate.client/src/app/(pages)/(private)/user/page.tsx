@@ -14,7 +14,6 @@ const UserPage = () => {
   const userSelector = useSelector((state: RootState) => {
     return state.auth.user.data;
   });
-  console.log("userSelector", userSelector)
 
   const items: TabsProps["items"] = [
     {
