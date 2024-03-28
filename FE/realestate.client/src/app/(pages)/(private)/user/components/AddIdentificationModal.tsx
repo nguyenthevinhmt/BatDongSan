@@ -10,6 +10,8 @@ import {
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+import { updateConfirmStatus } from "@/redux/slices/authSlice";
 
 const AddIdentificationModal = ({ isOpen, handleShowModal, data }: any) => {
     const [form] = Form.useForm();
@@ -27,6 +29,7 @@ const AddIdentificationModal = ({ isOpen, handleShowModal, data }: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isShowSaveButton, setIsShowSaveButton] = useState<boolean>(false);
     const [isDisableUpload, setIsDisableUpload] = useState<boolean>(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (data) {
@@ -70,6 +73,7 @@ const AddIdentificationModal = ({ isOpen, handleShowModal, data }: any) => {
         const response = await addUserIdentification(body);
         if (response?.code === HTTP_STATUS_CODE.OK) {
             message.success("Xác thực giấy tờ thành công");
+            dispatch(updateConfirmStatus());
         }
         else {
             message.error("Có lỗi xảy ra, vui lòng thử lại!");
@@ -78,6 +82,7 @@ const AddIdentificationModal = ({ isOpen, handleShowModal, data }: any) => {
         setIsLoading(false);
         setIsShowSaveButton(false);
         handleShowModal();
+
     }
 
     const getCardInfo = async (): Promise<any> => {
