@@ -372,12 +372,13 @@ const ListBankPage = () => {
                                                 hoverable={true}
                                                 bordered={false}
                                                 style={{
-                                                    border: '1px solid #aaa',
+                                                    border: hover ? '1px solid #ff4d4f' : '1px solid #aaa',
                                                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                                                 }}
                                                 headStyle={{
-                                                    borderBottom: '1px solid #aaa', // Đường viền dưới của title
+                                                    borderBottom: hover ? '1px solid #ff4d4f' : '1px solid #aaa', // Đường viền dưới của title
                                                     alignItems: 'center',
+                                                    color: hover ? '#ff4d4f' : 'black',
                                                 }}
                                                 bodyStyle={{
                                                     borderBottom: '1px solid #aaa', // Đường viền trên của nội dung
@@ -475,6 +476,7 @@ const ListBankPage = () => {
                                                         paddingBottom: 5,
                                                         paddingLeft: 5,
                                                         paddingRight: 5,
+                                                        borderRadius: 0,
                                                     }}
                                                 >{item.img}</Radio.Button>
                                             })

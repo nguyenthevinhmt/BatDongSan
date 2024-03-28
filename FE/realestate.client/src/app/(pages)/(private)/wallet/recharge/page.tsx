@@ -311,6 +311,7 @@ const RechangePage = () => {
                                             paddingBottom: 5,
                                             paddingLeft: 5,
                                             paddingRight: 5,
+                                            borderRadius: 0,
                                         }}
                                         onClick={() => {
                                             form.setFieldsValue({ amount: item.value });
@@ -406,8 +407,11 @@ const RechangePage = () => {
                                             width: 'auto',
                                             height: 'auto',
                                             lineHeight: 'initial',
-                                            padding: 5,
-                                            backgroundColor: '#fff'
+                                            paddingTop: 5,
+                                            paddingBottom: 5,
+                                            paddingLeft: 5,
+                                            paddingRight: 5,
+                                            borderRadius: 0,
                                         }}
                                     >{item.img}</Radio.Button>
                                 })
