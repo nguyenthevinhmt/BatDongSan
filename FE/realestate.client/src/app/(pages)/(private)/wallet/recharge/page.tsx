@@ -289,8 +289,12 @@ const RechangePage = () => {
                             },
                         ]}
                     >
-                        <InputNumber addonAfter="đ" style={{ width: '50%' }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            parser={(value) => value!.replace(/\$\s?|(,*)/g, '')} />
+                        <InputNumber 
+                            addonAfter="đ" 
+                            style={{ width: '50%' }} 
+                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                            parser={(value) => value!.replace(/\$\s?|(,*)/g, '')} 
+                        />
                     </Form.Item>
 
                     <Form.Item

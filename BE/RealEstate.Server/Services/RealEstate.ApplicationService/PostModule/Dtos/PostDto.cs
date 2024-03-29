@@ -77,6 +77,10 @@
         public DateTime? ModifiedDate { get; set; }
         public int? ModifiedBy { get; set; }
         public string? FirstImageUrl { get;set; }
+        /// <summary>
+        /// Check admin duyệt
+        /// </summary>
+        public bool IsAdminApproved { get; set; }
 
 
     }

@@ -28,6 +28,8 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
+import CheckOutlined from "@ant-design/icons/lib/icons/CheckOutlined";
+import CloseOutlined from "@ant-design/icons/lib/icons/CloseOutlined";
 
 interface IPost {
   id: number;
@@ -39,6 +41,7 @@ interface IPost {
   realEstateTypeId: number;
   status: number;
   mediaUrl?: string;
+  isAdminApprove?: boolean;
 }
 
 const realEstateType = [
@@ -148,47 +151,49 @@ const ManagePost = () => {
   const [change, setChange] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (role === UserType.ADMIN) {
-        const res = await findAll({ pageSize: 10, pageNumber: 1 });
-        const data = res?.data.items;
-        const posts: IPost[] = data?.map((post: any) => ({
-          id: post.id,
-          title: post.title,
-          description: post.description,
-          rentalObject: post.rentalObject,
-          youtubeLink: post.youtubeLink,
-          postTypeId: post.postTypeId,
-          realEstateTypeId: post.realEstateTypeId,
-          status: post.status,
-          mediaUrl: post.firstImageUrl,
-        }));
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (role === UserType.ADMIN) {
+  //       const res = await findAll({ pageSize: 10, pageNumber: 1 });
+  //       const data = res?.data.items;
+  //       const posts: IPost[] = data?.map((post: any) => ({
+  //         id: post.id,
+  //         title: post.title,
+  //         description: post.description,
+  //         rentalObject: post.rentalObject,
+  //         youtubeLink: post.youtubeLink,
+  //         postTypeId: post.postTypeId,
+  //         realEstateTypeId: post.realEstateTypeId,
+  //         status: post.status,
+  //         mediaUrl: post.firstImageUrl,
+  //         isAdminAprrove: post.isAdminApproved,
+  //       }));
 
-        setListPost(posts);
-        setTotalItems(res?.data.totalItems);
-      } else {
-        const res = await findAllPersonal({ pageSize: 10, pageNumber: 1 });
-        const data = res?.data.items;
-        const posts: IPost[] = data?.map((post: any) => ({
-          id: post.id,
-          title: post.title,
-          description: post.description,
-          rentalObject: post.rentalObject,
-          youtubeLink: post.youtubeLink,
-          postTypeId: post.postTypeId,
-          realEstateTypeId: post.realEstateTypeId,
-          status: post.status,
-          mediaUrl: post.firstImageUrl,
-        }));
+  //       setListPost(posts);
+  //       setTotalItems(res?.data.totalItems);
+  //     } else {
+  //       const res = await findAllPersonal({ pageSize: 10, pageNumber: 1 });
+  //       const data = res?.data.items;
+  //       const posts: IPost[] = data?.map((post: any) => ({
+  //         id: post.id,
+  //         title: post.title,
+  //         description: post.description,
+  //         rentalObject: post.rentalObject,
+  //         youtubeLink: post.youtubeLink,
+  //         postTypeId: post.postTypeId,
+  //         realEstateTypeId: post.realEstateTypeId,
+  //         status: post.status,
+  //         mediaUrl: post.firstImageUrl,
+  //         isAdminAprrove: post.isAdminApproved,
+  //       }));
 
-        setListPost(posts);
-        setTotalItems(res?.data.totalItems);
-      }
-    };
+  //       setListPost(posts);
+  //       setTotalItems(res?.data.totalItems);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     handleSearch();
@@ -200,8 +205,7 @@ const ManagePost = () => {
       label: "phê duyệt",
       onClick: async (id: number) => {
         const res = await approvedPost(id);
-        handleSearch(pageNumber, pageSize);
-        console.log(res);
+        await handleSearch(pageNumber, pageSize);
       },
       accept: [UserType.ADMIN],
     },
@@ -210,8 +214,7 @@ const ManagePost = () => {
       label: "hủy duyệt",
       onClick: async (id: number) => {
         const res = await cancelRequest(id);
-        handleSearch(pageNumber, pageSize);
-        console.log(res);
+        await handleSearch(pageNumber, pageSize);
       },
       accept: [UserType.ADMIN],
     },
@@ -223,12 +226,7 @@ const ManagePost = () => {
         return router.push(`/post/edit/?role=${role}&postId=${id}`);
       },
       accept: [UserType.ADMIN, UserType.CUSTOMER],
-    },
-    // {
-    //   key: 4,
-    //   label: "Đăng lại (chưa xử lý)",
-    //   accept: [UserType.CUSTOMER]
-    // }
+    }
   ];
 
   const columns: TableColumnsType<IPost> = [
@@ -297,6 +295,28 @@ const ManagePost = () => {
       render: (postTypeId: number) => {
         const postTypeItem = postType.find((item) => item.value === postTypeId);
         return postTypeItem ? postTypeItem.label : "";
+      },
+    },
+    {
+      title: "Phê duyệt",
+      width: 50,
+      dataIndex: "isAdminAprrove",
+      key: "isAdminAprrove",
+      fixed: "right",
+      render: (isAdminAprrove: boolean) => {
+        if (isAdminAprrove) {
+          return (
+            <Tag icon={<CheckOutlined />} color="success">
+              Đã phê duyệt
+            </Tag>
+          )
+        } else {
+          return (
+            <Tag icon={<CloseOutlined />} color="error">
+              Chưa phê duyệt
+            </Tag>
+          )
+        }
       },
     },
     {
@@ -419,6 +439,7 @@ const ManagePost = () => {
         realEstateTypeId: post.realEstateTypeId,
         status: post.status,
         mediaUrl: post.firstImageUrl,
+        isAdminAprrove: post.isAdminApproved,
       }));
 
       setListPost(posts);
@@ -445,6 +466,7 @@ const ManagePost = () => {
         realEstateTypeId: post.realEstateTypeId,
         status: post.status,
         mediaUrl: post.firstImageUrl,
+        isAdminAprrove: post.isAdminApproved,
       }));
 
       setListPost(posts);

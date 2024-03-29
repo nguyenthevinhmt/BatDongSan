@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { CgSize } from "react-icons/cg";
 import { TbCurrencyDong } from "react-icons/tb";
 import dayjs from "dayjs";
@@ -25,7 +25,7 @@ import { CiLink } from "react-icons/ci";
 import type { MenuProps } from "antd";
 
 import MapComponent from "@/components/Map/MapComponent";
-import { getById } from "@/services/post/post.service";
+import { getById, getByIdHome } from "@/services/post/post.service";
 import { Carousel } from "@/components/public/carousel/carousel";
 import { environment } from "@/shared/environment/environment";
 import axios from "axios";
@@ -34,9 +34,11 @@ import {
   formatCurrency,
 } from "@/shared/utils/common-helpers";
 import Image from "next/image";
+import SlideSecond from "@/app/components/detailComponent/SlideSecond";
 const { Paragraph } = Typography;
 
 const Page = () => {
+  const router = useRouter();
   const items: MenuProps["items"] = [
     {
       label: <Link href="https://www.facebook.com/">Facebook</Link>,
@@ -67,18 +69,19 @@ const Page = () => {
   const param = useParams();
   useEffect(() => {
     const fetchDetailPost = async () => {
-      const response = await getById(+param?.id[0]);
+      const response = await getByIdHome(+param?.id[0]);
       console.log("data", response?.data?.medias);
       await setData(response?.data);
+
       const coordinatesRes = await axios.get(
         `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
           response?.data?.street +
-            " " +
-            response?.data?.ward +
-            " " +
-            response?.data?.district +
-            " " +
-            response?.data?.province
+          " " +
+          response?.data?.ward +
+          " " +
+          response?.data?.district +
+          " " +
+          response?.data?.province
         )}&key=${environment.BingMapsApiKey}`
       );
       const coordinates = {
@@ -104,6 +107,7 @@ const Page = () => {
       window.location.href = `https://zalo.me/${data?.userPhoneNumber}`;
     }
   };
+
   return (
     <>
       <div
@@ -323,6 +327,8 @@ const Page = () => {
 
             <MapComponent prop={location} width={730} height={270} />
             <Divider style={{ margin: "35px 0" }} />
+
+            <SlideSecond/>
           </div>
 
           <div className="box_right">
@@ -341,6 +347,7 @@ const Page = () => {
                 size={54}
                 style={{ margin: "20px 0 10px 0" }}
                 icon={<UserOutlined />}
+                src={data?.user?.avatarUrl ? data?.user?.avatarUrl : "https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
               />
               <p
                 style={{
@@ -351,13 +358,22 @@ const Page = () => {
               >
                 Được đăng bởi
               </p>
-              <Link href="/u/list-post">
-                <p style={contentStyle}>{data?.userName}</p>
+              <Link href={{
+                pathname: "/u/list-post",
+                query: { 
+                  id: data?.user?.id,
+                  fullName: data?.user?.fullName,
+                  avatarUrl: data?.user?.avatarUrl,
+                  phone: data?.user?.phone,
+                },
+                }}
+              >
+                <p style={contentStyle}>{data?.user?.fullName}</p>
               </Link>
               <Button style={firstButtonStyle}>
                 <Paragraph
                   style={{ color: "#fff" }}
-                  copyable={{ text: `${data?.userPhoneNumber}` }}
+                  copyable={{ text: `${data?.user?.phone}` }}
                 >
                   {data?.userPhoneNumber}
                 </Paragraph>

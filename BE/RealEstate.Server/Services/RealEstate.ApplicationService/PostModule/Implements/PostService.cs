@@ -132,6 +132,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
+                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -183,7 +184,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
-                            FirstImageUrl = postmedia.MediaUrl
+                            FirstImageUrl = postmedia.MediaUrl,
+                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -569,7 +571,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
-                            PostStartDate = post.PostStartDate
+                            PostStartDate = post.PostStartDate,
+                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -627,7 +630,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
-                            PostStartDate = post.PostStartDate
+                            PostStartDate = post.PostStartDate,
+                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -678,7 +682,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
-                            PostStartDate = post.PostStartDate
+                            PostStartDate = post.PostStartDate,
+                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -734,7 +739,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
-                            PostStartDate = post.PostStartDate
+                            PostStartDate = post.PostStartDate,
+                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {

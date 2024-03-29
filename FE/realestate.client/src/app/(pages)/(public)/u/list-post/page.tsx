@@ -22,8 +22,30 @@ import { LuDot } from "react-icons/lu";
 import LeasePost from "@/app/(pages)/(public)/u/list-post/LeasePost/";
 import PhoneOutlined from "@ant-design/icons/lib/icons/PhoneOutlined";
 import ShareAltOutlined from "@ant-design/icons/lib/icons/ShareAltOutlined";
+import { getUserInfo } from "@/services/user/user.service";
+import SlidePostByUser from "@/app/components/detailComponent/SlidePostByUser";
+import { useSearchParams } from "next/navigation";
 
-const ListPostsAuthor = () => {
+interface IUser {
+  id: number,
+  fullname: string,
+  phoneNumber: string,
+  avatarUrl: string,
+}
+
+interface IPost {
+  id: number;
+  title: string;
+  province: string;
+  district: string;
+  area: number;
+  price: number;
+  postStartDate: Date;
+  firstImageUrl: string;
+};
+
+const ListPostsAuthor = ()  => {
+  const searchParams = useSearchParams();
   const { Paragraph } = Typography;
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.toString());
@@ -47,16 +69,13 @@ const ListPostsAuthor = () => {
   ]);
   const [statusLoadmore, setStatusLoadmore] = useState(true);
   const [visibleProducts, setVisibleProducts] = useState(8);
-  useEffect(() => {
-    quantityPost.length <= 8 && setStatusLoadmore(false);
-  }, [visibleProducts]);
+  const [userInfo, setUserInfo] = useState<IUser>();
+  const [isHidden, setIsHidden] = useState(true);
 
-  const onLoadMore = () => {
-    setVisibleProducts((prevVisibleProducts) => prevVisibleProducts + 8);
-    if (visibleProducts + 8 >= quantityPost.length) {
-      setStatusLoadmore(false);
-    }
+  const handleButtonClick = () => {
+    setIsHidden(!isHidden);
   };
+
 
   const items: MenuProps["items"] = [
     {
@@ -107,7 +126,7 @@ const ListPostsAuthor = () => {
           <Flex style={{ margin: "20px 20px" }}>
             <Avatar
               size={90}
-              src="https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={userInfo ? userInfo.avatarUrl : "https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
             />
             <h3
               style={{
@@ -118,7 +137,7 @@ const ListPostsAuthor = () => {
                 fontWeight: "600",
               }}
             >
-              Nguyễn Quốc Việt
+              {searchParams.get("fullName")}
             </h3>
           </Flex>
           <Flex style={{ marginTop: "30px" }}>
@@ -145,9 +164,10 @@ const ListPostsAuthor = () => {
                 height: "44px",
                 margin: "0 20px 0 10px",
               }}
+              onClick={handleButtonClick}
             >
               <Paragraph style={styleButton} copyable={{ text: `${label}` }}>
-                <PhoneOutlined style={{ fontSize: "25px" }} /> 0965115***
+                <PhoneOutlined style={{ fontSize: "25px" }} /> {isHidden ? searchParams.get('phone')?.toString().replace(/\d(?=\d{4})/g, "*") : searchParams.get('phone')}
                 <LuDot />
                 Hiện số
               </Paragraph>
@@ -164,89 +184,22 @@ const ListPostsAuthor = () => {
             margin: "25px 0",
           }}
         >
-          Danh sách tin đăng bán ({quantityPost.length})
+          Danh sách tin đăng bán
         </h1>
-        <Row gutter={[24, 24]}>
-          {quantityPost.slice(0, visibleProducts).map((item, index) => {
-            return (
-              <Col span={6} key={index}>
-                <a href={`posts/detail/${index}`}>
-                  <Card
-                    hoverable
-                    loading={loading}
-                    style={{ width: 288, height: 377 }}
-                    bodyStyle={{ padding: 14 }}
-                    cover={
-                      loading ? (
-                        <div className="custom-skeleton-image"></div>
-                      ) : (
-                        <img
-                          height={200}
-                          style={{ objectFit: "cover", width: "100%" }}
-                          alt="example"
-                          src="https://images.unsplash.com/photo-1564648351416-3eec9f3e85de?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29zdGVubG9zZSUyMGJpbGRlcnxlbnwwfHwwfHx8MA%3D%3D"
-                        />
-                      )
-                    }
-                  >
-                    <h2
-                      className="ellipsis-multiline"
-                      style={{
-                        fontFamily: "Roboto,Arial",
-                        height: "40px",
-                        fontSize: "15px",
-                        lineHeight: "20px",
-                        fontWeight: "500",
-                        color: "#2C2C2C",
-                        marginBottom: "4px",
-                        letterSpacing: "1px",
-                      }}
-                    >
-                      {item.name}
-                    </h2>
-                    <span
-                      style={{
-                        color: "#E03C31",
-                        fontSize: "17px",
-                        fontWeight: 600,
-                        marginTop: "7px",
-                      }}
-                    >
-                      Giá thỏa thuận <LineOutlined /> <span>56m²</span>
-                    </span>
-                    <p style={{ marginTop: "7px", fontSize: "16px" }}>
-                      <EnvironmentOutlined style={{ marginRight: "5px" }} />
-                      Liên Chiểu, Đà Nẵng
-                    </p>
-                    <Flex justify="space-between" align="flex-end">
-                      <Tooltip
-                        placement="bottom"
-                        title={"27/02/2024"}
-                        color={"#423e3e"}
-                      >
-                        <span
-                          style={{
-                            color: "#999",
-                            fontSize: "13px",
-                            marginTop: "17px",
-                          }}
-                        >
-                          Đăng 3 ngày trước
-                        </span>
-                      </Tooltip>
-                    </Flex>
-                  </Card>
-                </a>
-              </Col>
-            );
-          })}
-        </Row>
-        <div style={{ width: "100%", textAlign: "center", margin: "40px 0" }}>
-          {statusLoadmore ? (
-            <Button onClick={onLoadMore}>Xem thêm</Button>
-          ) : null}
-        </div>
-        <LeasePost />
+        <SlidePostByUser postType={1} />
+        <Divider />
+        <h1
+          style={{
+            fontSize: "24px",
+            fontWeight: 700,
+            fontFamily: "Nunito, sans-serif",
+            color: "#000000",
+            margin: "25px 0",
+          }}
+        >
+          Danh sách tin đăng cho thuê
+        </h1>
+        <SlidePostByUser postType={2} />
       </div>
     </>
   );
