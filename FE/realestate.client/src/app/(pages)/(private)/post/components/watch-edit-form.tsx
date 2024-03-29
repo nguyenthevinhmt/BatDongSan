@@ -2,6 +2,8 @@ import { RootState } from "@/redux/store";
 import {
     apiRemoveImage,
     apiUploadImage,
+    approvedPost,
+    cancelRequest,
     deleteImage,
     getById,
     getPublicIdFromUrl,
@@ -43,6 +45,7 @@ import {
 } from "@/services/post/address.service";
 import { postStatus } from "@/shared/consts/postStatus";
 import MapComponent from "@/components/Map/MapComponent";
+import InputNumber from "antd/es/input-number";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -64,6 +67,8 @@ interface IPost {
     lifeTime: number;
     calculateType: number;
     listMedia?: MediaType[];
+    userName?: string;
+    userPhoneNumber?: string;
 }
 
 interface MediaType {
@@ -173,6 +178,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                     description: item.description,
                     mediaUrl: item.mediaUrl,
                 })) : [],
+                userName: data?.userName,
+                userPhoneNumber: data?.userPhoneNumber,
             };
             setListMediaId(data?.medias?.map((item: any) => item.id) || []);
             setListMedia(post?.listMedia || []);
@@ -205,6 +212,8 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 youtubeLink: post.youtubeLink,
                 realEstateTypeId: post.realEstateTypeId,
                 calculateType: post.calculateType,
+                name: post.userName,
+                phoneNumber: post.userPhoneNumber,
             });
         };
 
@@ -460,6 +469,16 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
     const goBack = () => {
         router.back();
     };
+
+    const handleApprove = async (id: number) => {
+        const res = await approvedPost(id);
+        router.back();
+    }
+
+    const handleRefuse = async (id: number) => {
+        const res = await cancelRequest(id);
+        router.back();
+    }
 
     return (
         <>
@@ -798,7 +817,13 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         style={{ width: "70%" }}
                                         rules={[{ validator: validatePrice }]}
                                     >
-                                        <Input disabled={currentCalculateType === 3 || (!(edit && isChange))} />
+                                        <InputNumber 
+                                            disabled={currentCalculateType === 3 || (!(edit && isChange))} 
+                                            style={{
+                                                width: '100%'
+                                            }}
+                                            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                            parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}/>
                                     </Form.Item>
 
                                     <Form.Item
@@ -846,7 +871,6 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     Hình ảnh & Video
                                 </p>
                                 <ul style={{ paddingLeft: 20 }}>
-                                    <li>Đăng tối thiểu 4 ảnh thường với tin VIP</li>
                                     <li>Đăng tối đa 24 ảnh với tất cả các loại tin</li>
                                     <li>Hãy dùng ảnh thật, không trùng, không chèn SDT</li>
                                     <li>
@@ -863,6 +887,12 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                     }}
                                     valuePropName="fileList"
                                     getValueFromEvent={normFile}
+                                    rules={[
+                                        {
+                                          validator: (_, value) =>
+                                            fileList.length > 0 ? Promise.resolve() : Promise.reject(new Error('Vui lòng thêm ít nhất 1 ảnh')),
+                                        },
+                                      ]}
                                 >
                                     <Upload
                                         disabled={!(edit && isChange)}
@@ -918,56 +948,50 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                         <p>Bạn chắc chắn muốn xóa ảnh chứ?</p>
                                     </Modal>
                                 </Form.Item>
-                                <Form.Item
-                                    name={"youtubeLink"}
-                                    label={<strong>Link youtube</strong>}
-                                >
-                                    <Input placeholder="Dán đường dẫn youtube tại đây" disabled={!(edit && isChange)} />
-                                </Form.Item>
                             </div>
 
-                            {edit ?
-                                <div
+                            <div
+                                style={{
+                                    width: "100%",
+                                    margin: "auto",
+                                    backgroundColor: "#fff",
+                                }}
+                            >
+                                <p
                                     style={{
-                                        width: "100%",
-                                        margin: "auto",
-                                        backgroundColor: "#fff",
+                                        fontSize: 24,
+                                        fontWeight: "500",
                                     }}
                                 >
-                                    <p
-                                        style={{
-                                            fontSize: 24,
-                                            fontWeight: "500",
-                                        }}
-                                    >
-                                        Thông tin liên hệ
-                                    </p>
-                                    <Flex justify="center" gap={"small"}>
-                                        <Form.Item
-                                            name="name"
-                                            label={<strong>Tên liên hệ</strong>}
-                                            style={{ width: "50%" }}
-                                        >
-                                            <Input
-                                                value={userInfo.fullname}
-                                                placeholder={userInfo.fullname}
-                                                disabled={true}
-                                            />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="phoneNumber"
-                                            label={<strong>Số điện thoại</strong>}
-                                            style={{ width: "50%" }}
-                                        >
-                                            <Input
-                                                value={userInfo.phoneNumber}
-                                                placeholder={userInfo.phoneNumber}
-                                                disabled={true}
-                                            />
-                                        </Form.Item>
-                                    </Flex>
-
+                                    Thông tin liên hệ
+                                </p>
+                                <Flex justify="center" gap={"small"}>
                                     <Form.Item
+                                        name="name"
+                                        label={<strong>Tên liên hệ</strong>}
+                                        style={{ width: "50%" }}
+                                    >
+                                        <Input
+                                            value={userInfo.fullname}
+                                            placeholder={userInfo.fullname}
+                                            disabled={true}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="phoneNumber"
+                                        label={<strong>Số điện thoại</strong>}
+                                        style={{ width: "50%" }}
+                                    >
+                                        <Input
+                                            value={userInfo.phoneNumber}
+                                            placeholder={userInfo.phoneNumber}
+                                            disabled={true}
+                                        />
+                                    </Form.Item>
+                                </Flex>
+
+                                {
+                                    edit ? <Form.Item
                                         name="email"
                                         label={<strong>Email</strong>}
                                         style={{ width: "50%", marginTop: "-5px" }}
@@ -977,11 +1001,12 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             placeholder={userInfo.email}
                                             disabled={true}
                                         />
-                                    </Form.Item>
-                                </div> : <></>
-                            }
+                                    </Form.Item> : <></>
+                                }
 
-                            
+                            </div>
+
+
                             {//check role
                                 edit ?
                                     <div
@@ -1115,15 +1140,76 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                                 <Button
                                                     style={{
                                                         padding: "0 15px",
-                                                        color: "white",
-                                                        backgroundColor: "rgb(224, 60, 49)",
-                                                        border: "none",
+                                                        marginRight: 10,
+                                                        //color: "white",
+                                                        backgroundColor: "#fff",
+                                                        border: "0.5px solid #aaa",
                                                     }}
                                                     onClick={goBack}
                                                 >
                                                     Quay lại
                                                 </Button>
                                             </Form.Item>
+
+                                            {(status !== postStatus.PENDING) ??
+                                                <Form.Item>
+                                                    <Button
+                                                        style={{
+                                                            padding: "0 15px",
+                                                            marginRight: 10,
+                                                            color: "white",
+                                                            backgroundColor: "rgb(224, 60, 49)",
+                                                            border: "none",
+                                                        }}
+                                                        onClick={() => {
+                                                            Modal.confirm({
+                                                                title: "Từ chối phê duyệt bài viết?",
+                                                                content: "Các thay đổi của bạn sẽ được lưu và không thể hoàn tác.",
+                                                                okText: "Đồng ý",
+                                                                cancelText: "Hủy",
+                                                                onOk() {
+                                                                    handleRefuse(postId);
+                                                                },
+                                                                onCancel() {
+                                                                    console.log("cancel");
+                                                                },
+                                                            });
+                                                        }}
+                                                    >
+                                                        Hủy duyệt
+                                                    </Button>
+                                                </Form.Item>
+                                            }
+
+                                            {(status !== postStatus.PENDING) ??
+                                                <Form.Item>
+                                                    <Button
+                                                        style={{
+                                                            padding: "0 15px",
+                                                            color: "white",
+                                                            backgroundColor: "rgb(224, 60, 49)",
+                                                            border: "none",
+                                                        }}
+                                                        onClick={() => {
+                                                            Modal.confirm({
+                                                                title: "Phê duyệt bài viết?",
+                                                                content: "Các thay đổi của bạn sẽ được lưu và không thể hoàn tác.",
+                                                                okText: "Đồng ý",
+                                                                cancelText: "Hủy",
+                                                                onOk() {
+                                                                    handleApprove(postId);
+                                                                },
+                                                                onCancel() {
+                                                                    console.log("cancel");
+                                                                },
+                                                            });
+
+                                                        }}
+                                                    >
+                                                        Phê duyệt
+                                                    </Button>
+                                                </Form.Item>
+                                            }
                                         </div>
                                     </div>
                             }

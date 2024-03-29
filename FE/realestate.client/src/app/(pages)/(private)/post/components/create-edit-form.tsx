@@ -33,6 +33,7 @@ import { useRouter } from "next/navigation";
 import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
 import MapComponent from "@/components/Map/MapComponent";
+import { InputNumber } from "antd";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -154,12 +155,12 @@ const CreateEditForm = () => {
       const res = await axios.get(
         `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
           location?.street +
-            " " +
-            location.wards +
-            " " +
-            location.districts +
-            " " +
-            location.provinces
+          " " +
+          location.wards +
+          " " +
+          location.districts +
+          " " +
+          location.provinces
         )}&key=${environment.BingMapsApiKey}`
       );
       const coordinates = {
@@ -682,7 +683,14 @@ const CreateEditForm = () => {
                       style={{ width: "70%" }}
                       rules={[{ validator: validatePrice }]}
                     >
-                      <Input disabled={currentCalculateType === 3} />
+                      <InputNumber
+                        disabled={currentCalculateType === 3}
+                        style={{
+                          width: '100%'
+                        }}
+                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                      />
                     </Form.Item>
 
                     <Form.Item
@@ -723,7 +731,6 @@ const CreateEditForm = () => {
                     Hình ảnh & Video
                   </p>
                   <ul style={{ paddingLeft: 20 }}>
-                    <li>Đăng tối thiểu 4 ảnh thường với tin VIP</li>
                     <li>Đăng tối đa 24 ảnh với tất cả các loại tin</li>
                     <li>Hãy dùng ảnh thật, không trùng, không chèn SDT</li>
                     <li>
@@ -732,6 +739,7 @@ const CreateEditForm = () => {
                     <li>Mô tả ảnh tối đa 45 ký tự</li>
                   </ul>
                   <Form.Item
+                    name="upload"
                     style={{
                       display: "flex",
                       justifyContent: "center",
@@ -739,6 +747,12 @@ const CreateEditForm = () => {
                     }}
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
+                    rules={[
+                      {
+                        validator: (_, value) =>
+                          fileList.length > 0 ? Promise.resolve() : Promise.reject(new Error('Vui lòng thêm ít nhất 1 ảnh.')),
+                      },
+                    ]}
                   >
                     <Upload
                       customRequest={handleUpload}
@@ -771,12 +785,6 @@ const CreateEditForm = () => {
                         src={previewImage}
                       />
                     </Modal>
-                  </Form.Item>
-                  <Form.Item
-                    name={"youtubeLink"}
-                    label={<strong>Link youtube</strong>}
-                  >
-                    <Input placeholder="Dán đường dẫn youtube tại đây" />
                   </Form.Item>
                 </div>
 

@@ -233,6 +233,7 @@ interface IPayment {
   postStartDate?: Date;
   postEndDate?: Date;
 }
+
 export const updatePaymentStatus = async (payload: IPayment) => {
   try {
     const response = await axiosInstance.put(
@@ -478,3 +479,18 @@ export const cancelRequest = async (id: number) => {
     return null;
   }
 }
+
+//lấy thông tin bài viết với tư cách khách hàng
+export const getByIdHome = async (id: number) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/home/find-by-id?id=${id}`
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api get by id home của post bị lỗi!!!");
+    return error;
+  }
+};
