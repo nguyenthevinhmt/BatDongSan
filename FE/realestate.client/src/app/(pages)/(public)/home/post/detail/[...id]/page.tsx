@@ -161,7 +161,7 @@ const Page = () => {
                       marginTop: "5px",
                     }}
                   >
-                    {data?.price}
+                    {data?.price ? data?.price : 'Giá thỏa thuận'}
                   </p>
                 </div>
                 <div>
@@ -246,8 +246,8 @@ const Page = () => {
                   <TbCurrencyDong style={{ fontSize: "34px" }} />
                   <p style={styleIcon}>
                     Mức giá
-                    <span style={{ marginLeft: "122px", fontWeight: "400" }}>
-                      {formatCurrency(data?.price)}
+                    <span style={{ marginLeft: "110px", fontWeight: "400" }}>
+                      {data?.price ? formatCurrency(data?.price) : 'Giá thỏa thuận'}
                     </span>
                   </p>
                 </Flex>
@@ -375,7 +375,7 @@ const Page = () => {
                   style={{ color: "#fff" }}
                   copyable={{ text: `${data?.user?.phone}` }}
                 >
-                  {data?.userPhoneNumber}
+                  {data?.user?.phone}
                 </Paragraph>
               </Button>
               <Button style={styleButtonGroup} onClick={handleContactZalo}>

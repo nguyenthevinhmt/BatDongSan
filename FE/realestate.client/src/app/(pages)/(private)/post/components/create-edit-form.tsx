@@ -34,6 +34,7 @@ import PaymentForm from "./payment-form";
 import { toast } from "react-toastify";
 import MapComponent from "@/components/Map/MapComponent";
 import { InputNumber } from "antd";
+import { current } from "@reduxjs/toolkit";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -315,7 +316,7 @@ const CreateEditForm = () => {
       street: formValue.street,
       detailAddress: formValue.detailAddress,
       area: formValue.area,
-      price: formValue.price,
+      price: currentCalculateType === 3 ? null : formValue.price,
       youtubeLink: formValue.youtubeLink,
       postTypeId: postType,
       realEstateTypeId: formValue.realEstateTypeId,

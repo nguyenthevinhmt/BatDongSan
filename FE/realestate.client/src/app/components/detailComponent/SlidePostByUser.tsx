@@ -69,7 +69,7 @@ const SlidePostByUser: React.FC<SlidePostByUserProps> = ({ postType }) => {
             {listPost ?
                 <>
                     <Flex justify="space-between">
-                        <Flex align='flex-end' style={{width: '100%'}}>
+                        <Flex align='flex-end' style={{ width: '100%' }}>
                             <Button style={{ marginRight: "10px" }} onClick={onClickPrev} disabled={indexPost === 0} icon={<ArrowLeftOutlined />} />
                             <Button onClick={onClickNext} disabled={indexPost >= listPost?.length - 5} icon={<ArrowRightOutlined />} />
                         </Flex>
@@ -103,7 +103,11 @@ const SlidePostByUser: React.FC<SlidePostByUserProps> = ({ postType }) => {
                                                 fontWeight: 500,
                                             }}>
                                                 <p style={{ marginRight: 20 }}>{item.area} m2</p>
-                                                <p>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND</p>
+                                                {item?.price ?
+                                                    <p>{item?.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND</p>
+                                                    :
+                                                    <p>Giá thỏa thuận</p>
+                                                }
                                             </Flex>
                                             <p style={{ marginTop: "4px", fontSize: "16px", fontWeight: 400, lineHeight: "20px", height: "40px", }}> <IoLocationOutline /> {item.district}, {item.province}</p>
                                             <Flex justify="space-between" align="flex-end" style={{ marginBottom: 0 }} >

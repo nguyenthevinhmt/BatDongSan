@@ -260,7 +260,17 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                              Ward=post.Ward,
                              YoutubeLink=post.YoutubeLink,
                              Title=post.Title,
-                             User = _mapper.Map<UserDto>(post.User),
+                             User = new UserDto
+                             {
+                                 Id = user.Id,
+                                 Username = user.Username,
+                                 FullName = user.Fullname,
+                                 Phone = user.PhoneNumber,
+                                 Email = user.Email,
+                                 Status = user.Status,
+                                 UserType = user.UserType,
+                                 Avatar = user.AvatarUrl
+                             },
                          }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             return result;
         }

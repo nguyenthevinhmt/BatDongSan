@@ -28,8 +28,8 @@ const SlideSecond = () => {
     const [listPost, setListPost] = useState<IPost[]>([])
     useEffect(() => {
         const fetchData = async () => {
-            const response = await recommendPost({pageSize: 20, pageNumber: 1});
-            const posts : IPost[] = response?.data?.items?.map((post: any) => ({
+            const response = await recommendPost({ pageSize: 20, pageNumber: 1 });
+            const posts: IPost[] = response?.data?.items?.map((post: any) => ({
                 id: post.id,
                 title: post.title,
                 province: post.province,
@@ -133,11 +133,15 @@ const SlideSecond = () => {
                                         color: '#ff4d4f',
                                         fontWeight: 500,
                                     }}>
-                                        <p style={{marginRight: 20}}>{item.area} m2</p>
-                                        <p>{item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND</p>
+                                        <p style={{ marginRight: 20 }}>{item.area} m2</p>
+                                        {item?.price ?
+                                            <p>{item?.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')} VND</p>
+                                            :
+                                            <p>Giá thỏa thuận</p>
+                                        }
                                     </Flex>
                                     <p style={{ marginTop: "4px", fontSize: "16px", fontWeight: 400, lineHeight: "20px", height: "40px", }}> <IoLocationOutline /> {item.district}, {item.province}</p>
-                                    <Flex justify="space-between" align="flex-end" style={{marginBottom: 0}} >
+                                    <Flex justify="space-between" align="flex-end" style={{ marginBottom: 0 }} >
                                         <Tooltip placement="bottom" title={"27/02/2024"} color={'#423e3e'}>
                                             <span style={{ color: "#999", fontSize: "13px", marginBottom: "4px" }}>{item.postStartDate.getDate()}/{item.postStartDate.getMonth() + 1}</span>
                                         </Tooltip>
