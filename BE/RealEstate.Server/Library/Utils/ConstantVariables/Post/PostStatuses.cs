@@ -3,7 +3,7 @@
     public static class PostStatuses
     {
         /// <summary>
-        /// Khởi tạo
+        /// Khởi tạo/chờ thanh toán
         /// </summary>
         public const int INIT = 1;
         /// <summary>
@@ -11,16 +11,20 @@
         /// </summary>
         public const int PENDING = 2;
         /// <summary>
-        /// Đã đăng
+        /// Tin chưa đăng - chờ hiển thị
         /// </summary>
-        public const int POSTED = 3;
+        public const int UNPOSTED = 3;
         /// <summary>
-        /// Hủy duyệt
+        /// Đã đăng - đang hiển thị
         /// </summary>
-        public const int CANCEL = 4;
+        public const int POSTED = 4;
         /// <summary>
-        /// Đã gỡ
+        /// Hủy duyệt - không được duyệt
         /// </summary>
-        public const int REMOVED = 5;
+        public const int CANCEL = 5;
+        /// <summary>
+        /// Đã hết hạn
+        /// </summary>
+        public const int EXPIRED = 6;
     }
 }

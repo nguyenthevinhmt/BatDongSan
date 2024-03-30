@@ -1,6 +1,5 @@
 ﻿using RealEstate.ApplicationBase.Common.Validations;
 using RealEstate.Utils.ConstantVariables.Post;
-using System.ComponentModel.DataAnnotations;
 
 namespace RealEstate.ApplicationService.PostModule.Dtos
 {
@@ -75,19 +74,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// Giá cho thuê/bán
         /// </summary>
         public double? Price { get; set; }
-        /// <summary>
-        /// Đối tượng cho thuê
-        /// </summary>
-        public double? RentalObject { get; set; }
-        private string? _youtubeLink;
-        /// <summary>
-        /// Link video youtube
-        /// </summary>
-        [MaxLength(250)]
-        public string? YoutubeLink {
-            get => _youtubeLink;
-            set => _youtubeLink = value?.Trim();
-        }
         [IntegerRange(AllowableValues = new int[] {PostOptions.NORMAL, PostOptions.SILVER, PostOptions.GOLD, PostOptions.DIAMOND })]
         public int Options {  get; set; }
         /// <summary>
@@ -103,16 +89,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// Loại bất động sản
         /// </summary>
         public int RealEstateTypeId { get; set; }
-
-        ///// <summary>
-        ///// Mã ví
-        ///// </summary>
-        //public string WalletNumber { get; set; } = null!;
-        ///// <summary>
-        ///// Số giao dịch
-        ///// </summary>
-        //public string TransactionNumber { get; set; } = null!;
-
         /// <summary>
         /// Đơn vị
         /// <see cref="RealEstate.Utils.ConstantVariables.Post.CalculateType"/>

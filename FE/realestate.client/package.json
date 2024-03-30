@@ -33,6 +33,7 @@
     "react-toastify": "^10.0.4",
     "redux-persist": "^6.0.0",
     "swr": "^2.2.5",
+    "turbo": "^1.13.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {

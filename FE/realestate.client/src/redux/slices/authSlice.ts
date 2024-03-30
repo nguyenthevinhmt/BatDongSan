@@ -1,13 +1,10 @@
-import { 
-  PayloadAction, 
-  createSlice 
+import {
+  PayloadAction,
+  createSlice
 } from "@reduxjs/toolkit";
 
 const initialState: any = {
-  user: {
-    // fullname: "",
-    // avatarUrl: "",
-  },
+  user: {},
   data: {
     access_token: "",
     refresh_token: "",
@@ -46,12 +43,14 @@ const authSlice = createSlice({
         },
       };
     },
+    updateConfirmStatus: (state) => {
+      state.user.data.isConfirm = true
+    },
+    updateAvatarUrl: (state) => {
+      state.user.data.avatarUrl = null
+    }
   },
   extraReducers(builder) {
-    // builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
-    //     HYDRATE,
-    //     (state,action) => ({...state, ...action.payload})
-    // );
   },
 });
 
@@ -61,6 +60,8 @@ export const {
   clearUserInfo,
   saveUserToken,
   clearUserToken,
+  updateConfirmStatus,
+  updateAvatarUrl
 } = authSlice.actions;
 const authReducer = authSlice.reducer;
 export default authReducer;

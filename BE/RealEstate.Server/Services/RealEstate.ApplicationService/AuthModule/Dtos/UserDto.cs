@@ -31,6 +31,10 @@
         /// Trạng thái tài khoản
         /// </summary>
         public int Status { get; set; }
+        /// <summary>
+        /// Link avatar
+        /// </summary>
+        public string? AvatarUrl {  get; set; }
 
         /// <summary>
         /// Loại tài khoản

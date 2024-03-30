@@ -35,14 +35,6 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         /// </summary>
         public double? Price { get; set; }
         /// <summary>
-        /// Đối tượng cho thuê
-        /// </summary>
-        public double? RentalObject { get; set; }
-        /// <summary>
-        /// Link video youtube
-        /// </summary>
-        public string? YoutubeLink { get; set; }
-        /// <summary>
         /// Trạng thái
         /// <see cref="PostStatuses"/>
         /// </summary>

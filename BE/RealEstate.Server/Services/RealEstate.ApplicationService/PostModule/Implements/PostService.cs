@@ -54,8 +54,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 DetailAddress = input.DetailAddress,
                 Area = input.Area,
                 Price = input.Price,
-                RentalObject = input.RentalObject,
-                YoutubeLink = input.YoutubeLink,
                 PostTypeId = input.PostTypeId,
                 RealEstateTypeId = input.RealEstateTypeId,
                 Status = PostStatuses.INIT,
@@ -120,19 +118,16 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Price = post.Price,
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
-                            RentalObject = post.RentalObject,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
                             Ward = post.Ward,
-                            YoutubeLink = post.YoutubeLink,
                             PostEndDate = post.PostEndDate,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
-                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -173,19 +168,16 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Price = post.Price,
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
-                            RentalObject = post.RentalObject,
                             PostEndDate = post.PostEndDate,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
                             Ward = post.Ward,
-                            YoutubeLink = post.YoutubeLink,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
                             ModifiedBy = post.ModifiedBy,
                             ModifiedDate = post.ModifiedDate,
                             FirstImageUrl = postmedia.MediaUrl,
-                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -220,11 +212,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 Price = post.Price,
                                 Province = post.Province,
                                 RealEstateTypeId = post.RealEstateTypeId,
-                                RentalObject = post.RentalObject,
                                 Status = post.Status,
                                 Street = post.Street,
                                 Ward = post.Ward,
-                                YoutubeLink = post.YoutubeLink,
                                 LifeTime = post.LifeTime,
                                 CalculateType = post.CalculateType,
                                 Options = post.Options,
@@ -254,23 +244,19 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                              Price = post.Price,
                              Province = post.Province,
                              RealEstateTypeId=post.RealEstateTypeId,
-                             RentalObject=post.RentalObject,
                              Status=post.Status,
                              Street=post.Street,
                              Ward=post.Ward,
-                             YoutubeLink=post.YoutubeLink,
                              Title=post.Title,
-                             User = new UserDto
+                             User = new()
                              {
                                  Id = user.Id,
                                  Username = user.Username,
                                  FullName = user.Fullname,
                                  Phone = user.PhoneNumber,
                                  Email = user.Email,
-                                 Status = user.Status,
-                                 UserType = user.UserType,
-                                 Avatar = user.AvatarUrl
-                             },
+                                 AvatarUrl = user.AvatarUrl,
+                             }
                          }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             return result;
         }
@@ -280,7 +266,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var currentUserId = _httpContext.GetCurrentUserId();
             var transactions = _dbContext.Database.BeginTransaction();
             var post = _dbContext.Posts.FirstOrDefault(p => p.Id == input.Id 
-                                                            && (p.Status == PostStatuses.REMOVED)
+                                                            && (p.Status == PostStatuses.EXPIRED)
                                                             && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             var wallet = _dbContext.Wallets.FirstOrDefault(c => c.WalletNumber == input.WalletNumber && c.UserId == currentUserId)
                        ?? throw new UserFriendlyException(ErrorCode.WalletNotFound);
@@ -328,9 +314,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var post = _dbContext.Posts.FirstOrDefault(p => p.Id == id
                                                             && (p.Status == PostStatuses.POSTED)
                                                             && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
-            post.Status = PostStatuses.REMOVED;
+            post.Status = PostStatuses.EXPIRED;
             post.IsPayment = false;
-            post.IsAdminApproved = false;
             _dbContext.SaveChanges();
         }
 
@@ -348,8 +333,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             findPost.Street = input.Street;
             findPost.Description = input.Description;
             findPost.Price = input.Price;
-            findPost.RentalObject = input.RentalObject;
-            findPost.YoutubeLink = input.YoutubeLink;
             findPost.PostTypeId = input.PostTypeId;
             findPost.RealEstateTypeId = input.RealEstateTypeId;
 
@@ -393,11 +376,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 Price = findPost.Price,
                 Province = findPost.Province,
                 RealEstateTypeId = findPost.RealEstateTypeId,
-                RentalObject = input.RentalObject,
                 Street = findPost.Street,
                 Title = findPost.Title,
                 Ward = findPost.Ward,
-                YoutubeLink = findPost.YoutubeLink,
                 Medias = input.ListMedia
             };
         }
@@ -421,9 +402,9 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             var post = _dbContext.Posts.FirstOrDefault(p => p.Status == PostStatuses.PENDING && p.Id == id && !p.Deleted) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.ApproveAt = DateTime.Now;
             post.ApproveBy = currentUserId;
-            post.IsAdminApproved = true;
+            post.Status = PostStatuses.UNPOSTED;
 
-            if (post.PostStartDate <= DateTime.Now)
+            if (post.PostStartDate.Date >= DateTime.Now.Date)
             {
                 var jobId = BackgroundJob.Schedule<IPostService>(
                    x => x.ShowOnPost(post.Id),
@@ -431,7 +412,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 );
                 post.BackgroundJobOnShowPostId = jobId;
             }
-            if (post.PostEndDate.Date >= DateTime.Now.Date)
+            if (post.PostEndDate.Date <= DateTime.Now.Date)
             {
                 var jobId = BackgroundJob.Schedule<IPostService>(
                 x => x.ShowOffPost(post.Id),
@@ -498,23 +479,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             }
             _dbContext.SaveChanges();
 
-            //if (post.PostStartDate <= DateTime.Now)
-            //{
-            //    var jobId = BackgroundJob.Schedule<IPostService>(
-            //       x => x.ShowOnPost(post.Id),
-            //       post.PostStartDate
-            //    );
-            //    post.BackgroundJobOnShowPostId = jobId;
-            //}
-            //if (post.PostEndDate.Date >= DateTime.Now.Date)
-            //{
-            //    var jobId = BackgroundJob.Schedule<IPostService>(
-            //       x => x.ShowOffPost(post.Id),
-            //       post.PostEndDate
-            //    );
-            //    post.BackgroundJobOffShowPostId = jobId;
-            //}
-
             var payloadToTransaction = new Transaction()
             {
                 Amount = TotalAmount,
@@ -568,12 +532,10 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Price = post.Price,
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
-                            RentalObject = post.RentalObject,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
                             Ward = post.Ward,
-                            YoutubeLink = post.YoutubeLink,
                             PostEndDate = post.PostEndDate,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
@@ -582,7 +544,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
-                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -627,12 +588,10 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Price = post.Price,
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
-                            RentalObject = post.RentalObject,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
                             Ward = post.Ward,
-                            YoutubeLink = post.YoutubeLink,
                             PostEndDate = post.PostEndDate,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
@@ -641,7 +600,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
-                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -679,12 +637,10 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Price = post.Price,
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
-                            RentalObject = post.RentalObject,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
                             Ward = post.Ward,
-                            YoutubeLink = post.YoutubeLink,
                             PostEndDate = post.PostEndDate,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
@@ -693,7 +649,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
-                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -736,12 +691,10 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             Price = post.Price,
                             Province = post.Province,
                             RealEstateTypeId = post.RealEstateTypeId,
-                            RentalObject = post.RentalObject,
                             Status = post.Status,
                             Street = post.Street,
                             UserId = post.UserId,
                             Ward = post.Ward,
-                            YoutubeLink = post.YoutubeLink,
                             PostEndDate = post.PostEndDate,
                             CreatedBy = post.CreatedBy,
                             CreatedDate = post.CreatedDate,
@@ -750,7 +703,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
-                            IsAdminApproved = post.IsAdminApproved
                         };
             var result = new PagingResult<PostDto>()
             {
@@ -770,7 +722,6 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                         ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Status = PostStatuses.CANCEL;
             post.IsPayment = false;
-            post.IsAdminApproved = true;
             post.BackgroundJobOnShowPostId = null;
             post.BackgroundJobOffShowPostId = null;
             var transaction = _dbContext.Transactions.FirstOrDefault(c => c.PostId == id) 

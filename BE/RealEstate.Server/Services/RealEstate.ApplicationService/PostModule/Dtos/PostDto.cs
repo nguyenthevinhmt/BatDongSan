@@ -31,14 +31,6 @@
         /// </summary>
         public double? Price { get; set; }
         /// <summary>
-        /// Đối tượng cho thuê
-        /// </summary>
-        public double? RentalObject { get; set; }
-        /// <summary>
-        /// Link video youtube
-        /// </summary>
-        public string? YoutubeLink { get; set; }
-        /// <summary>
         /// Ngày hết hạn
         /// </summary>
         public DateTime PostEndDate {  get; set; }
@@ -77,10 +69,6 @@
         public DateTime? ModifiedDate { get; set; }
         public int? ModifiedBy { get; set; }
         public string? FirstImageUrl { get;set; }
-        /// <summary>
-        /// Check admin duyệt
-        /// </summary>
-        public bool IsAdminApproved { get; set; }
 
 
     }

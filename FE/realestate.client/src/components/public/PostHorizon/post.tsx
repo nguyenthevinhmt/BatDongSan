@@ -26,7 +26,7 @@ const PostHorizon = ({
   let color = "";
   if (option === OptionConst.NORMAL) {
     return (
-      <>
+      <div>
         <div style={{ width: "720px", height: "150px", marginBottom: "60px" }}>
           <Flex>
             <Link href={`/home/post/detail/${data?.id}`} style={{ flex: 3 }}>
@@ -90,7 +90,7 @@ const PostHorizon = ({
           </Flex>
           <Divider />
         </div>
-      </>
+      </div>
     );
   }
   if (option === OptionConst.SILVER) {
@@ -106,7 +106,14 @@ const PostHorizon = ({
   return (
     <>
       <LabelCardHorizon text={labelText} color={color}>
-        <div style={{ width: "720px", height: "150px", marginBottom: "60px", fontFamily: '__Lexend_126e48', }}>
+        <div
+          style={{
+            width: "720px",
+            height: "150px",
+            marginBottom: "60px",
+            fontFamily: "__Lexend_126e48",
+          }}
+        >
           <Flex>
             <Link href={`/home/post/detail/${data?.id}`} style={{ flex: 3 }}>
               <img src={data?.firstImageUrl} alt="#" width={200} height={150} />
@@ -133,20 +140,26 @@ const PostHorizon = ({
                       marginRight: "10px",
                     }}
                   >
-                    <div style={{
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      color: "#444",
-                      marginRight: "10px",
-                    }}>
+                    <div
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        color: "#444",
+                        marginRight: "10px",
+                      }}
+                    >
                       {formatCurrency(data?.price)}
                     </div>
-                    <div style={{
-                      fontSize: "18px",
-                      fontFamily: '__Lexend_126e48',
-                      fontWeight: "600",
-                      color: "#444",
-                    }}>{data?.area} m²</div>
+                    <div
+                      style={{
+                        fontSize: "18px",
+                        fontFamily: "__Lexend_126e48",
+                        fontWeight: "600",
+                        color: "#444",
+                      }}
+                    >
+                      {data?.area} m²
+                    </div>
                   </Flex>
                   <Tooltip title={isSave ? "Bỏ lưu" : "Lưu bài viết"}>
                     <Button
