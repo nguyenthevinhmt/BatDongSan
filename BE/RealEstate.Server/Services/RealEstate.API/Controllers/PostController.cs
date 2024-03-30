@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.AspNetCore.Mvc;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Dtos;
@@ -212,6 +213,27 @@ namespace RealEstate.API.Controllers
         {
             _postService.CancelRequest(id);
             return new();
+        }
+        /// <summary>
+        /// Tìm bài đăng bán theo người dùng
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("sale-post/find-all")]
+        public ApiResponse FindAllSalePostByUserCreated([FromQuery]PagingRequestByPostTypeDto input)
+        {
+            return new(_postService.FindAllSalePostByUserCreated(input));
+        }
+
+        /// <summary>
+        /// Tìm bài đăng cho thuê theo người dùng
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpGet("rent-post/find-all")]
+        public ApiResponse FindAllRentPostByUserCreated([FromQuery] PagingRequestByPostTypeDto input)
+        {
+            return new(_postService.FindAllRentPostByUserCreated(input));
         }
     }
 }
