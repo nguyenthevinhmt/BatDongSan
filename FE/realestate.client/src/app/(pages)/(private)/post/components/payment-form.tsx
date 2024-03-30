@@ -67,7 +67,7 @@ const PaymentForm = ({
   ];
 
   const handleSubmit = async (formValue: any) => {
-    if (status === 5) {
+    if (status === 6) {
       const walletResponse = await walletInfo();
       const payload: IRepublishPost = {
         options: formData.options,

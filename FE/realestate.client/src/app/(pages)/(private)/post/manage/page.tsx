@@ -24,12 +24,14 @@ import {
   approvedPost,
   findAllPersonal,
   cancelRequest,
+  deletePost,
 } from "@/services/post/post.service";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import CheckOutlined from "@ant-design/icons/lib/icons/CheckOutlined";
 import CloseOutlined from "@ant-design/icons/lib/icons/CloseOutlined";
+import Modal from "antd/es/modal";
 
 interface IPost {
   id: number;
@@ -114,11 +116,16 @@ const Status = [
   {
     value: postStatus.INIT,
     label: "Khởi tạo",
-    accept: [UserType.CUSTOMER],
+    accept: [UserType.CUSTOMER], //cho biết role này có thể lựa chọn trạng thái này
   },
   {
     value: postStatus.PENDING,
     label: "Chờ xử lý/yêu cầu duyệt",
+    accept: [UserType.ADMIN, UserType.CUSTOMER],
+  },
+  {
+    value: postStatus.UNPOSTED,
+    label: "Đã phê duyệt, chờ đăng",
     accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
   {
@@ -132,8 +139,8 @@ const Status = [
     accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
   {
-    value: postStatus.REMOVED,
-    label: "Đã gỡ",
+    value: postStatus.EXPIRED,
+    label: "Đã hết hạn",
     accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
 ];
@@ -226,6 +233,32 @@ const ManagePost = () => {
         return router.push(`/post/edit/?role=${role}&postId=${id}`);
       },
       accept: [UserType.ADMIN, UserType.CUSTOMER],
+    },
+    {
+      key: 4,
+      label: "xóa",
+      onClick: async (id: number) => {
+        Modal.confirm({
+          title: "Bạn có chắc chắn muốn xóa?",
+          content: "Các thay đổi của bạn sẽ được lưu và không thể hoàn tác.",
+          okText: "Đồng ý",
+          cancelText: "Hủy",
+          onOk() {
+            const handleDelete = async (id: number) => {
+              await deletePost(id);
+              setChange(!change);
+            };
+
+            handleDelete(id);
+          },
+          onCancel() {
+            console.log("cancel");
+          },
+        });
+
+
+      },
+      accept: [UserType.CUSTOMER],
     }
   ];
 
@@ -298,28 +331,6 @@ const ManagePost = () => {
       },
     },
     {
-      title: "Phê duyệt",
-      width: 50,
-      dataIndex: "isAdminAprrove",
-      key: "isAdminAprrove",
-      fixed: "right",
-      render: (isAdminAprrove: boolean) => {
-        if (isAdminAprrove) {
-          return (
-            <Tag icon={<CheckOutlined />} color="success">
-              Đã phê duyệt
-            </Tag>
-          )
-        } else {
-          return (
-            <Tag icon={<CloseOutlined />} color="error">
-              Chưa phê duyệt
-            </Tag>
-          )
-        }
-      },
-    },
-    {
       title: "Trạng thái",
       width: 70,
       dataIndex: "status",
@@ -340,7 +351,14 @@ const ManagePost = () => {
                 Chờ xử lý
               </Tag>
             );
-          } else if (statusItem.value === postStatus.POSTED) {
+          } else if (statusItem.value === postStatus.UNPOSTED) {
+            return (
+              <Tag icon={<CheckOutlined />} color="success">
+                Đã phê duyệt, chờ đăng
+              </Tag>
+            );
+          }
+          else if (statusItem.value === postStatus.POSTED) {
             return (
               <Tag icon={<CheckCircleOutlined />} color="success">
                 Đã đăng
@@ -352,7 +370,7 @@ const ManagePost = () => {
                 Hủy duyệt
               </Tag>
             );
-          } else if (statusItem.value === postStatus.REMOVED) {
+          } else if (statusItem.value === postStatus.EXPIRED) {
             return (
               <Tag icon={<MinusCircleOutlined />} color="#ccc">
                 Đã gỡ
@@ -375,18 +393,21 @@ const ManagePost = () => {
         if (record.status === postStatus.INIT) {
           actions[1].accept.includes(role) && items.push(actions[1]);
           actions[2].accept.includes(role) && items.push(actions[2]);
+          actions[3].accept.includes(role) && items.push(actions[3]);
         } else if (record.status === postStatus.PENDING) {
           actions[0].accept.includes(role) && items.push(actions[0]);
           actions[1].accept.includes(role) && items.push(actions[1]);
           actions[2].accept.includes(role) && items.push(actions[2]);
+        } else if (record.status === postStatus.UNPOSTED) {
+          actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.POSTED) {
-          //actions[1].accept.includes(role) && items.push(actions[1]);
           actions[2].accept.includes(role) && items.push(actions[2]);
         } else if (record.status === postStatus.CANCEL) {
           actions[2].accept.includes(role) && items.push(actions[2]);
+          actions[3].accept.includes(role) && items.push(actions[3]);
         } else {
           actions[2].accept.includes(role) && items.push(actions[2]);
-          //actions[3].accept.includes(role) && items.push(actions[3]);
+          actions[3].accept.includes(role) && items.push(actions[3]);
         }
 
         const menu = (

@@ -1052,7 +1052,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             </Form.Item>
 
                                             {
-                                                (status !== postStatus.POSTED && status !== postStatus.PENDING && status !== postStatus.REMOVED) ?
+                                                (status !== postStatus.POSTED && status !== postStatus.PENDING && status !== postStatus.EXPIRED) ?
                                                     !isChange ?
                                                         <Form.Item>
                                                             <Button
@@ -1116,7 +1116,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                                         >
                                                             {status === postStatus.INIT ? "Đăng tin" : 
                                                             status === postStatus.CANCEL ? "Trình duyệt" :
-                                                            status === postStatus.REMOVED ? "Đăng lại" : "Tiếp tục"}
+                                                            status === postStatus.EXPIRED ? "Đăng lại" : "Tiếp tục"}
                                                         </Button>
                                                     </Form.Item>
                                             }

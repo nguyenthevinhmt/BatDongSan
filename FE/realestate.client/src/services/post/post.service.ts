@@ -264,7 +264,7 @@ export const approvedPost = async (id: number) => {
   }
 };
 
-export const removePost = async (id: number) => {
+export const deletePost = async (id: number) => {
   try {
     const response = await axiosInstance.delete(
       `${environment.baseUrl}/api/post/remove?id=${id}`

@@ -88,7 +88,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         public void Delete(int id)
         {
             _logger.LogInformation($"{nameof(Delete)}: id : {id}");
-            var post = _dbContext.Posts.FirstOrDefault(c => !c.Deleted && c.Id == id) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            var post = _dbContext.Posts.FirstOrDefault(c => !c.Deleted && c.Id == id && (c.Status == PostStatuses.INIT || c.Status == PostStatuses.CANCEL || c.Status == PostStatuses.EXPIRED )) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Deleted = true;
             _dbContext.SaveChanges();
         }

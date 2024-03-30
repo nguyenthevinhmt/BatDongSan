@@ -22,6 +22,7 @@ interface IPost {
     price: number;
     postStartDate: Date;
     firstImageUrl: string;
+    options: number;
 };
 
 interface SlidePostByUserProps {
@@ -43,7 +44,8 @@ const SlidePostByUser: React.FC<SlidePostByUserProps> = ({ postType }) => {
                 area: post.area,
                 price: post.price,
                 postStartDate: new Date(post.postStartDate),
-                firstImageUrl: post.firstImageUrl
+                firstImageUrl: post.firstImageUrl,
+                options: post.options,
             }));
             setListPost(posts);
             console.log("posts: ", posts);
