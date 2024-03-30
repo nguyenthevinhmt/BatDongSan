@@ -1,3 +1,5 @@
 .DS_Store
 __pycache__/
 src/dataloader/check-test
+src/dataloader/results
+src/dataloader/uploads

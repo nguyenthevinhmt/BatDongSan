@@ -51,15 +51,6 @@ namespace RealEstate.Domain.Entities
         /// </summary>
         public double? Price { get; set; }
         /// <summary>
-        /// Đối tượng cho thuê
-        /// </summary>
-        public double? RentalObject { get; set; }
-        /// <summary>
-        /// Link video youtube
-        /// </summary>
-        [MaxLength(250)]
-        public string? YoutubeLink { get; set; }
-        /// <summary>
         /// Thời gian duyệt
         /// </summary>
         public DateTime? ApproveAt { get; set; }
@@ -71,7 +62,6 @@ namespace RealEstate.Domain.Entities
         /// Trạng thái
         /// <see cref="PostStatuses"/>
         /// </summary>
-        [IntegerRange(AllowableValues = new int[] { PostStatuses.POSTED, PostStatuses.REMOVED, PostStatuses.INIT, PostStatuses.CANCEL, PostStatuses.PENDING })]
         public int Status { get; set; }
         /// <summary>
         /// Option cho bài viết (thường, bạc, vàng, kim cương)
@@ -105,10 +95,6 @@ namespace RealEstate.Domain.Entities
         /// Check thanh toán
         /// </summary>
         public bool IsPayment { get; set; }
-        /// <summary>
-        /// Check admin duyệt
-        /// </summary>
-        public bool IsAdminApproved {  get; set; }
         public int UserId { get; set; }
         public User User { get; set; } = null!;
         /// <summary>
