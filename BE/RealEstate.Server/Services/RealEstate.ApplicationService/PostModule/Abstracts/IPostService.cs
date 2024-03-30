@@ -113,5 +113,17 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="input"></param>
         /// <returns></returns>
         PagingResult<PostDto> SearchPost(SearchPostRequestDto input);
+        /// <summary>
+        /// Danh sách bài đăng bán theo user id
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllSalePostByUserCreated(PagingRequestByPostTypeDto input);
+        /// <summary>
+        /// Danh sách bài đăng cho thuê theo user id
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        PagingResult<PostDto> FindAllRentPostByUserCreated(PagingRequestByPostTypeDto input);
     }
 }
