@@ -301,12 +301,15 @@ export const updateStatus = async (info: IUpdateStatus) => {
   }
 };
 
-export const recommendPost = async ({ pageSize, pageNumber }: { pageSize: number, pageNumber?: number }) => {
+export const recommendPost = async ({ pageSize, pageNumber, postType, realEstateType, keyword }: { pageSize: number, pageNumber?: number, postType?: number, realEstateType?: number, keyword?: string }) => {
   try {
     const response = await axiosInstance.get(`${environment.baseUrl}/api/post/public/find-all`, {
       params: {
         pageSize: pageSize || -1,
         pageNumber: pageNumber || null,
+        postType: postType || null,
+        realEstateType: realEstateType || null,
+        keyword: keyword || null,
       },
     })
     return response?.data;

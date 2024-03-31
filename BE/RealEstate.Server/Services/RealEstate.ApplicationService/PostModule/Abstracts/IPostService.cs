@@ -20,7 +20,7 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input);
+        PagingResult<PostUserDto> FindAllPublic(PostPagingRequestDto input);
         /// <summary>
         /// Chi tiết bài viết
         /// </summary>
@@ -106,7 +106,7 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        PagingResult<PostDto> FindAllPostByProvince(PagingRequestBaseDto input);
+        PagingResult<PostUserDto> FindAllPostByProvince(PagingRequestBaseDto input);
         /// <summary>
         /// Tìm kiếm post trang chủ
         /// </summary>

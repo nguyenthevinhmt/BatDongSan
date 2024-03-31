@@ -13,10 +13,12 @@ import Typography from "antd/es/typography";
 import { LuDot } from 'react-icons/lu';
 import Divider from 'antd/es/divider';
 import dayjs from 'dayjs';
+import Link from 'next/link';
 
 interface ListPostPaginationProps {
     header: string;
     data: any[];
+    totalItem? : number;
 }
 
 const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) => {
@@ -31,7 +33,7 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
             <List
                 // loading={loading}
                 style={{
-                    width: '50%',
+                    width: '100%',
                     margin: 'auto'
                 }}
                 itemLayout="vertical"
@@ -49,14 +51,13 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                         style={{
                             fontSize: "24px",
                             fontWeight: 500,
-                            color: "#2C2C2C",
-                            marginBottom: "20px"
+                            color: "#2C2C2C"
                         }}
                     >{props.header}</p>
                 }
                 footer={
                     <div>
-                        hiện có <b>45666</b> bất động sản.
+                        hiện có <b>{props.totalItem ? props.totalItem : 0}</b> bất động sản.
                     </div>
                 }
                 renderItem={(item, i) => (
@@ -68,13 +69,13 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                             borderRadius: "10px",
                         }}>
                             {/* ảnh sản phẩm */}
-                            <a href={`posts/detail/${i}`} key={i}>
+                            <Link href={`/home/post/detail/${item?.id}`}>
                                 <List.Item style={{ padding: 0 }}>
                                     <img
                                         src={item?.firstImageUrl ? item?.firstImageUrl : "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"}
                                         style={{
                                             width: "100%",
-                                            height: "300px",
+                                            height: "200px",
                                             padding: 0,
                                             objectFit: "cover",
                                             borderTopLeftRadius: "10px",
@@ -82,14 +83,18 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                         }}
                                     />
                                 </List.Item>
-                            </a>
+                            </Link>
 
                             {/* Thông tin sản phẩm */}
-                            <a href={`posts/detail/${i}`} key={i}>
+                            <Link href={`/home/post/detail/${item?.id}`}>
                                 <List.Item
                                     style={{
                                         display: 'flex',
                                         flexDirection: 'column',
+                                        paddingTop: 0,
+                                         paddingRight: 0,
+                                        paddingBottom: 0,
+                                        paddingLeft: 10,
                                     }}
                                 >
                                     <div style={{
@@ -106,7 +111,7 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                         }
                                     </div>
 
-                                    <div>
+                                    <div style={{paddingTop: 10, paddingBottom: 10}}>
                                         <span style={{
                                             color: '#ff4d4f',
                                             marginRight: '10px',
@@ -119,12 +124,11 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                             fontWeight: 600,
                                         }}> {item?.area ? item?.area : 0} m2 </span>
 
-                                        <span>{item?.district ? item?.district : 'Thành phố'}, {item?.province ? item?.privince : "Tỉnh"}</span>
+                                        <span>{item?.district ? item?.district : 'Thành phố'}, {item?.province ? item?.province : "Tỉnh"}</span>
                                     </div>
 
                                     <div
                                         style={{
-                                            height: "58px",
                                             lineHeight: "20px",
                                         }}
                                     >
@@ -137,44 +141,59 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                         }
                                     </div>
                                 </List.Item>
-                            </a>
+                            </Link>
                             <Divider />
 
                             {/* Thông tin người đăng bán và lưu tin */}
-                            <List.Item style={{ display: 'flex', alignItems: 'flex-start', paddingBottom: 0, paddingTop: 0, }}>
-                                <List.Item.Meta
-                                    avatar={<Avatar size={40} src={item.avatar} />}
-                                    title={<h2 className="ellipsis-multiline2"
-                                        style={{
-                                            fontFamily: "Lexend Medium, Roboto, Arial",
-                                            fontSize: "14px",
-                                            lineHeight: "20px",
-                                            fontWeight: "500",
-                                            color: "#2C2C2C",
-                                            height: "58",
-                                            letterSpacing: "1px"
-                                        }}>{item?.user?.username ? item?.user?.username : 'Tên người dùng'}</h2>}
-                                    description={
-                                        item?.createDate ?
-                                            <Tooltip
-                                                placement="bottom"
-                                                title={dayjs(item?.createdDate).format("DD/MM/YYYY")}
-                                                color={"#423e3e"}
-                                            >
-                                                <span
-                                                    style={{
-                                                        color: "#999",
-                                                        fontSize: "13px",
-                                                        marginBottom: "4px",
-                                                        fontFamily: "__Lexend_126e48, __Lexend_Fallback_126e48",
-                                                    }}
+                            <List.Item style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', paddingBottom: 0, paddingTop: 0, paddingRight: 10, paddingLeft: 10 }}>
+                                <Link href={{
+                                    pathname: "/u/list-post",
+                                    query: {
+                                        id: item?.user?.id,
+                                        fullName: item?.user?.fullName,
+                                        avatarUrl: item?.user?.avatarUrl,
+                                        phone: item?.user?.phone,
+                                    },
+                                }}
+                                style={{}}
+                                >
+                                    <List.Item.Meta
+                                        style={{width: 50}}
+                                        avatar={<Avatar size={40} src={item?.user?.avatarUrl ? item?.user.avatarUrl : "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"} />}
+                                        title={<p className="ellipsis-multiline2"
+                                            style={{
+                                                width: 200,
+                                                fontFamily: "Lexend Medium, Roboto, Arial",
+                                                fontSize: "14px",
+                                                lineHeight: "20px",
+                                                fontWeight: "500",
+                                                color: "#2C2C2C",
+                                                height: "58",
+                                                letterSpacing: "1px"
+                                            }}>{item?.user?.fullName ? item?.user?.fullName : 'Tên người dùng'}</p>}
+                                        description={
+                                            item?.createdDate ?
+                                                <Tooltip
+                                                    placement="bottom"
+                                                    title={dayjs(item?.createdDate).format("DD/MM/YYYY")}
+                                                    color={"#423e3e"}
                                                 >
-                                                    {formatDate(dayjs(item?.createdDate))}
-                                                </span>
-                                            </Tooltip>
-                                            : 'Ngày đăng'
-                                    }
-                                />
+                                                    <p
+                                                        style={{
+                                                            width: 200,
+                                                            color: "#999",
+                                                            fontSize: "13px",
+                                                            marginBottom: "4px",
+                                                            fontFamily: "__Lexend_126e48, __Lexend_Fallback_126e48",
+                                                        }}
+                                                    >
+                                                        {formatDate(dayjs(item?.createdDate))}
+                                                    </p>
+                                                </Tooltip>
+                                                : 'Ngày đăng'
+                                        }
+                                    />
+                                </Link>
 
                                 <div style={{ display: 'flex', }}>
                                     <Button
@@ -184,9 +203,9 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                         }}
                                         onClick={handleButtonClick}
                                     >
-                                        {item?.phone ?
-                                        <Paragraph style={styleButton} copyable={{ text: item?.phone }}>
-                                            <PhoneOutlined style={{ fontSize: "20px" }} /> {isHidden ? item?.phone.toString().replace(/\d(?=\d{4})/g, "*") : '012345678'}
+                                        {item?.user?.phone ?
+                                        <Paragraph style={styleButton} copyable={{ text: item?.user?.phone }}>
+                                            <PhoneOutlined style={{ fontSize: "20px" }} /> {isHidden ? item?.user?.phone.toString().replace(/\d(?=\d{4})/g, "*") : '012345678'}
                                             <LuDot />
                                             Hiện số
                                         </Paragraph>

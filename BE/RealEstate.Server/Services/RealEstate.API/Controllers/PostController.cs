@@ -156,7 +156,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("public/find-all")]
-        public ApiResponse<PagingResult<PostDto>> FindAllPublic([FromQuery]PostPagingRequestDto input)
+        public ApiResponse<PagingResult<PostUserDto>> FindAllPublic([FromQuery]PostPagingRequestDto input)
         {
             return new(_postService.FindAllPublic(input));
         }
@@ -188,7 +188,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("find-all-by-province")]
-        public ApiResponse<PagingResult<PostDto>> FindAllPostByProvince([FromQuery] PagingRequestBaseDto input)
+        public ApiResponse<PagingResult<PostUserDto>> FindAllPostByProvince([FromQuery] PagingRequestBaseDto input)
         {
             return new(_postService.FindAllPostByProvince(input));
         }

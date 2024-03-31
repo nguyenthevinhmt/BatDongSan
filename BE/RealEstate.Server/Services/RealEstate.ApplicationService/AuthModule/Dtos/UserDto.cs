@@ -40,10 +40,5 @@
         /// Loại tài khoản
         /// </summary>
         public int UserType { get; set; }
-
-        /// <summary>
-        /// ảnh đại diện
-        /// </summary>
-        public string? Avatar { get; set; }
     }
 }
