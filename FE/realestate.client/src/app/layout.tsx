@@ -6,6 +6,8 @@ import ToastProvider from "@/shared/provider/toast.provider";
 import { Lexend } from "next/font/google";
 import StyledComponentsRegistry from "./AntdRegistry";
 import dynamic from "next/dynamic";
+import ServerHeaderComponent from "@/components/shareLayout/serverHeader";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 const ReduxProvider = dynamic(() => import("@/app/StoreProvider"), {
   ssr: false,
@@ -26,13 +28,14 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => {
     <html lang="en">
       <body className={lexend.className}>
         <link rel="icon" href="../../favicon_io/favicon.ico" sizes="any" />
-        <StyledComponentsRegistry>
+        {/* <ServerHeaderComponent /> */}
+        <AntdRegistry>
           <ReduxProvider>
             <CommontLayout>
               <ToastProvider>{children}</ToastProvider>
             </CommontLayout>
           </ReduxProvider>
-        </StyledComponentsRegistry>
+        </AntdRegistry>
       </body>
     </html>
   );

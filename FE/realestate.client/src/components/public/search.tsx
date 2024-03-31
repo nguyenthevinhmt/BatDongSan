@@ -1,22 +1,16 @@
-"use client"
-import { searchPostStore } from "@/redux/slices/post.slice";
+"use client";
 import { getDistricts, getProvinces } from "@/services/post/address.service";
 import { SearchPost, getRealEstateType } from "@/services/post/post.service";
-import axiosInstance from "@/shared/configs/axiosInstance";
-import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-import {
-  Button,
-  Flex,
-  Form,
-  Input,
-  Select,
-  Tabs,
-} from "antd";
+import { Button, Flex, Form, Input, Select, Tabs } from "antd";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-
+import {
+  PriceRentConst,
+  PriceSaleConst,
+} from "./FilterComponent/DataConst/PriceConst";
+import { extractNumbersFromString } from "@/shared/utils/common-helpers";
+import { AreaConst } from "./FilterComponent/DataConst/AreaConst";
 
 const SearchComponent = () => {
   const [formData, setFormData] = useState({
@@ -24,15 +18,14 @@ const SearchComponent = () => {
     inputSearch: "",
     realEstateType: null,
     region: null,
-    price: null,
-    area: null
-
+    startPrice: null,
+    endPrice: null,
+    startArea: null,
+    endArea: null,
   });
   const [provinces, setProvinces] = useState([]);
   const [realEstateType, setRealEstateType] = useState<any>();
-  const dispatch = useDispatch();
-  const router = useRouter()
-  const sendingParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -48,42 +41,54 @@ const SearchComponent = () => {
   }, []);
 
   const handleSubmit = (formValue: any) => {
+    formValue = delete formValue.price;
+    formValue = delete formValue.area;
     const param = {
       ...formValue,
-      postType: formData?.postType
+      postType: formData?.postType,
+    };
+    if (formData?.startPrice) {
+      param.startPrice = formData?.startPrice;
+    }
+    if (formData?.endPrice) {
+      param.endPrice = formData?.endPrice;
     }
 
+    if (formData?.startArea) {
+      param.startArea = formData?.startArea;
+    }
+    if (formData?.endArea) {
+      param.endArea = formData?.endArea;
+    }
     const filteredParams: any = Object.fromEntries(
       Object.entries(param).filter(([_, value]) => value !== undefined)
     );
-    console.log("object", filteredParams)
     const queryParams = new URLSearchParams(filteredParams).toString();
-    console.log("object", queryParams)
     let url: string;
-    url = formData?.postType == 1 ? '/nha-dat-ban' : '/nha-dat-cho-thue';
-    router.push(`${url}?${queryParams}`)
+    url = formData?.postType == 1 ? "/nha-dat-ban" : "/nha-dat-cho-thue";
+    router.push(`${url}?${queryParams}`);
   };
 
   let prices = [
     {
       value: 0,
-      label: "Thỏa thuận"
+      label: "Thỏa thuận",
     },
     {
       value: 1 * Math.pow(10, 9),
-      label: "<= 1 Tỷ"
+      label: "<= 1 Tỷ",
     },
-  ]
+  ];
   for (let i = 2; i < 20; i++) {
     prices.push({
       value: i * Math.pow(10, 9),
-      label: `${i} - ${i + 1} tỷ`
-    })
+      label: `${i} - ${i + 1} tỷ`,
+    });
   }
   prices.push({
     value: 21 * Math.pow(10, 9),
-    label: `>= 20 tỷ`
-  })
+    label: `>= 20 tỷ`,
+  });
   const tabs = [
     {
       key: "1",
@@ -98,45 +103,45 @@ const SearchComponent = () => {
   const areas = [
     {
       value: 20,
-      label: "<= 20 m²"
+      label: "<= 20 m²",
     },
     {
       value: 30,
-      label: "20 - 30 m²"
+      label: "20 - 30 m²",
     },
     {
       value: 40,
-      label: "30 - 40 m²"
+      label: "30 - 40 m²",
     },
     {
       value: 50,
-      label: "40 - 50 m²"
+      label: "40 - 50 m²",
     },
     {
       value: 60,
-      label: "50 - 60 m²"
+      label: "50 - 60 m²",
     },
     {
       value: 70,
-      label: "60 - 70 m²"
+      label: "60 - 70 m²",
     },
     {
       value: 80,
-      label: "70 - 80 m²"
+      label: "70 - 80 m²",
     },
     {
       value: 90,
-      label: "80 - 90 m²"
+      label: "80 - 90 m²",
     },
     {
       value: 100,
-      label: "90 - 100 m²"
+      label: "90 - 100 m²",
     },
     {
       value: 110,
-      label: "> 100 m²"
+      label: "> 100 m²",
     },
-  ]
+  ];
 
   return (
     <Form onFinish={(formValue) => handleSubmit(formValue)}>
@@ -150,26 +155,31 @@ const SearchComponent = () => {
           backgroundColor: "rgba(0, 0, 0, 0.4)",
         }}
       >
-        <Form.Item name='postType'>
+        <Form.Item name="postType">
           <Tabs
             activeKey={formData.postType.toString()}
             tabBarGutter={10}
             type="card"
             style={{
-              marginBottom: "-20px", marginLeft: "20px",
+              marginBottom: "-20px",
+              marginLeft: "20px",
             }}
             onChange={(value) => {
               setFormData((prev) => {
                 return {
                   ...prev,
-                  postType: +value
-                }
-              })
+                  postType: +value,
+                };
+              });
             }}
             items={tabs.map((item) => {
               return {
                 key: item.key,
-                label: <div style={{ color: '#aaa' }} onChange={() => { }}>{item.label}</div>,
+                label: (
+                  <div style={{ color: "#aaa" }} onChange={() => {}}>
+                    {item.label}
+                  </div>
+                ),
               };
             })}
           />
@@ -190,7 +200,7 @@ const SearchComponent = () => {
             }}
           >
             <Form.Item
-              name='keyword'
+              name="keyword"
               style={{
                 cursor: "pointer",
                 margin: "13px auto",
@@ -200,7 +210,7 @@ const SearchComponent = () => {
                 width: "100%",
                 marginLeft: "20px",
                 backgroundColor: "#fafafa",
-                borderRadius: '8px',
+                borderRadius: "8px",
                 fontSize: "16",
               }}
             >
@@ -211,16 +221,20 @@ const SearchComponent = () => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      inputSearch: e.target.value ?? ""
-                    }
+                      inputSearch: e.target.value ?? "",
+                    };
                   });
                 }}
-                prefix={<FaSearch style={{ marginRight: '10px' }} />}
+                prefix={<FaSearch style={{ marginRight: "10px" }} />}
                 placeholder="Nhập địa chỉ hoặc dự án ...."
                 suffix={
                   <Button
                     size="large"
-                    style={{ backgroundColor: "#FF4D4F", color: "#fff", fontWeight: 500 }}
+                    style={{
+                      backgroundColor: "#FF4D4F",
+                      color: "#fff",
+                      fontWeight: 500,
+                    }}
                     htmlType="submit"
                   >
                     Tìm kiếm
@@ -236,38 +250,41 @@ const SearchComponent = () => {
               margin: "0 20px",
             }}
           >
-            <Form.Item style={{ flex: "1", backgroundColor: 'rgba(0, 0, 0, 0.1)' }} name="realEstateType" >
+            <Form.Item
+              style={{ flex: "1", backgroundColor: "rgba(0, 0, 0, 0.1)" }}
+              name="realEstateType"
+            >
               <Select
                 size="middle"
                 allowClear={true}
-                style={{ flex: "1", backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
+                style={{ flex: "1", backgroundColor: "rgba(0, 0, 0, 0.1)" }}
                 placeholder={"Loại nhà đất"}
                 options={realEstateType?.map((item: any) => {
                   return {
                     value: item?.id,
-                    label: item?.name
-                  }
+                    label: item?.name,
+                  };
                 })}
                 value={formData?.realEstateType}
                 onChange={(e) => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      realEstateType: e
-                    }
-                  })
+                      realEstateType: e,
+                    };
+                  });
                 }}
                 onClear={() => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      realEstateType: null
-                    }
-                  })
+                      realEstateType: null,
+                    };
+                  });
                 }}
               />
             </Form.Item>
-            <Form.Item name='province' style={{ flex: "1" }}>
+            <Form.Item name="province" style={{ flex: "1" }}>
               <Select
                 size="middle"
                 allowClear={true}
@@ -275,85 +292,96 @@ const SearchComponent = () => {
                 options={provinces?.map((item: any) => {
                   return {
                     value: item?.name,
-                    label: item?.name
-                  }
+                    label: item?.name,
+                  };
                 })}
                 value={formData?.region}
                 onChange={(e) => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      region: e
-                    }
-                  })
+                      region: e,
+                    };
+                  });
                 }}
                 onClear={() => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      region: null
-                    }
-                  })
+                      region: null,
+                    };
+                  });
                 }}
               />
             </Form.Item>
-            <Form.Item name='price' style={{ flex: "1" }}>
+            <Form.Item name="price" style={{ flex: "1" }}>
               <Select
                 size="middle"
                 allowClear={true}
                 placeholder={"Mức giá"}
-                options={prices?.map((item: any) => {
+                options={(formData?.postType === 1
+                  ? PriceSaleConst
+                  : PriceRentConst
+                )?.map((item: any) => {
                   return {
-                    value: item?.value,
-                    label: item?.label
-                  }
+                    value: `${item?.value.startPrice} - ${item?.value.endPrice}`,
+                    label: item?.label,
+                  };
                 })}
-                value={formData?.price}
+                // value={formData?.startPrice && formData?.endPrice}
                 onChange={(e) => {
+                  const [firstNumber, secondNumber] =
+                    extractNumbersFromString(e);
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      price: e
-                    }
-                  })
+                      startPrice: firstNumber,
+                      endPrice: secondNumber,
+                    };
+                  });
                 }}
                 onClear={() => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      price: null
-                    }
-                  })
+                      startPrice: undefined,
+                      endPrice: undefined,
+                    };
+                  });
                 }}
               />
             </Form.Item>
-            <Form.Item name='area' style={{ flex: "1" }}>
+            <Form.Item name="area" style={{ flex: "1" }}>
               <Select
                 size="middle"
                 allowClear={true}
                 placeholder={"Diện tích"}
-                options={areas?.map((item: any) => {
+                options={AreaConst?.map((item: any) => {
                   return {
-                    value: item?.value,
-                    label: item?.label
-                  }
+                    value: `${item?.value.startArea} - ${item?.value.endArea}`,
+                    label: item?.label,
+                  };
                 })}
-                value={formData?.area}
+                // value={formData?.area}
                 onChange={(e) => {
+                  const [firstNumber, secondNumber] =
+                    extractNumbersFromString(e);
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      area: e
-                    }
-                  })
+                      startArea: firstNumber,
+                      endArea: secondNumber,
+                    };
+                  });
                 }}
                 onClear={() => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      area: null
-                    }
-                  })
+                      startArea: undefined,
+                      endArea: undefined,
+                    };
+                  });
                 }}
               />
             </Form.Item>

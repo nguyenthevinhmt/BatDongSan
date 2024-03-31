@@ -1,5 +1,4 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Header } from "antd/es/layout/layout";
 import Avatar from "antd/es/avatar";
 import Button from "antd/es/button";
@@ -18,19 +17,29 @@ import UserOutlined from "@ant-design/icons/UserOutlined";
 import WalletOutlined from "@ant-design/icons/WalletOutlined";
 import { usePathname, useRouter } from "next/navigation";
 import logo from "@/assets/image/logo.svg";
-import { CookieService } from "@/shared/services/cookies.service";
-import axiosInstance from "@/shared/configs/axiosInstance";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
-import { HTTP_STATUS_CODE } from "@/shared/consts/http";
-import { formatVietnameseToString } from "@/shared/utils/common-helpers";
 import Badge from "antd/lib/badge";
+import { cookies } from "next/headers";
 
-const HeaderComponent = () => {
-  const router = useRouter();
-  const [userInfo, setUserInfo] = useState<any>();
-  const pathname = usePathname();
+const ServerHeaderComponent = async () => {
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
+  const fetchData = async (): Promise<any> => {
+    const response = await fetch("http://localhost:5083/api/user/my-info", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token?.value,
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+    return data?.data;
+  };
+  const data: any = await fetchData();
+  const fullname = await data?.fullname;
+  const avatarUrl = await data?.avatarUrl;
+  await console.log({ fullname, avatarUrl });
+
   const headerItems: MenuProps["items"] = [
     "Nhà đất bán",
     "Nhà đất cho thuê",
@@ -46,71 +55,13 @@ const HeaderComponent = () => {
       fontWeight: 500,
       lineHeight: "20px",
     },
-    onClick: () => {
-      if (`/${formatVietnameseToString(key)}`.includes("nha-dat-ban")) {
-        router.push(`/${formatVietnameseToString(key)}?postType=1`);
-      } else {
-        router.push(`/${formatVietnameseToString(key)}?postType=2`);
-      }
-    },
   }));
 
-  useEffect(() => {
-    const repo = async () => {
-      try {
-        const res = await axiosInstance.get(
-          "http://localhost:5083/api/user/my-info"
-        );
-        const data = await res?.data;
-        return data;
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    repo().then((res) => setUserInfo(res));
-  }, []);
-
-  const dispatch = useDispatch();
-  const userSelector = useSelector((state: RootState) => {
-    return state.auth.user.data;
-  });
-  useEffect(() => {
-    if (userInfo) {
-      dispatch(saveUserInfo(userInfo));
-    }
-  }, [userInfo, dispatch]);
-  const fullname = (userSelector as any)?.fullname;
-  const avatarUrl = (userSelector as any)?.avatarUrl;
-  const handleLogout = async () => {
-    dispatch(clearUserInfo());
-    try {
-      const response = await axiosInstance.post(
-        "http://localhost:5083/connect/logout",
-        null,
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
-      if (response.status === HTTP_STATUS_CODE.OK) {
-        CookieService.removeToken();
-      }
-      if (pathname?.includes("/dashboard")) {
-        router.replace("/auth/login");
-      }
-    } catch (error) {
-      console.log("Có lỗi xảy ra khi đăng xuất", error);
-    }
-  };
   const items: MenuProps["items"] = [
     {
       key: "1",
       label: (
-        <Badge
-          dot={!userSelector?.isConfirm}
-          style={{ fontFamily: "__Lexend_126e48 " }}
-        >
+        <Badge style={{ fontFamily: "__Lexend_126e48 " }}>
           <span style={{ fontFamily: "__Lexend_126e48 " }}>
             Thông tin cá nhân
           </span>
@@ -119,9 +70,6 @@ const HeaderComponent = () => {
       icon: (
         <SolutionOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
       ),
-      onClick: () => {
-        router.push("/user");
-      },
     },
     {
       key: "2",
@@ -131,9 +79,6 @@ const HeaderComponent = () => {
           style={{ fontSize: " 16px", marginRight: "15px" }}
         />
       ),
-      onClick: () => {
-        router.push("/post/manage");
-      },
     },
     {
       key: "3",
@@ -146,9 +91,6 @@ const HeaderComponent = () => {
           }}
         />
       ),
-      onClick: () => {
-        router.push("/wallet");
-      },
     },
     {
       key: "4",
@@ -161,9 +103,6 @@ const HeaderComponent = () => {
           }}
         />
       ),
-      onClick: () => {
-        router.push("/user");
-      },
     },
     {
       key: "5",
@@ -172,9 +111,6 @@ const HeaderComponent = () => {
       icon: (
         <LogoutOutlined style={{ fontSize: " 16px", marginRight: "15px" }} />
       ),
-      onClick: () => {
-        handleLogout();
-      },
     },
   ];
 
@@ -205,7 +141,7 @@ const HeaderComponent = () => {
             alt="batdongsan"
             width={164}
             height={48}
-            priority={true}
+            // priority={true}
           />
         </Link>
       </div>
@@ -238,9 +174,6 @@ const HeaderComponent = () => {
                   height: "46px",
                   fontWeight: 500,
                 }}
-                onClick={() => {
-                  router.push("/auth/login");
-                }}
               >
                 Đăng nhập
               </Button>
@@ -258,9 +191,6 @@ const HeaderComponent = () => {
                   height: "46px",
                   padding: "0px 20px",
                   fontWeight: 500,
-                }}
-                onClick={() => {
-                  router.push("/auth/register");
                 }}
               >
                 Đăng ký
@@ -282,7 +212,6 @@ const HeaderComponent = () => {
                 <div>
                   {!avatarUrl ? (
                     <Badge
-                      dot={!userSelector?.isConfirm}
                       style={{
                         width: "10px",
                         height: "10px",
@@ -301,7 +230,6 @@ const HeaderComponent = () => {
                     </Badge>
                   ) : (
                     <Badge
-                      dot={!userSelector?.isConfirm}
                       style={{
                         width: "10px",
                         height: "10px",
@@ -348,9 +276,6 @@ const HeaderComponent = () => {
           danger
           ghost
           style={{ fontWeight: 500 }}
-          onClick={() => {
-            router.push("/post/create");
-          }}
         >
           Đăng tin
         </Button>
@@ -358,5 +283,5 @@ const HeaderComponent = () => {
     </Header>
   );
 };
-// export default React.memo(HeaderComponent);
-export default HeaderComponent;
+// export default React.memo(ServerHeaderComponent);
+export default ServerHeaderComponent;

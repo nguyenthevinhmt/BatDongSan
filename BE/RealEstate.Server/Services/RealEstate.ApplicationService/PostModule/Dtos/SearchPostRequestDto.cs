@@ -13,10 +13,14 @@ namespace RealEstate.ApplicationService.PostModule.Dtos
         }
         [FromQuery(Name = "realEstateType")]
         public int? RealEstateType { get; set; }
-        [FromQuery(Name = "price")]
-        public int? Price { get; set; }
-        [FromQuery(Name = "area")]
-        public double? Area { get; set; }
+        [FromQuery(Name = "startPrice")]
+        public double? StartPrice { get; set; }
+        [FromQuery(Name = "endPrice")]
+        public double? EndPrice { get; set; }
+        [FromQuery(Name = "startArea")]
+        public double? StartArea { get; set; }
+        [FromQuery(Name = "endArea")]
+        public double? EndArea { get; set; }
         /// <summary>
         /// Loại bài viết
         /// </summary>
