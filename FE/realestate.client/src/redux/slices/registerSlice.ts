@@ -21,12 +21,7 @@ const registerSlice = createSlice({
       };
     },
   },
-  extraReducers(builder) {
-    // builder.addCase<typeof HYDRATE, PayloadAction<RootState, typeof HYDRATE>>(
-    //     HYDRATE,
-    //     (state,action) => ({...state, ...action.payload})
-    // );
-  },
+  extraReducers(builder) {},
 });
 const registerReducer = registerSlice.reducer;
 export default registerReducer;

@@ -44,8 +44,14 @@ const SearchComponent = () => {
     formValue = delete formValue.price;
     formValue = delete formValue.area;
     const param = {
-      ...formValue,
-      postType: formData?.postType,
+      postType: formData?.postType ?? undefined,
+      inputSearch: formData?.inputSearch ?? undefined,
+      realEstateType: formData?.realEstateType ?? undefined,
+      region: formData?.region ?? undefined,
+      startPrice: formData?.startPrice ?? undefined,
+      endPrice: formData?.endPrice ?? undefined,
+      startArea: formData?.startArea ?? undefined,
+      endArea: formData?.endArea ?? undefined,
     };
     if (formData?.startPrice) {
       param.startPrice = formData?.startPrice;
@@ -278,7 +284,7 @@ const SearchComponent = () => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      realEstateType: null,
+                      realEstateType: undefined,
                     };
                   });
                 }}
@@ -308,7 +314,7 @@ const SearchComponent = () => {
                   setFormData((prev: any) => {
                     return {
                       ...prev,
-                      region: null,
+                      region: undefined,
                     };
                   });
                 }}
