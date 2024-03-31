@@ -156,7 +156,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("public/find-all")]
-        public ApiResponse<PagingResult<PostDetailWithAuthorDto>> FindAllPublic([FromQuery]PostPagingRequestDto input)
+        public ApiResponse<PagingResult<PostDto>> FindAllPublic([FromQuery]PostPagingRequestDto input)
         {
             return new(_postService.FindAllPublic(input));
         }

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RealEstate.ApplicationBase.Common;
 using RealEstate.ApplicationService.AuthModule.Dtos;
+using RealEstate.ApplicationService.AuthModule.Implements;
 using RealEstate.ApplicationService.Common;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Dtos;
@@ -507,20 +508,19 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _dbContext.SaveChanges();
         }
 
-        public PagingResult<PostDetailWithAuthorDto> FindAllPublic(PostPagingRequestDto input)
+        public PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input)
         {
             _logger.LogInformation($"{nameof(FindAllPublic)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
-                        join user in _dbContext.Users on post.UserId equals user.Id
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
                                 && (input.PostType == null || post.PostTypeId == input.PostType)
                                 && (input.PostStatus == null || post.Status == input.PostStatus)
                                 && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
-                                && !post.Deleted 
+                                && !post.Deleted
                                 && post.Status == PostStatuses.POSTED && post.IsPayment
-                        select new PostDetailWithAuthorDto
+                        select new PostDto
                         {
                             Title = post.Title,
                             ApproveAt = DateTime.Now,
@@ -546,17 +546,8 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
-                            User = new ()
-                            {
-                                Id = user.Id,
-                                Username = user.Username,
-                                FullName = user.Fullname,
-                                Phone = user.PhoneNumber,
-                                Email = user.Email,
-                                AvatarUrl = user.AvatarUrl,
-                            }
                         };
-            var result = new PagingResult<PostDetailWithAuthorDto>()
+            var result = new PagingResult<PostDto>()
             {
                 TotalItems = query.Count(),
             };
