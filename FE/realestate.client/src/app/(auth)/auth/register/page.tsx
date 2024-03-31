@@ -58,6 +58,8 @@ const Register = () => {
       const res = await register(registerBody);
       let response = res as any;
       dispatch(updateFormData(response.data));
+      console.log("111", response.data.data.id);
+      localStorage.setItem("userId", response.data.data.id);
     } catch (error) {
       console.error("Login failed:", error);
     }

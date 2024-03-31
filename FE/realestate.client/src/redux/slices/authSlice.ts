@@ -1,7 +1,4 @@
-import {
-  PayloadAction,
-  createSlice
-} from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 const initialState: any = {
   user: {},
@@ -30,7 +27,7 @@ const authSlice = createSlice({
       };
     },
     clearUserInfo: (state) => {
-      state.user = {};
+      state.auth = null;
     },
     clearUserToken: (state) => {
       state.data = {};
@@ -44,14 +41,13 @@ const authSlice = createSlice({
       };
     },
     updateConfirmStatus: (state) => {
-      state.user.data.isConfirm = true
+      state.user.data.isConfirm = true;
     },
     updateAvatarUrl: (state) => {
-      state.user.data.avatarUrl = null
-    }
+      state.user.data.avatarUrl = null;
+    },
   },
-  extraReducers(builder) {
-  },
+  extraReducers(builder) {},
 });
 
 export const {
@@ -61,7 +57,7 @@ export const {
   saveUserToken,
   clearUserToken,
   updateConfirmStatus,
-  updateAvatarUrl
+  updateAvatarUrl,
 } = authSlice.actions;
 const authReducer = authSlice.reducer;
 export default authReducer;

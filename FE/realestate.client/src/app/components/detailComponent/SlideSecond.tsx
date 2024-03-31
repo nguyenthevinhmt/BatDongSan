@@ -46,8 +46,8 @@ const SlideSecond = () => {
             console.log("posts: ", posts);
         };
 
-        fetchData();
-    }, [])
+    fetchData();
+  }, []);
 
     const [indexPost, setIndexPost] = useState(0)
     const onClickNext = () => { //nút tiến
@@ -121,14 +121,14 @@ const SlideSecond = () => {
 export default SlideSecond
 
 const styleIcon = {
-    fontSize: "15px",
-    margin: "7px 0 0 15px",
-    fontWeight: "500",
-}
+  fontSize: "15px",
+  margin: "7px 0 0 15px",
+  fontWeight: "500",
+};
 const styleButton = {
-    borderRadius: "20px",
-    backgroundColor: "#F2F2F2",
-    marginRight: "20px",
-    marginTop: "10px",
-    border: "none"
-}
+  borderRadius: "20px",
+  backgroundColor: "#F2F2F2",
+  marginRight: "20px",
+  marginTop: "10px",
+  border: "none",
+};
