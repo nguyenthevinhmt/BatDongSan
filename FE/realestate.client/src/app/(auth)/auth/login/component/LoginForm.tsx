@@ -40,12 +40,31 @@ const LoginForm = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     formRef.current = loginFormValue;
-    console.log("isSuccess", isSuccess);
     if (isSuccess) {
-      console.log(data);
       router.replace("/");
     }
   }, [data, isSuccess, loginFormValue, router]);
+
+  const setToken = async (token: string) => {
+    try {
+      const response = await fetch("/api/set-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token: token }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+      } else {
+        console.error("Có lỗi khi thiết lập token.");
+      }
+    } catch (error) {
+      console.error("Đã xảy ra lỗi:", error);
+    }
+  };
 
   const handleLogin = async (formValue: any) => {
     const loginBody = {
@@ -66,6 +85,7 @@ const LoginForm = () => {
           "refresh_token",
           (response.data as ITokenResponse).refresh_token
         );
+        await setToken((response.data as ITokenResponse).access_token);
         dispatch(saveLoginInfo(response));
         router.replace("/");
       } else {

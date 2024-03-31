@@ -101,3 +101,19 @@ export function formatCurrency(amount?: any) {
 export function CheckPasswordMatch(oldPassword: string, newPassword: string) {
   return oldPassword === newPassword;
 }
+
+export function extractNumbersFromString(str: any): any {
+  if (!str) {
+    return null;
+  }
+  const regex = /(\d+)\s*-\s*(\d+)/; // Biểu thức chính quy để tìm các số nguyên ở dạng "số1 - số2"
+  const match = str.match(regex); // Sử dụng phương thức match() để tìm các chuỗi phù hợp với biểu thức chính quy
+
+  if (match) {
+    const firstNumber = parseInt(match[1]); // Số thứ nhất nằm ở group 1
+    const secondNumber = parseInt(match[2]); // Số thứ hai nằm ở group 2
+    return [firstNumber, secondNumber];
+  } else {
+    return undefined; // Trả về null nếu không tìm thấy cặp số trong chuỗi
+  }
+}

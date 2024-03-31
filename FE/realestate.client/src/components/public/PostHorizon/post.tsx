@@ -30,7 +30,13 @@ const PostHorizon = ({
         <div style={{ width: "720px", height: "150px", marginBottom: "60px" }}>
           <Flex>
             <Link href={`/home/post/detail/${data?.id}`} style={{ flex: 3 }}>
-              <img src={data?.firstImageUrl} alt="#" width={200} height={150} />
+              <img
+                src={data?.firstImageUrl}
+                alt="#"
+                width={200}
+                height={150}
+                style={{ objectFit: "cover" }}
+              />
             </Link>
             <div style={{ flex: 7 }}>
               <Link href={`/home/post/detail/${data?.id}`}>
@@ -41,7 +47,10 @@ const PostHorizon = ({
               <p
                 style={{ margin: "10px 0px", color: "rgba(0, 0,0, 0.6)" }}
               >{`${data?.district}. ${data?.province}`}</p>
-              <Flex align="center" style={{ width: "140px" }}>
+              <Flex
+                align="center"
+                style={{ width: "140px", color: "rgba(0, 0, 0, 0.6)" }}
+              >
                 <div>{data?.area} m²</div>
               </Flex>
               <Flex justify="space-between" style={{ marginTop: "40px" }}>
@@ -116,7 +125,13 @@ const PostHorizon = ({
         >
           <Flex>
             <Link href={`/home/post/detail/${data?.id}`} style={{ flex: 3 }}>
-              <img src={data?.firstImageUrl} alt="#" width={200} height={150} />
+              <img
+                src={data?.firstImageUrl}
+                alt="#"
+                width={200}
+                height={150}
+                style={{ objectFit: "cover" }}
+              />
             </Link>
             <div style={{ flex: 7 }}>
               <Link href={`/home/post/detail/${data?.id}`}>
@@ -127,7 +142,10 @@ const PostHorizon = ({
               <p
                 style={{ margin: "10px 0px", color: "rgba(0, 0,0, 0.6)" }}
               >{`${data?.district}. ${data?.province}`}</p>
-              <Flex align="center" style={{ width: "140px" }}>
+              <Flex
+                align="center"
+                style={{ width: "140px", color: "rgba(0, 0, 0, 0.6)" }}
+              >
                 <div>{data?.area} m²</div>
               </Flex>
               <Flex justify="space-between" style={{ marginTop: "40px" }}>

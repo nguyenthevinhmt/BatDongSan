@@ -8,7 +8,6 @@ import Tooltip from "antd/es/tooltip";
 import React from "react";
 import LabelCard from "./HOC/labelCard";
 import { OptionConst } from "@/shared/consts/PostOption.const";
-import Image from "next/image";
 import { FaRegHeart } from "react-icons/fa";
 import dayjs from "dayjs";
 import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
@@ -28,7 +27,7 @@ const PostCard = ({
       <Card
         hoverable
         loading={loading}
-        style={{ width: 236, height: 361 }}
+        style={{ width: 260, height: 360 }}
         bodyStyle={{ padding: 14 }}
         cover={
           loading ? (
@@ -113,7 +112,7 @@ const PostCard = ({
       <Card
         hoverable
         loading={loading}
-        style={{ width: 236, height: 361 }}
+        style={{ width: 260, height: 360 }}
         bodyStyle={{ padding: 14 }}
         cover={
           loading ? (
