@@ -20,7 +20,7 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input);
+        PagingResult<PostDetailWithAuthorDto> FindAllPublic(PostPagingRequestDto input);
         /// <summary>
         /// Chi tiết bài viết
         /// </summary>

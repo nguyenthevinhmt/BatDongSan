@@ -248,6 +248,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                              Street=post.Street,
                              Ward=post.Ward,
                              Title=post.Title,
+                             Options=post.Options,
                              User = new()
                              {
                                  Id = user.Id,
@@ -506,10 +507,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _dbContext.SaveChanges();
         }
 
-        public PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input)
+        public PagingResult<PostDetailWithAuthorDto> FindAllPublic(PostPagingRequestDto input)
         {
             _logger.LogInformation($"{nameof(FindAllPublic)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
+                        join user in _dbContext.Users on post.UserId equals user.Id
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
@@ -518,7 +520,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
                                 && !post.Deleted 
                                 && post.Status == PostStatuses.POSTED && post.IsPayment
-                        select new PostDto
+                        select new PostDetailWithAuthorDto
                         {
                             Title = post.Title,
                             ApproveAt = DateTime.Now,
@@ -544,8 +546,17 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
+                            User = new ()
+                            {
+                                Id = user.Id,
+                                Username = user.Username,
+                                FullName = user.Fullname,
+                                Phone = user.PhoneNumber,
+                                Email = user.Email,
+                                AvatarUrl = user.AvatarUrl,
+                            }
                         };
-            var result = new PagingResult<PostDto>()
+            var result = new PagingResult<PostDetailWithAuthorDto>()
             {
                 TotalItems = query.Count(),
             };

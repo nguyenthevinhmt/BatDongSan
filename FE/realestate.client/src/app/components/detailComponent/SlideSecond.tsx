@@ -80,19 +80,39 @@ const SlideSecond = () => {
                     width: "730px",
                     paddingTop: 20,
                     paddingBottom: 20,
+                    paddingLeft: 5
                 }}
             >
-                {listPost && listPost.length >= indexPost + 3 && listPost.slice(indexPost, indexPost + 3).map((item, index) => {
-                    return (
-                        <Link href={`/home/post/detail/${item?.id}`}>
-                            <PostCard
-                                data={item}
-                                option={item.options}
-                                loading={false}
-                            />
-                        </Link>
-                    )
-                })}
+                {listPost && listPost?.length >= indexPost + 3 ?
+                            listPost?.slice(indexPost, indexPost + 3)?.map((item, index) => {
+                                return (
+                                    <>
+                                        <Link 
+                                            href={`/home/post/detail/${item?.id}`}
+                                            style={{marginRight: 5}}
+                                        >
+                                            <PostCard
+                                                data={item}
+                                                option={item.options}
+                                                loading={false}
+                                            />
+                                        </Link>
+                                    </>
+                                )
+                            }) :
+                            listPost?.map((item, index) => {
+                                return (
+                                    <>
+                                        <Link href={`/home/post/detail/${item?.id}`} style={{marginRight: 5}}>
+                                            <PostCard
+                                                data={item}
+                                                option={item.options}
+                                                loading={false}
+                                            />
+                                        </Link>
+                                    </>
+                                )
+                            })}
             </Flex>
             <Divider style={{ margin: "35px 0" }} />
         </>

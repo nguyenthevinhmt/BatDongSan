@@ -70,7 +70,7 @@ const Page = () => {
   useEffect(() => {
     const fetchDetailPost = async () => {
       const response = await getByIdHome(+param?.id[0]);
-      console.log("data", response?.data?.medias);
+      console.log("data", response?.data);
       await setData(response?.data);
 
       const coordinatesRes = await axios.get(
@@ -161,7 +161,7 @@ const Page = () => {
                       marginTop: "5px",
                     }}
                   >
-                    {data?.price ? data?.price : 'Giá thỏa thuận'}
+                    {data?.price ? formatCurrency(data?.price) : 'Giá thỏa thuận'}
                   </p>
                 </div>
                 <div>
