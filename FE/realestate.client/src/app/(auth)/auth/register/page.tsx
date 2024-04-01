@@ -16,7 +16,7 @@ import { useRegisterMutation } from "../_services/auth.service";
 import SpinComponent from "@/components/shareComponents/spinComponent";
 import { useDispatch } from "react-redux";
 import { updateFormData } from "@/redux/slices/registerSlice";
-import { createWallet } from "@/services/wallet/wallet.service";
+import { CreateChatAccount } from "../_services/authService";
 
 type RegisterType = {
   username: string;
@@ -58,10 +58,18 @@ const Register = () => {
       const res = await register(registerBody);
       let response = res as any;
       dispatch(updateFormData(response.data));
-      console.log("111", response.data.data.id);
       localStorage.setItem("userId", response.data.data.id);
+      console.log("response", response)
+      console.log(
+        response.data.data.id,
+        response?.data?.data?.fullName,
+        response?.data?.data?.avatarUrl
+      )
+      localStorage.setItem("username", response?.data?.data?.fullName);
+      localStorage.setItem("avatar", response?.data?.data?.avatarUrl);
+
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Register failed:", error);
     }
   }
   useEffect(() => {

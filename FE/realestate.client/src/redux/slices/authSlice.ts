@@ -27,7 +27,10 @@ const authSlice = createSlice({
       };
     },
     clearUserInfo: (state) => {
-      state.auth = null;
+      return {
+        ...state,
+        user: {},
+      };
     },
     clearUserToken: (state) => {
       state.data = {};
@@ -47,7 +50,7 @@ const authSlice = createSlice({
       state.user.data.avatarUrl = null;
     },
   },
-  extraReducers(builder) {},
+  extraReducers(builder) { },
 });
 
 export const {
