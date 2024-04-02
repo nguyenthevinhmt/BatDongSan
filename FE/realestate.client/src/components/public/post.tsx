@@ -5,12 +5,27 @@ import Button from "antd/es/button";
 import Card from "antd/es/card";
 import Flex from "antd/es/flex";
 import Tooltip from "antd/es/tooltip";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LabelCard from "./HOC/labelCard";
 import { OptionConst } from "@/shared/consts/PostOption.const";
 import { FaRegHeart } from "react-icons/fa";
 import dayjs from "dayjs";
 import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
+import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
+import { IoMdHeart } from "react-icons/io";
+import { PiHeart, PiHeartFill } from "react-icons/pi";
+
+const handleSavePost = (postId: any) => {
+  if (isFavorite(postId)) {
+      removeFromFavorites(postId);
+      console.log("localStorage: ", getFavorites());
+      console.log('remove', postId);
+  } else {
+      addToFavorites(postId);
+      console.log("localStorage: ", getFavorites());
+      console.log('add', postId);
+  }
+};
 
 const PostCard = ({
   option,
@@ -22,6 +37,12 @@ const PostCard = ({
   data: any;
 }) => {
   let color = "";
+  const [isChange, setIsChange] = useState(false);
+
+  useEffect(() => {
+    //re-render component when change localStorage
+  }, [isChange]);
+
   if (option === OptionConst.NORMAL) {
     return (
       <Card
@@ -66,7 +87,15 @@ const PostCard = ({
           {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
           <span>{data?.area} m²</span>
         </span>
-        <p style={{ marginTop: "4px", marginBottom: "16px", fontSize: "13px" }}>
+        <p 
+          style={{ 
+            marginTop: "4px", 
+            //marginBottom: "10px", 
+            fontSize: "13px",
+            maxHeight: "40px",
+            height: "40px", 
+            }}
+          >
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           {`${data.district}, ${data.province}`}
         </p>
@@ -89,13 +118,28 @@ const PostCard = ({
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
-            title={"Bấm để lưu tin"}
+            title={isFavorite(data.id) ? "Xóa khỏi tin lưu" : "Bấm để lưu tin"}
           >
-            <FaRegHeart
-              onClick={() => {
-                console.log("click");
+            <Button
+              shape="circle"
+              style={{
+                border: "0 solid",
               }}
-            />
+              onClick={() => {
+                handleSavePost(data?.id);
+                setIsChange(!isChange);
+              }}
+              icon={
+                isFavorite(data?.id) ? (
+                  <PiHeartFill
+                    style={{ color: "red", borderColor: "red" }}
+                  />
+                ) : (
+                  <PiHeart />
+                )
+              }
+            >
+            </Button>
           </Tooltip>
         </Flex>
       </Card>
@@ -107,6 +151,7 @@ const PostCard = ({
   } else if (option === OptionConst.DIAMOND) {
     color = "#E03C6D";
   }
+    
   return (
     <LabelCard text="VIP" color={color}>
       <Card
@@ -151,18 +196,19 @@ const PostCard = ({
           {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
           <span>{data?.area} m²</span>
         </span>
-        <p
-          style={{
-            marginTop: "4px",
-            marginBottom: "16px",
+        <p 
+          style={{ 
+            marginTop: "4px", 
+            //marginBottom: "16px", 
             fontSize: "13px",
-            fontFamily: "__Lexend_126e48, __Lexend_Fallback_126e48",
-          }}
-        >
+            maxHeight: "40px",
+            height: "40px", 
+            }}
+          >
           <EnvironmentOutlined style={{ marginRight: "5px" }} />
           {`${data.district}, ${data.province}`}
         </p>
-        <Flex justify="space-between" align="center">
+        <Flex justify="space-between" align="flex-end">
           <Tooltip
             placement="bottom"
             title={dayjs(data?.createdDate).format("DD/MM/YYYY")}
@@ -173,7 +219,6 @@ const PostCard = ({
                 color: "#999",
                 fontSize: "13px",
                 marginBottom: "4px",
-                fontFamily: "__Lexend_126e48, __Lexend_Fallback_126e48",
               }}
             >
               {formatDate(dayjs(data?.createdDate))}
@@ -182,13 +227,34 @@ const PostCard = ({
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
-            title={"Bấm để lưu tin"}
+            title={isFavorite(data.id) ? "Xóa khỏi tin lưu" : "Bấm để lưu tin"}
           >
-            <FaRegHeart
-              onClick={() => {
-                console.log("click");
+            <Button
+              shape="circle"
+              style={{
+                border: "0 solid",
               }}
-            />
+              onClick={() => {
+                handleSavePost(data?.id);
+                setIsChange(!isChange);
+              }}
+              icon={
+                isFavorite(data?.id) ? (
+                  <PiHeartFill
+                    style={{ color: "red", borderColor: "red" }}
+                  />
+                ) : (
+                  <PiHeart />
+                )
+              }
+            >
+            </Button>
+            {/* <FaRegHeart
+              style={{color: isFavorite(data.id) ? "#ff4d4f" : "black"}}
+              onClick={() => {
+                handleSavePost(data.id);
+              }}
+            /> */}
           </Tooltip>
         </Flex>
       </Card>

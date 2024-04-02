@@ -269,7 +269,7 @@ const HeaderComponent = () => {
           ) : (
             <>
               <Link
-                href={"/"}
+                href={"/favorites"}
                 style={{
                   marginRight: "20px",
                   fontSize: "24px",

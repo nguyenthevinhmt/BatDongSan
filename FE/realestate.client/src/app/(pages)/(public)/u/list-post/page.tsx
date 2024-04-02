@@ -25,6 +25,8 @@ import ShareAltOutlined from "@ant-design/icons/lib/icons/ShareAltOutlined";
 import { getUserInfo } from "@/services/user/user.service";
 import SlidePostByUser from "@/app/components/detailComponent/SlidePostByUser";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import QC4 from "@/assets/image/QC4.gif";
 
 interface IUser {
   id: number,
@@ -180,7 +182,10 @@ const ListPostsAuthor = ()  => {
           Danh sách tin đăng bán
         </h1>
         <SlidePostByUser userId={parseInt(searchParams?.get("id") || "")} postType={1} />
+
+        <Image src={QC4} alt='' width={1120} height={200} style={{ objectFit: "cover", marginBottom: 20 }} />
         <Divider />
+
         <h1
           style={{
             fontSize: "24px",

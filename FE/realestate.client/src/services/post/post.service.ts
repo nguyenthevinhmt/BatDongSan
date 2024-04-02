@@ -533,3 +533,36 @@ export const getRentPostByAuthor = async (params: IFindAllPost, id: any) => {
     return error;
   }
 };
+
+export const getAllPostByProvince = async ({ pageSize, pageNumber, keyword} : { pageSize: number, pageNumber?: number, keyword?: string }) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/find-all-by-province`, {
+      params: {
+        pageSize: pageSize || -1,
+        pageNumber: pageNumber || 1,
+        keyword: keyword || null,
+      },
+    })
+    return response?.data;
+  } catch (error) {
+    console.log("Error: Gọi api get all post by province của post bị lỗi!!!");
+    return null;
+  }
+};
+
+export const getAllPostByIds = async (ids: number[]) => {
+  try {
+    const response = await axios.get(`${environment.baseUrl}/post/find-post-by-ids`, {
+      params: {
+        ids: ids
+      },
+      paramsSerializer: {
+        indexes: null, // use brackets with indexes
+      }
+    })
+    return response?.data;
+  } catch (error) {
+    console.log("Error: Gọi api get all post by ids của post bị lỗi!!!");
+    return error;
+  }
+}

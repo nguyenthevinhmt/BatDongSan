@@ -681,10 +681,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             return result;
         }
 
-        public PagingResult<PostDto> SearchPost(SearchPostRequestDto input)
+        public PagingResult<PostUserDto> SearchPost(SearchPostRequestDto input)
         {
             _logger.LogInformation($"{nameof(SearchPost)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
+                        join user in _dbContext.Users on post.UserId equals user.Id
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
@@ -697,7 +698,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 && (input.EndPrice == null || post.Price <= input.EndPrice)
                                 && (input.Province == null || post.Province.ToLower().Contains(input.Province.ToLower()))
                                 && post.Status == PostStatuses.POSTED && post.IsPayment
-                        select new PostDto
+                        select new PostUserDto
                         {
                             Title = post.Title,
                             ApproveAt = DateTime.Now,
@@ -723,8 +724,19 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
+                            User = new()
+                            {
+                                Id = user.Id,
+                                Username = user.Username,
+                                FullName = user.Fullname,
+                                Phone = user.PhoneNumber,
+                                Email = user.Email,
+                                AvatarUrl = user.AvatarUrl,
+                                UserType = user.UserType,
+                                Status = user.Status
+                            }
                         };
-            var result = new PagingResult<PostDto>()
+            var result = new PagingResult<PostUserDto>()
             {
                 TotalItems = query.Count(),
             };
@@ -863,6 +875,63 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
             }
             result.Items = query;
+            return result;
+        }
+
+        public List<PostUserDto> getPostByIds(int[] ids)
+        {
+            List<PostUserDto> result = new();
+            foreach (var id in ids)
+            {
+                if (_dbContext.Posts.FirstOrDefault(c => c.Id == id)?.Status == PostStatuses.POSTED && _dbContext.Posts.FirstOrDefault(c => c.Id == id)?.IsPayment == true && !_dbContext.Posts.FirstOrDefault(c => c.Id == id)?.Deleted == true)
+                {
+                    var query = from post in _dbContext.Posts
+                                join user in _dbContext.Users on post.UserId equals user.Id
+                                join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                                from postmedia in pm.Take(1).DefaultIfEmpty()
+                                where post.Id == id
+                                select new PostUserDto
+                                {
+                                    Title = post.Title,
+                                    ApproveAt = DateTime.Now,
+                                    ApproveBy = post.ApproveBy,
+                                    Area = post.Area,
+                                    Description = post.Description,
+                                    DetailAddress = post.DetailAddress,
+                                    District = post.District,
+                                    Id = post.Id,
+                                    PostTypeId = post.PostTypeId,
+                                    Price = post.Price,
+                                    Province = post.Province,
+                                    RealEstateTypeId = post.RealEstateTypeId,
+                                    Status = post.Status,
+                                    Street = post.Street,
+                                    UserId = post.UserId,
+                                    Ward = post.Ward,
+                                    PostEndDate = post.PostEndDate,
+                                    CreatedBy = post.CreatedBy,
+                                    CreatedDate = post.CreatedDate,
+                                    ModifiedBy = post.ModifiedBy,
+                                    ModifiedDate = post.ModifiedDate,
+                                    FirstImageUrl = postmedia.MediaUrl,
+                                    Options = post.Options,
+                                    PostStartDate = post.PostStartDate,
+                                    User = new()
+                                    {
+                                        Id = user.Id,
+                                        Username = user.Username,
+                                        FullName = user.Fullname,
+                                        Phone = user.PhoneNumber,
+                                        Email = user.Email,
+                                        AvatarUrl = user.AvatarUrl,
+                                        UserType = user.UserType,
+                                        Status = user.Status
+                                    }
+                                };
+                    result.Add(query.FirstOrDefault());
+                }
+            };
+            
             return result;
         }
     }

@@ -198,7 +198,7 @@ namespace RealEstate.API.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpGet("search-post")]
-        public ApiResponse<PagingResult<PostDto>> SearchPost([FromQuery] SearchPostRequestDto input)
+        public ApiResponse<PagingResult<PostUserDto>> SearchPost([FromQuery] SearchPostRequestDto input)
         {
             return new(_postService.SearchPost(input));
         }
@@ -234,6 +234,17 @@ namespace RealEstate.API.Controllers
         public ApiResponse FindAllRentPostByUserCreated([FromQuery] PagingRequestByPostTypeDto input)
         {
             return new(_postService.FindAllRentPostByUserCreated(input));
+        }
+
+        /// <summary>
+        /// tìm tất cả bài đăng theo danh sách id
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpGet("/post/find-post-by-ids")]
+        public ApiResponse FindAllPostByIds([FromQuery] int[] ids)
+        {
+            return new(_postService.getPostByIds(ids));
         }
     }
 }

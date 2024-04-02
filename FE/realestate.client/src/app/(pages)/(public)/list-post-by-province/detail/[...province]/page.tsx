@@ -5,7 +5,7 @@ import Space from "antd/es/space";
 import React from "react";
 import Divider from "antd/es/divider";
 import ListPostPaginationComponent from "@/app/components/ListPostPaginationComponent";
-import { SearchPost, getAllPostByIds, recommendPost } from "@/services/post/post.service";
+import { SearchPost, recommendPost } from "@/services/post/post.service";
 import PriceFilter from "@/components/public/FilterComponent/PriceFilter";
 import AreaFilter from "@/components/public/FilterComponent/AreaFilter";
 import Form from "antd/es/form";
@@ -14,79 +14,104 @@ import Select from "antd/es/select";
 import FilterOutlined from "@ant-design/icons/lib/icons/FilterOutlined";
 import { PriceRentConst, PriceSaleConst } from "@/components/public/FilterComponent/DataConst/PriceConst";
 import { AreaConst } from "@/components/public/FilterComponent/DataConst/AreaConst";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getProvinces } from "@/services/post/address.service";
 
 const realEstateType = [
     {
-      value: 1,
-      label: "Căn hộ chung cư",
+        value: 1,
+        label: "Căn hộ chung cư",
     },
     {
-      value: 2,
-      label: "Nhà riêng",
+        value: 2,
+        label: "Nhà riêng",
     },
     {
-      value: 3,
-      label: "Nhà biệt thự, liền kề",
+        value: 3,
+        label: "Nhà biệt thự, liền kề",
     },
     {
-      value: 4,
-      label: "Nhà mặt phố",
+        value: 4,
+        label: "Nhà mặt phố",
     },
     {
-      value: 5,
-      label: "Shophouse, nhà phố thương mại",
+        value: 5,
+        label: "Shophouse, nhà phố thương mại",
     },
     {
-      value: 6,
-      label: "Đất nền dự án",
+        value: 6,
+        label: "Đất nền dự án",
     },
     {
-      value: 7,
-      label: "Đất",
+        value: 7,
+        label: "Đất",
     },
     {
-      value: 8,
-      label: "Trang trại, khu nghỉ dưỡng",
+        value: 8,
+        label: "Trang trại, khu nghỉ dưỡng",
     },
     {
-      value: 9,
-      label: "Kho, nhà xưởng",
+        value: 9,
+        label: "Kho, nhà xưởng",
     },
     {
-      value: 10,
-      label: "Bất động sản khác",
+        value: 10,
+        label: "Bất động sản khác",
     },
     {
-      value: 11,
-      label: "nhà trọ, phòng trọ",
+        value: 11,
+        label: "nhà trọ, phòng trọ",
     },
     {
-      value: 12,
-      label: "Văn phòng",
+        value: 12,
+        label: "Văn phòng",
     },
     {
-      value: 13,
-      label: "Cửa hàng, ki ốt",
+        value: 13,
+        label: "Cửa hàng, ki ốt",
     },
-  ];
-  
-  const postType = [
-    {
-      value: 1,
-      label: "Bán",
-    },
-    {
-      value: 2,
-      label: "Cho thuê",
-    },
-  ];
+];
 
-const ListPost = () => {
+const postType = [
+    {
+        value: 1,
+        label: "Bán",
+    },
+    {
+        value: 2,
+        label: "Cho thuê",
+    },
+];
+
+const provinceTemp = [
+    {
+        id: 1,
+        name: "Hà Nội",
+    },
+    {
+        id: 79,
+        name: "Hồ Chí Minh",
+    },
+    {
+        id: 50,
+        name: "Đà Nẵng",
+    },
+    {
+        id: 74,
+        name: "Bình Dương",
+    },
+    {
+        id: 75,
+        name: "Đồng Nai",
+    }
+]
+
+const ListPostByProvince = () => {
     const { Search } = Input;
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<any[]>([]);
+    const [listAddress, setListAddress] = useState<any[]>([]);
     const [totalItems, setTotalItems] = useState<number>(0);
     const [isShow, setIsShow] = useState(false);
     const [keyword, setKeyword] = useState<string>();
@@ -95,12 +120,25 @@ const ListPost = () => {
     const pathName = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
+    const param = useParams<{ province: string }>();
 
-    const getData = async ({pageSize, pageNumber, postType, realEstateType, keyword, priceStart, priceEnd, areaStart, areaEnd} : 
-                            {pageSize: number, pageNumber?: number, postType?: number, 
-                                realEstateType?: number, keyword?: string, priceStart?: string, 
-                                priceEnd?: string, areaStart?: string, areaEnd?: string}) => {
+    const getAddress = async () => {
+        const response = await getProvinces();
+        await setListAddress(response?.data?.map((item: any) => ({
+            value: item.name,
+            label: item.name,
+            key: item.id
+        })) || []);
+    }
+
+    const getData = async ({ province, pageSize, pageNumber, postType, realEstateType, keyword, priceStart, priceEnd, areaStart, areaEnd }:
+        {
+            province?: string, pageSize: number, pageNumber?: number, postType?: number,
+            realEstateType?: number, keyword?: string, priceStart?: string,
+            priceEnd?: string, areaStart?: string, areaEnd?: string
+        }) => {
         const response = await SearchPost({
+            province: province || null,
             pageSize: pageSize,
             pageNumber: pageNumber || null,
             postType: postType || null,
@@ -117,34 +155,42 @@ const ListPost = () => {
     };
 
     useEffect(() => {
+        //get address list
+        getAddress();
+
+    }, []);
+
+    useEffect(() => {
         async function fetchData() {
-        let priceStart = undefined;
-        let priceEnd = undefined;
-        let areaStart = undefined;
-        let areaEnd = undefined;
-        
-        if (!form.getFieldValue('postTypeId')) {
-            await router.push(pathName);
-        }
-        else {
-            priceStart = await searchParams?.get("startPrice");
-            priceEnd = await searchParams?.get("endPrice");
-            areaStart = await searchParams?.get("startArea");
-            areaEnd = await searchParams?.get("endArea");
-        }
+            //search
+            let priceStart = undefined;
+            let priceEnd = undefined;
+            let areaStart = undefined;
+            let areaEnd = undefined;
 
-        await getData({
-            pageSize: -1, 
-            postType: form.getFieldValue('postTypeId'), 
-            realEstateType: form.getFieldValue('realEstateTypeId'), 
-            keyword: keyword,
-            priceStart: priceStart || undefined,
-            priceEnd: priceEnd || undefined,
-            areaStart: areaStart || undefined,
-            areaEnd: areaEnd || undefined
-        }
-        )};
+            if (!form.getFieldValue('postTypeId')) {
+                await router.push(pathName);
+            }
+            else {
+                priceStart = await searchParams?.get("startPrice");
+                priceEnd = await searchParams?.get("endPrice");
+                areaStart = await searchParams?.get("startArea");
+                areaEnd = await searchParams?.get("endArea");
+            }
 
+            await getData({
+                province: form.getFieldValue('addressId'),
+                pageSize: -1,
+                postType: form.getFieldValue('postTypeId'),
+                realEstateType: form.getFieldValue('realEstateTypeId'),
+                keyword: keyword,
+                priceStart: priceStart || undefined,
+                priceEnd: priceEnd || undefined,
+                areaStart: areaStart || undefined,
+                areaEnd: areaEnd || undefined
+            }
+            )
+        };
         fetchData();
     }, [searchChange])
 
@@ -154,7 +200,7 @@ const ListPost = () => {
 
     return (
         <>
-            <Flex vertical justify="center" align="center" style={{width: '100%'}}>
+            <Flex vertical justify="center" align="center" style={{ width: '100%' }}>
                 <div style={{
                     width: '70%',
                     height: 150,
@@ -165,6 +211,9 @@ const ListPost = () => {
                 }}>
                     <Form
                         form={form}
+                        initialValues={{
+                            addressId: provinceTemp.find((item) => item.id.toString() === param.province[0])?.name,
+                        }}
                         onFinish={getData}
                         style={{
                             display: 'flex',
@@ -174,13 +223,13 @@ const ListPost = () => {
                         }}
                     >
                         <Search
-                            placeholder="input search text" 
+                            placeholder="input search text"
                             onSearch={(value) => {
                                 setKeyword(value);
                                 setSearchChange(!searchChange);
-                            }} 
-                            enterButton 
-                            style={{ marginBottom: 10, backgroundColor: '#f2f2f2'}}
+                            }}
+                            enterButton
+                            style={{ marginBottom: 10, backgroundColor: '#f2f2f2' }}
                         />
                         <Flex justify="flex-start" align="flex-end">
                             <Form.Item
@@ -191,7 +240,9 @@ const ListPost = () => {
                                     allowClear={true}
                                     placeholder="Loại bất động sản"
                                     options={realEstateType}
-                                    onChange={() => setSearchChange(!searchChange)}
+                                    onChange={() => {
+                                        setSearchChange(!searchChange);
+                                    }}
                                 />
                             </Form.Item>
 
@@ -205,7 +256,6 @@ const ListPost = () => {
                                     options={postType}
                                     onChange={(value) => {
                                         if (value === 1 || value === 2) {
-                                            console.log(value);
                                             setIsShow(true);
                                         }
                                         else {
@@ -215,12 +265,24 @@ const ListPost = () => {
                                     }}
                                 />
                             </Form.Item>
+
+                            <Form.Item
+                                name="addressId"
+                                style={{ marginRight: 10 }}
+                            >
+                                <Select
+                                    allowClear={true}
+                                    placeholder="Địa điểm"
+                                    options={listAddress}
+                                    onChange={() => setSearchChange(!searchChange)}
+                                />
+                            </Form.Item>
                         </Flex>
                     </Form>
-                    
-                <Divider style={{width: '70%', marginTop: 0, marginBottom: 10}}/>
+
+                    <Divider style={{ width: '70%', marginTop: 0, marginBottom: 10 }} />
                 </div>
-                
+
                 <Flex style={{
                     width: '70%',
                     justifyContent: 'center',
@@ -230,7 +292,7 @@ const ListPost = () => {
                         width: '65%',
                         marginRight: '20px'
                     }}>
-                        <ListPostPaginationComponent header={"Danh sách tin"} data={data} totalItem={totalItems}/>
+                        <ListPostPaginationComponent header={"Danh sách tin"} data={data} totalItem={totalItems} />
                     </div>
                     <div style={{
                         width: '35%',
@@ -238,14 +300,14 @@ const ListPost = () => {
                         paddingLeft: '40px',
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: 'center',                                          
+                        alignItems: 'center',
                     }}>
                         {isShow ?
-                            <Flex vertical gap={10} style={{margin: "20px 0"}}>
+                            <Flex vertical gap={10} style={{ margin: "20px 0" }}>
                                 <div>
                                     Bộ lọc <FilterOutlined />
                                 </div>
-                                <div>
+                                <div >
                                     <PriceFilter
                                         data={
                                             form.getFieldValue('postTypeId') == "1"
@@ -255,7 +317,7 @@ const ListPost = () => {
                                     />
                                 </div>
                                 <div>
-                                    <AreaFilter data={AreaConst}/>
+                                    <AreaFilter data={AreaConst} />
                                 </div>
                             </Flex>
                             : <></>
@@ -272,4 +334,4 @@ const ListPost = () => {
         </>
     )
 }
-export default ListPost;
+export default ListPostByProvince;

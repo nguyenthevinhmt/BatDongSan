@@ -46,8 +46,8 @@ const SlideSecond = () => {
             console.log("posts: ", posts);
         };
 
-    fetchData();
-  }, []);
+        fetchData();
+    }, []);
 
     const [indexPost, setIndexPost] = useState(0)
     const onClickNext = () => { //nút tiến
@@ -63,7 +63,7 @@ const SlideSecond = () => {
     }
     return (
         <>
-            <Flex justify="space-between">
+            <Flex justify="space-between" style={{width: '100%'}}>
                 <h1 style={{
                     fontSize: "18px",
                     color: "#2C2C2C"
@@ -84,35 +84,35 @@ const SlideSecond = () => {
                 }}
             >
                 {listPost && listPost?.length >= indexPost + 3 ?
-                            listPost?.slice(indexPost, indexPost + 3)?.map((item, index) => {
-                                return (
-                                    <>
-                                        <Link 
-                                            href={`/home/post/detail/${item?.id}`}
-                                            style={{marginRight: 5}}
-                                        >
-                                            <PostCard
-                                                data={item}
-                                                option={item.options}
-                                                loading={false}
-                                            />
-                                        </Link>
-                                    </>
-                                )
-                            }) :
-                            listPost?.map((item, index) => {
-                                return (
-                                    <>
-                                        <Link href={`/home/post/detail/${item?.id}`} style={{marginRight: 5}}>
-                                            <PostCard
-                                                data={item}
-                                                option={item.options}
-                                                loading={false}
-                                            />
-                                        </Link>
-                                    </>
-                                )
-                            })}
+                    listPost?.slice(indexPost, indexPost + 3)?.map((item, index) => {
+                        return (
+                            <>
+                                <Link
+                                    href={`/home/post/detail/${item?.id}`}
+                                    style={{ marginRight: 10 }}
+                                >
+                                    <PostCard
+                                        data={item}
+                                        option={item.options}
+                                        loading={false}
+                                    />
+                                </Link>
+                            </>
+                        )
+                    }) :
+                    listPost?.map((item, index) => {
+                        return (
+                            <>
+                                <Link href={`/home/post/detail/${item?.id}`} style={{ marginRight: 10 }}>
+                                    <PostCard
+                                        data={item}
+                                        option={item.options}
+                                        loading={false}
+                                    />
+                                </Link>
+                            </>
+                        )
+                    })}
             </Flex>
             <Divider style={{ margin: "35px 0" }} />
         </>
@@ -121,14 +121,14 @@ const SlideSecond = () => {
 export default SlideSecond
 
 const styleIcon = {
-  fontSize: "15px",
-  margin: "7px 0 0 15px",
-  fontWeight: "500",
+    fontSize: "15px",
+    margin: "7px 0 0 15px",
+    fontWeight: "500",
 };
 const styleButton = {
-  borderRadius: "20px",
-  backgroundColor: "#F2F2F2",
-  marginRight: "20px",
-  marginTop: "10px",
-  border: "none",
+    borderRadius: "20px",
+    backgroundColor: "#F2F2F2",
+    marginRight: "20px",
+    marginTop: "10px",
+    border: "none",
 };
