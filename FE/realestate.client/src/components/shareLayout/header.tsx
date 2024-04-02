@@ -96,6 +96,8 @@ const HeaderComponent = () => {
       if (response.status === HTTP_STATUS_CODE.OK) {
         CookieService.removeToken();
       }
+      dispatch(clearUserInfo());
+      localStorage.clear();
       if (pathname?.includes("/dashboard")) {
         router.replace("/auth/login");
       }

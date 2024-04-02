@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { authConst } from "../const/authConst";
 import hideEmail from "@/shared/utils/hideEmail";
+import { CreateChatAccount } from "../_services/authService";
 
 const ValidateOtp = () => {
   let registerSelector = useSelector((state: RootState) => state.register);
@@ -35,6 +36,14 @@ const ValidateOtp = () => {
     };
     try {
       const res = await ValidateOtp(body);
+      const avatarUrl = localStorage.getItem("avatar")
+      const fullname = localStorage.getItem("username")
+      console.log(avatarUrl, fullname)
+      await CreateChatAccount({
+        accountUserId: userId,
+        username: fullname,
+        avatar: avatarUrl
+      })
     } catch {
       console.error("Lỗi khi xác thực otp");
     }

@@ -70,3 +70,12 @@ export class AuthService {
     }
   }
 }
+export const CreateChatAccount = async (data: any) => {
+  try {
+    const res = await axios.post(`http://localhost:5000/user/create-user`, data)
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi add user chat", error);
+    throw error;
+  }
+}

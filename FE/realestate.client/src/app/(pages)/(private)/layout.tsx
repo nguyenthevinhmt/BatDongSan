@@ -20,6 +20,7 @@ import MenuItem from "antd/es/menu/MenuItem";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ToastProvider from "@/shared/provider/toast.provider";
+import MessageOutlined from "@ant-design/icons/lib/icons/MessageOutlined";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import UserType from "@/shared/consts/userType";
@@ -58,6 +59,11 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
       <Link href={"/user"}>Thông tin cá nhân</Link>,
       "/user",
       <ContainerOutlined />
+    ),
+    getItem(
+      <Link href={"/chat"}>Tin nhắn</Link>,
+      "/chat",
+      < MessageOutlined />
     ),
 
     getItem("Quản lý tài chính", "wallet/manager", <MailOutlined />, [

@@ -18,7 +18,7 @@ const InfoForm = () => {
     return state.auth.user.data;
   });
   const [userInfo, setUserInfo] = useState({
-    avatarUrl: userSelector.avatarUrl,
+    avatarUrl: userSelector?.avatarUrl,
     taxCode: "",
     fullname: "",
     phoneNumber: "",
@@ -29,11 +29,11 @@ const InfoForm = () => {
 
   useEffect(() => {
     form.setFieldsValue({
-      avatarUrl: userSelector.avatarUrl,
-      taxCode: userSelector.taxCode,
-      fullname: userSelector.fullname,
-      phoneNumber: userSelector.phoneNumber,
-      email: userSelector.email,
+      avatarUrl: userSelector?.avatarUrl,
+      taxCode: userSelector?.taxCode,
+      fullname: userSelector?.fullname,
+      phoneNumber: userSelector?.phoneNumber,
+      email: userSelector?.email,
     });
   }, [form]);
 

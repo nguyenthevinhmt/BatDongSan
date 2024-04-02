@@ -8,6 +8,7 @@ import AccountSetting from "./components/AccountSetting";
 import VerificationForm from "./components/VerificationForm";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import isAuth from "@/app/isAuth";
 
 const UserPage = () => {
 
@@ -72,4 +73,4 @@ const UserPage = () => {
   );
 };
 
-export default UserPage;
+export default isAuth(UserPage);

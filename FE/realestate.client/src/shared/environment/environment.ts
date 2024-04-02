@@ -9,6 +9,6 @@ export const environment = {
   API_SECRET: "Z1-QCn7URawHJHgjksJW6OHhvhY",
   cloudinary_url: `https://api.cloudinary.com/v1_1/deurdoich/image/upload`,
   BingMapsApiKey: `ApObW4lBidUPHYREilHz-zTrZrgcNVxf5T075p92nYEw15cPgOv2UWPkkhPoRe8-`,
-  MongoDbConnectionString:
-    "mongodb+srv://vinh2412:Qwertyuiop@12345@chat-nextjs-mongo.pmdhguk.mongodb.net/chat?retryWrites=true&w=majority&appName=chat-nextjs-mongo",
+  chatBaseUrl: "http://localhost:5000",
+  socketBaseUrl: "http://localhost:8800",
 };
