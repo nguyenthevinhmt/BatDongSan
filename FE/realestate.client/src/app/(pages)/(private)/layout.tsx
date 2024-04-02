@@ -77,7 +77,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [
       getItem(<Link href={"/tro-giup/bao-gia"}>Báo giá</Link>, "tro-giup/bao-gia"),
       getItem(<Link href={"/tro-giup/huong-dan-thanh-toan"}>Hướng dẫn thanh toán</Link>, "tro-giup/huong-dan-thanh-toan"),
-      getItem("Hướng dẫn sử dụng", "11"),
+      getItem(<Link href={"/tro-giup/huong-dan-su-dung"}>Hướng dẫn sử dụng</Link>, "tro-giup/huong-dan-su-dung"),
     ]),
     getItem("Yêu cầu xóa tài khoản", "12", <UserOutlined />),
   ];
