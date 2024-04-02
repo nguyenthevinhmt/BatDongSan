@@ -4,12 +4,14 @@ import "../../page.css";
 import { getUser } from "../../_services/chat.service";
 const Conversation = ({ data, currentUser, online }: any) => {
   const [userData, setUserData] = useState<any>(null);
+  const defaultAvatar = "https://res.cloudinary.com/deurdoich/image/upload/v1711596102/DATN/xwtalq8bbiwdxefobfwn.png"
 
   useEffect(() => {
     const userId = data.members.find((id: any) => id !== currentUser);
     const getUserData = async () => {
       try {
         const { data } = await getUser(userId);
+        console.log("object", data)
         setUserData(data);
       } catch (error) {
         console.log(error);
@@ -24,7 +26,7 @@ const Conversation = ({ data, currentUser, online }: any) => {
         <div style={{ display: "flex" }}>
           {online && <div className="online-dot"></div>}
           <img
-            src={userData?.avatar}
+            src={userData?.avatar !== "null" ? userData?.avatar : defaultAvatar}
             alt="Profile"
             className="followerImage"
             style={{
