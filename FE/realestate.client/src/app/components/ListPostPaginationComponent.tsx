@@ -235,31 +235,31 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                             </Button>
 
                                             <Tooltip placement="top" title={"Lưu tin"}>
-                                                    <Button
-                                                        style={{
-                                                            width: "30px",
-                                                            display: "flex",
-                                                            justifyContent: "center",
-                                                            alignItems: "center",
-                                                            color: isFavorite(item?.id) ? "#ff4d4f" : "black",
-                                                            border: isFavorite(item?.id) ? "1px solid #ff4d4f" : "1px solid black",
-                                                        }}
-                                                        onClick={() => {
-                                                            handleSavePost(item?.id);
-                                                            setIsChange(!isChange);
-                                                        }}
-                                                        icon={
-                                                            isFavorite(item?.id) ? (
-                                                                <PiHeartFill
-                                                                    style={{ color: "red", borderColor: "red" }}
-                                                                />
-                                                            ) : (
-                                                                <PiHeart />
-                                                            )
-                                                        }
-                                                    >
-                                                    </Button>
-                                                </Tooltip>
+                                                <Button
+                                                    style={{
+                                                        width: "30px",
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        color: isFavorite(item?.id) ? "#ff4d4f" : "black",
+                                                        border: isFavorite(item?.id) ? "1px solid #ff4d4f" : "1px solid black",
+                                                    }}
+                                                    onClick={() => {
+                                                        handleSavePost(item?.id);
+                                                        setIsChange(!isChange);
+                                                    }}
+                                                    icon={
+                                                        isFavorite(item?.id) ? (
+                                                            <PiHeartFill
+                                                                style={{ color: "red", borderColor: "red" }}
+                                                            />
+                                                        ) : (
+                                                            <PiHeart />
+                                                        )
+                                                    }
+                                                >
+                                                </Button>
+                                            </Tooltip>
                                         </div>
                                     </List.Item>
                                 </Flex>

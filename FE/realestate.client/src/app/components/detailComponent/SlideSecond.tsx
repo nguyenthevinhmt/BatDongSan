@@ -62,8 +62,8 @@ const SlideSecond = () => {
         router.push(`/home/post/detail/${index}`);
     }
     return (
-        <>
-            <Flex justify="space-between" style={{width: '100%'}}>
+        <Flex vertical justify='flex-end'>
+            <Flex justify="space-between" style={{ width: '800px' }}>
                 <h1 style={{
                     fontSize: "18px",
                     color: "#2C2C2C"
@@ -74,10 +74,10 @@ const SlideSecond = () => {
                 </Flex>
             </Flex>
             <Flex
-                justify='space-between'
+                justify='flex-start'
                 style={{
                     overflow: 'auto',
-                    width: "730px",
+                    width: "100%",
                     paddingTop: 20,
                     paddingBottom: 20,
                     paddingLeft: 5
@@ -87,8 +87,7 @@ const SlideSecond = () => {
                     listPost?.slice(indexPost, indexPost + 3)?.map((item, index) => {
                         return (
                             <>
-                                <Link
-                                    href={`/home/post/detail/${item?.id}`}
+                                <div
                                     style={{ marginRight: 10 }}
                                 >
                                     <PostCard
@@ -96,26 +95,26 @@ const SlideSecond = () => {
                                         option={item.options}
                                         loading={false}
                                     />
-                                </Link>
+                                </div>
                             </>
                         )
                     }) :
                     listPost?.map((item, index) => {
                         return (
                             <>
-                                <Link href={`/home/post/detail/${item?.id}`} style={{ marginRight: 10 }}>
+                                <div style={{ marginRight: 10 }}>
                                     <PostCard
                                         data={item}
                                         option={item.options}
                                         loading={false}
                                     />
-                                </Link>
+                                </div>
                             </>
                         )
                     })}
             </Flex>
             <Divider style={{ margin: "35px 0" }} />
-        </>
+        </Flex>
     )
 }
 export default SlideSecond

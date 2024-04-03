@@ -72,7 +72,7 @@ const SearchResult = () => {
           <Image src={QC3} alt='' width={1120} height={200} style={{ objectFit: "cover", margin: '20px 0' }} />
         </div>
 
-        <div style={{width: '70%'}}>
+        <div style={{width: '100%'}}>
           <SlideSecond />
         </div>
         {/* <RecommendPost /> */}

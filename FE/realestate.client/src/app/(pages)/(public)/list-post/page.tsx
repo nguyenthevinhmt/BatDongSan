@@ -240,11 +240,12 @@ const ListPost = () => {
                         flexDirection: 'column',
                         alignItems: 'center',                                          
                     }}>
-                        {isShow ?
-                            <Flex vertical gap={10} style={{margin: "20px 0"}}>
-                                <div>
-                                    Bộ lọc <FilterOutlined />
-                                </div>
+                        
+                        <Flex vertical gap={10} style={{ margin: "20px 0" }}>
+                            <div>
+                                Bộ lọc <FilterOutlined />
+                            </div>
+                            {isShow ?
                                 <div>
                                     <PriceFilter
                                         data={
@@ -254,12 +255,13 @@ const ListPost = () => {
                                         }
                                     />
                                 </div>
-                                <div>
+                                : <></>
+                            }
+                            <div>
                                     <AreaFilter data={AreaConst}/>
                                 </div>
                             </Flex>
-                            : <></>
-                        }
+                            
                         <img
                             width="250px"
                             height="600px"

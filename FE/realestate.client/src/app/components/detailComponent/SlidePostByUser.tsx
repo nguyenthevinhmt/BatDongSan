@@ -104,8 +104,7 @@ const SlidePostByUser: React.FC<SlidePostByUserProps> = ({ userId, postType }) =
                             listPost?.slice(indexPost, indexPost + 5)?.map((item, index) => {
                                 return (
                                     <>
-                                        <Link 
-                                            href={`/home/post/detail/${item?.id}`}
+                                        <div
                                             style={{marginRight: 10}}
                                         >
                                             <PostCard
@@ -113,20 +112,20 @@ const SlidePostByUser: React.FC<SlidePostByUserProps> = ({ userId, postType }) =
                                                 option={item.options}
                                                 loading={false}
                                             />
-                                        </Link>
+                                        </div>
                                     </>
                                 )
                             }) :
                             listPost?.map((item, index) => {
                                 return (
                                     <>
-                                        <Link href={`/home/post/detail/${item?.id}`} style={{marginRight: 10}}>
+                                        <div style={{marginRight: 10}}>
                                             <PostCard
                                                 data={item}
                                                 option={item.options}
                                                 loading={false}
                                             />
-                                        </Link>
+                                        </div>
                                     </>
                                 )
                             })}

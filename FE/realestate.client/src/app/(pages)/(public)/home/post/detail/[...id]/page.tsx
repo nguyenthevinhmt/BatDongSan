@@ -234,7 +234,6 @@ const Page = () => {
                       )
                     }
                   >
-                    {/* <IoIosHeartEmpty style={{ fontSize: "30px", color: isFavorite(data?.id) ? "#ff4d4f" : "black" }} /> */}
                   </Button>
                 </Tooltip>
               </div>
@@ -362,9 +361,6 @@ const Page = () => {
             </h1>
 
             <MapComponent prop={location} width={730} height={270} />
-            <Divider style={{ margin: "35px 0" }} />
-
-            <SlideSecond/>
           </div>
 
           <div className="box_right">
@@ -436,6 +432,10 @@ const Page = () => {
             />
           </div>
         </Flex>
+
+        <Divider style={{ margin: "35px 0" }} />
+
+        <SlideSecond/>
       </div>
     </>
   );

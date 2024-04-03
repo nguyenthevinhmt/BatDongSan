@@ -14,16 +14,17 @@ import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
 import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
 import { IoMdHeart } from "react-icons/io";
 import { PiHeart, PiHeartFill } from "react-icons/pi";
+import Link from "next/link";
 
 const handleSavePost = (postId: any) => {
   if (isFavorite(postId)) {
-      removeFromFavorites(postId);
-      console.log("localStorage: ", getFavorites());
-      console.log('remove', postId);
+    removeFromFavorites(postId);
+    console.log("localStorage: ", getFavorites());
+    console.log('remove', postId);
   } else {
-      addToFavorites(postId);
-      console.log("localStorage: ", getFavorites());
-      console.log('add', postId);
+    addToFavorites(postId);
+    console.log("localStorage: ", getFavorites());
+    console.log('add', postId);
   }
 };
 
@@ -64,41 +65,56 @@ const PostCard = ({
           )
         }
       >
-        <h2
-          className="ellipsis-multiline"
-          style={{
-            height: "40px",
-            fontSize: "14px",
-            lineHeight: "20px",
-            fontWeight: "500",
-            color: "#2C2C2C",
-            marginBottom: "4px",
-          }}
+        <Link
+          href={`/home/post/detail/${data?.id}`}
         >
-          {data?.title}
-        </h2>
-        <span
-          style={{
-            color: "#E03C31",
-            fontSize: "14px",
-            fontWeight: 500,
-          }}
-        >
-          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
-          <span>{data?.area} m²</span>
-        </span>
-        <p 
-          style={{ 
-            marginTop: "4px", 
-            //marginBottom: "10px", 
-            fontSize: "13px",
-            maxHeight: "40px",
-            height: "40px", 
+          <h2
+            className="ellipsis-multiline"
+            style={{
+              height: "40px",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: "500",
+              color: "#2C2C2C",
+              marginBottom: "4px",
             }}
           >
-          <EnvironmentOutlined style={{ marginRight: "5px" }} />
-          {`${data.district}, ${data.province}`}
-        </p>
+            {data?.title}
+          </h2>
+        </Link>
+
+        <Link
+          href={`/home/post/detail/${data?.id}`}
+        >
+          <span
+            style={{
+              color: "#E03C31",
+              fontSize: "14px",
+              fontWeight: 500,
+            }}
+          >
+            {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
+            <span>{data?.area} m²</span>
+          </span>
+        </Link>
+
+        <Link
+          href={`/home/post/detail/${data?.id}`}
+        >
+          <p
+            style={{
+              marginTop: "4px",
+              //marginBottom: "10px", 
+              fontSize: "13px",
+              maxHeight: "40px",
+              height: "40px",
+            }}
+          >
+            <EnvironmentOutlined style={{ marginRight: "5px" }} />
+            {`${data.district}, ${data.province}`}
+          </p>
+        </Link>
+
         <Flex justify="space-between" align="center">
           <Tooltip
             placement="bottom"
@@ -115,6 +131,7 @@ const PostCard = ({
               {formatDate(dayjs(data?.createdDate))}
             </span>
           </Tooltip>
+
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
@@ -141,6 +158,7 @@ const PostCard = ({
             >
             </Button>
           </Tooltip>
+
         </Flex>
       </Card>
     );
@@ -151,7 +169,7 @@ const PostCard = ({
   } else if (option === OptionConst.DIAMOND) {
     color = "#E03C6D";
   }
-    
+
   return (
     <LabelCard text="VIP" color={color}>
       <Card
@@ -173,42 +191,57 @@ const PostCard = ({
           )
         }
       >
-        <h2
-          className="ellipsis-multiline"
-          style={{
-            height: "40px",
-            fontSize: "14px",
-            lineHeight: "20px",
-            fontWeight: "500",
-            color: "#2C2C2C",
-            marginBottom: "4px",
-          }}
+        <Link
+          href={`/home/post/detail/${data?.id}`}
         >
-          {data?.title}
-        </h2>
-        <span
-          style={{
-            color: "#E03C31",
-            fontSize: "14px",
-            fontWeight: 500,
-          }}
-        >
-          {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
-          <span>{data?.area} m²</span>
-        </span>
-        <p 
-          style={{ 
-            marginTop: "4px", 
-            //marginBottom: "16px", 
-            fontSize: "13px",
-            maxHeight: "40px",
-            height: "40px", 
+          <h2
+            className="ellipsis-multiline"
+            style={{
+              height: "40px",
+              fontSize: "14px",
+              lineHeight: "20px",
+              fontWeight: "500",
+              color: "#2C2C2C",
+              marginBottom: "4px",
             }}
           >
-          <EnvironmentOutlined style={{ marginRight: "5px" }} />
-          {`${data.district}, ${data.province}`}
-        </p>
-        <Flex justify="space-between" align="flex-end">
+            {data?.title}
+          </h2>
+        </Link>
+
+        <Link
+          href={`/home/post/detail/${data?.id}`}
+        >
+          <span
+            style={{
+              color: "#E03C31",
+              fontSize: "14px",
+              fontWeight: 500,
+            }}
+          >
+            {data?.price ? formatCurrency(data?.price) : "Giá thỏa thuận"} -{" "}
+            <span>{data?.area} m²</span>
+          </span>
+        </Link>
+
+        <Link
+          href={`/home/post/detail/${data?.id}`}
+        >
+          <p
+            style={{
+              marginTop: "4px",
+              //marginBottom: "10px", 
+              fontSize: "13px",
+              maxHeight: "40px",
+              height: "40px",
+            }}
+          >
+            <EnvironmentOutlined style={{ marginRight: "5px" }} />
+            {`${data.district}, ${data.province}`}
+          </p>
+        </Link>
+
+        <Flex justify="space-between" align="center">
           <Tooltip
             placement="bottom"
             title={dayjs(data?.createdDate).format("DD/MM/YYYY")}
@@ -224,6 +257,7 @@ const PostCard = ({
               {formatDate(dayjs(data?.createdDate))}
             </span>
           </Tooltip>
+
           <Tooltip
             placement="bottom"
             color={"#423e3e"}
@@ -249,13 +283,8 @@ const PostCard = ({
               }
             >
             </Button>
-            {/* <FaRegHeart
-              style={{color: isFavorite(data.id) ? "#ff4d4f" : "black"}}
-              onClick={() => {
-                handleSavePost(data.id);
-              }}
-            /> */}
           </Tooltip>
+
         </Flex>
       </Card>
     </LabelCard>

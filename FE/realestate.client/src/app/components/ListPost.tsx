@@ -56,13 +56,13 @@ const ListPost = () => {
           {listPost?.map((item: any) => {
             return (
               <Col span={6} key={Math.random()}>
-                <Link href={`/home/post/detail/${item?.id}`}>
+                <div>
                   <PostCard
                     data={item}
                     option={item?.options}
                     loading={loading}
                   />
-                </Link>
+                </div>
               </Col>
             );
           })}

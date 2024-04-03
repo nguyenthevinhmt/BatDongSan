@@ -35,6 +35,10 @@ const PostHorizon = ({
   loading?: boolean;
 }) => {
   const [isChange, setIsChange] = useState(false);
+  
+  useEffect(() => {
+  }, [isChange]);
+  
   let labelText = "";
   let color = "";
   if (option === OptionConst.NORMAL) {
@@ -126,9 +130,6 @@ const PostHorizon = ({
     labelText = "VIP Kim Cương";
     color = "#E03C6D";
   }
-
-  useEffect(() => {
-  }, [isChange]);
 
   return (
     <>
