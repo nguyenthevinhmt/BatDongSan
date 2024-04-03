@@ -5,9 +5,9 @@ const API = axios.create({ baseURL: 'http://localhost:5000' });
 
 export const getMessages = (id: any) => API.get(`/message/${id}`);
 
-export const addMessage = (data: any) => API.post('/message/', data);
+export const addMessage = (data: any) => API.post('/message', data);
 
-export const createChat = (data: any) => API.post('/chat/', data);
+export const createChat = (data: any) => API.post('/chat', data);
 
 export const userChats = (id: any) => API.get(`/chat/${id}`);
 

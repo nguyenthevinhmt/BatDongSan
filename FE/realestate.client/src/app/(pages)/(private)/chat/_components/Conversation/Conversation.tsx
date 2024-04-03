@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { useEffect } from "react";
 import "../../page.css";
 import { getUser } from "../../_services/chat.service";
@@ -17,7 +17,6 @@ const Conversation = ({ data, currentUser, online }: any) => {
         console.log(error);
       }
     };
-
     getUserData();
   }, []);
   return (
@@ -53,4 +52,4 @@ const Conversation = ({ data, currentUser, online }: any) => {
   );
 };
 
-export default Conversation;
+export default memo(Conversation);
