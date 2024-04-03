@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 const FavoritesPage = () => {
     const [listSavePost, setListSavePost] = useState<any>([]);
-    
+
     const getData = async () => {
         const saveIds = getFavorites();
         const response = await getAllPostByIds(saveIds);
@@ -20,7 +20,7 @@ const FavoritesPage = () => {
     }, []);
 
     return (
-        <Flex 
+        <Flex
             style={{
                 minHeight: '600',
                 width: '100%',
@@ -42,7 +42,7 @@ const FavoritesPage = () => {
                     width: '70%',
                     height: '100%',
                 }}>
-                    <ListPostPaginationComponent header={'Danh sách bài đăng yêu thích'} data={listSavePost} totalItem={listSavePost.length}/>
+                    <ListPostPaginationComponent header={'Danh sách bài đăng yêu thích'} data={listSavePost} totalItem={listSavePost?.length} />
                 </div>
 
                 {/* Quảng cáo */}
@@ -57,6 +57,7 @@ const FavoritesPage = () => {
                         height="600px"
                         style={{ margin: "20px 0", objectFit: "contain" }}
                         src="https://tpc.googlesyndication.com/simgad/13978607217291355544"
+                        alt='#'
                     />
                 </div>
             </div>

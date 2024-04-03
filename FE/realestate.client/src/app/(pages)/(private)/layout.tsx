@@ -86,8 +86,12 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     getItem("Quản lý tin đăng", "post", <DesktopOutlined />, [
       getItem(<Link href={"/post/manage"}>Danh sách tin</Link>, "/post/manage"),
     ]),
-    getItem(<Link href={"/user"}>Thông tin cá nhân</Link>,"/user",<ContainerOutlined />),
-
+    getItem(<Link href={"/user"}>Thông tin cá nhân</Link>, "/user", <ContainerOutlined />),
+    getItem(
+      <Link href={"/chat"}>Tin nhắn</Link>,
+      "/chat",
+      < MessageOutlined />
+    ),
     getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [
       getItem("Báo giá", "9"),
       getItem("Hướng dẫn thanh toán", "10"),
