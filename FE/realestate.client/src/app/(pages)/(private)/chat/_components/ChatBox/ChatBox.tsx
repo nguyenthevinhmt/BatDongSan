@@ -80,6 +80,7 @@ const ChatBox = ({
 
     // Receive Message from parent component
     useEffect(() => {
+        console.log("re render")
         console.log("Message Arrived: ", receivedMessage);
         if (receivedMessage !== null && receivedMessage?.chatId === chat?._id) {
             setMessages([...messages, receivedMessage]);

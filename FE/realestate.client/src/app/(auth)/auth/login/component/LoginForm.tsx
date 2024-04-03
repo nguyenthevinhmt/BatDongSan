@@ -85,7 +85,7 @@ const LoginForm = () => {
           "refresh_token",
           (response.data as ITokenResponse).refresh_token
         );
-        await setToken((response.data as ITokenResponse).access_token);
+        // await setToken((response.data as ITokenResponse).access_token);
         dispatch(saveLoginInfo(response));
         router.replace("/");
       } else {

@@ -8,6 +8,10 @@ import StyledComponentsRegistry from "./AntdRegistry";
 import dynamic from "next/dynamic";
 import ServerHeaderComponent from "@/components/shareLayout/serverHeader";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
+import FloatButton from "antd/lib/float-button/FloatButton";
+import CommentOutlined from "@ant-design/icons/lib/icons/CommentOutlined";
+import { Tooltip } from "antd/lib";
+import ChatButton from "@/components/public/ChatButton/ChatButton";
 
 const ReduxProvider = dynamic(() => import("@/app/StoreProvider"), {
   ssr: false,
@@ -32,7 +36,10 @@ const RootLayout = ({ children }: { children: React.ReactElement }) => {
         <AntdRegistry>
           <ReduxProvider>
             <CommontLayout>
-              <ToastProvider>{children}</ToastProvider>
+              <ToastProvider>
+                {children}
+                <ChatButton />
+              </ToastProvider>
             </CommontLayout>
           </ReduxProvider>
         </AntdRegistry>
