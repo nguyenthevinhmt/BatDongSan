@@ -21,6 +21,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ToastProvider from "@/shared/provider/toast.provider";
 import MessageOutlined from "@ant-design/icons/lib/icons/MessageOutlined";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import UserType from "@/shared/consts/userType";
 type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
@@ -39,14 +42,15 @@ function getItem(
   } as MenuItem;
 }
 const { Content, Sider } = Layout;
+
+
 const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
+  const authStore = useSelector((state: RootState) => state.auth);
+  const role = authStore?.user?.data?.userType;
+
+
   const parentKey = ["post/manager", "user/info", "wallet/manager"];
   const items: MenuItem[] = [
-    getItem(
-      <Link href={"/dashboard"}>Tổng quan</Link>,
-      "/dashboard",
-      <PieChartOutlined />
-    ),
     getItem("Quản lý tin đăng", "post", <DesktopOutlined />, [
       getItem(<Link href={"/post/create"}>Đăng mới</Link>, "/post/create"),
       getItem(<Link href={"/post/manage"}>Danh sách tin</Link>, "/post/manage"),
@@ -71,11 +75,24 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
     ]),
 
     getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [
+      getItem(<Link href={"/tro-giup/bao-gia"}>Báo giá</Link>, "tro-giup/bao-gia"),
+      getItem(<Link href={"/tro-giup/huong-dan-thanh-toan"}>Hướng dẫn thanh toán</Link>, "tro-giup/huong-dan-thanh-toan"),
+      getItem(<Link href={"/tro-giup/huong-dan-su-dung"}>Hướng dẫn sử dụng</Link>, "tro-giup/huong-dan-su-dung"),
+    ]),
+    getItem("Yêu cầu xóa tài khoản", "12", <UserOutlined />),
+  ];
+
+  const adminItems: MenuItem[] = [
+    getItem("Quản lý tin đăng", "post", <DesktopOutlined />, [
+      getItem(<Link href={"/post/manage"}>Danh sách tin</Link>, "/post/manage"),
+    ]),
+    getItem(<Link href={"/user"}>Thông tin cá nhân</Link>,"/user",<ContainerOutlined />),
+
+    getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [
       getItem("Báo giá", "9"),
       getItem("Hướng dẫn thanh toán", "10"),
       getItem("Hướng dẫn sử dụng", "11"),
     ]),
-    getItem("Yêu cầu xóa tài khoản", "12", <UserOutlined />),
   ];
 
   const pathname = usePathname();
@@ -138,7 +155,7 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
                   position: "relative",
                   overflow: "auto",
                 }}
-                items={items}
+                items={role === UserType.CUSTOMER ? items : adminItems}
               ></Menu>
             </Sider>
             <Layout

@@ -25,12 +25,14 @@ import ShareAltOutlined from "@ant-design/icons/lib/icons/ShareAltOutlined";
 import { getUserInfo } from "@/services/user/user.service";
 import SlidePostByUser from "@/app/components/detailComponent/SlidePostByUser";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+import QC4 from "@/assets/image/QC4.gif";
 
 interface IUser {
   id: number,
-  fullname: string,
-  phoneNumber: string,
-  avatarUrl: string,
+  fullname?: string,
+  phoneNumber?: string,
+  avatarUrl?: string,
 }
 
 interface IPost {
@@ -52,26 +54,19 @@ const ListPostsAuthor = ()  => {
   };
   const [loading, setLoading] = useState(true);
   const [label, setLabel] = useState<string>("0965552762");
-  const [quantityPost, setQuantityPost] = useState([
-    {
-      id: 1,
-      name: "hsgcd gdbc dwigihfgbvf giv fi vhie giv fig bvie eckie eikvc ki vcus vcv fskv cuev fu",
-    },
-    {
-      name: "ok",
-    },
-    {
-      name: "ok",
-    },
-    {
-      name: "ok",
-    },
-  ]);
-  const [statusLoadmore, setStatusLoadmore] = useState(true);
-  const [visibleProducts, setVisibleProducts] = useState(8);
+ 
   const [userInfo, setUserInfo] = useState<IUser>();
   const [isHidden, setIsHidden] = useState(true);
 
+  useEffect(() => {
+    setUserInfo({
+      id: parseInt(searchParams?.get("id") || ""),
+      fullname: searchParams?.get("fullName") || "",
+      phoneNumber: searchParams?.get("phone") || "",
+      avatarUrl: searchParams?.get("avatarUrl") || "",
+    })
+  }, []);
+  
   const handleButtonClick = () => {
     setIsHidden(!isHidden);
   };
@@ -186,8 +181,11 @@ const ListPostsAuthor = ()  => {
         >
           Danh sách tin đăng bán
         </h1>
-        <SlidePostByUser postType={1} />
+        <SlidePostByUser userId={parseInt(searchParams?.get("id") || "")} postType={1} />
+
+        <Image src={QC4} alt='' width={1120} height={200} style={{ objectFit: "cover", marginBottom: 20 }} />
         <Divider />
+
         <h1
           style={{
             fontSize: "24px",
@@ -199,7 +197,7 @@ const ListPostsAuthor = ()  => {
         >
           Danh sách tin đăng cho thuê
         </h1>
-        <SlidePostByUser postType={2} />
+        <SlidePostByUser userId={parseInt(searchParams?.get("id") || "")} postType={2} />
       </div>
     </>
   );

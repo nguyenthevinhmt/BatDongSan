@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "antd/lib/button";
 import Divider from "antd/lib/divider";
 import Flex from "antd/es/flex";
@@ -11,6 +11,19 @@ import Image from "next/image";
 import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
+
+const handleSavePost = (postId: any) => {
+  if (isFavorite(postId)) {
+      removeFromFavorites(postId);
+      console.log("localStorage: ", getFavorites());
+      console.log('remove', postId);
+  } else {
+      addToFavorites(postId);
+      console.log("localStorage: ", getFavorites());
+      console.log('add', postId);
+  }
+};
 
 const PostHorizon = ({
   data,
@@ -21,7 +34,7 @@ const PostHorizon = ({
   option?: number;
   loading?: boolean;
 }) => {
-  const [isSave, setIsSave] = useState(false);
+  const [isChange, setIsChange] = useState(false);
   let labelText = "";
   let color = "";
   if (option === OptionConst.NORMAL) {
@@ -71,16 +84,16 @@ const PostHorizon = ({
                     </div>
                     <div>{data?.area} m²</div>
                   </Flex>
-                  <Tooltip title={isSave ? "Bỏ lưu" : "Lưu bài viết"}>
+                  <Tooltip title={isFavorite(data.id) ? "Bỏ lưu" : "Lưu bài viết"}>
                     <Button
                       shape="circle"
                       style={{
                         color: "#ccc",
-                        borderColor: `${isSave ? "red" : "#ccc"}`,
+                        borderColor: `${isFavorite(data.id) ? "red" : "#ccc"}`,
                         backgroundColor: "#fafafa",
                       }}
                       icon={
-                        isSave ? (
+                        isFavorite(data.id) ? (
                           <PiHeartFill
                             style={{ color: "red", borderColor: "red" }}
                           />
@@ -89,7 +102,8 @@ const PostHorizon = ({
                         )
                       }
                       onClick={() => {
-                        setIsSave(!isSave);
+                        handleSavePost(data.id);
+                        setIsChange(!isChange);
                       }}
                     />
                   </Tooltip>
@@ -112,6 +126,10 @@ const PostHorizon = ({
     labelText = "VIP Kim Cương";
     color = "#E03C6D";
   }
+
+  useEffect(() => {
+  }, [isChange]);
+
   return (
     <>
       <LabelCardHorizon text={labelText} color={color}>
@@ -179,16 +197,16 @@ const PostHorizon = ({
                       {data?.area} m²
                     </div>
                   </Flex>
-                  <Tooltip title={isSave ? "Bỏ lưu" : "Lưu bài viết"}>
+                  <Tooltip title={isFavorite(data.id) ? "Bỏ lưu" : "Lưu bài viết"}>
                     <Button
                       shape="circle"
                       style={{
                         color: "#ccc",
-                        borderColor: `${isSave ? "red" : "#ccc"}`,
+                        borderColor: `${isFavorite(data.id) ? "red" : "#ccc"}`,
                         backgroundColor: "#fafafa",
                       }}
                       icon={
-                        isSave ? (
+                        isFavorite(data.id) ? (
                           <PiHeartFill
                             style={{ color: "red", borderColor: "red" }}
                           />
@@ -197,7 +215,8 @@ const PostHorizon = ({
                         )
                       }
                       onClick={() => {
-                        setIsSave(!isSave);
+                        handleSavePost(data.id);
+                        setIsChange(!isChange);
                       }}
                     />
                   </Tooltip>

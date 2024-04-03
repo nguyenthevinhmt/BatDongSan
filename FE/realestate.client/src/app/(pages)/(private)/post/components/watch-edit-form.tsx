@@ -208,7 +208,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                 street: post.street,
                 detailAddress: post.detailAddress,
                 area: post.area,
-                price: post.price,
+                price: post.price ? post.price : 'Giá thỏa thuận',
                 youtubeLink: post.youtubeLink,
                 realEstateTypeId: post.realEstateTypeId,
                 calculateType: post.calculateType,
@@ -435,7 +435,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
             street: formValue.street,
             detailAddress: formValue.detailAddress,
             area: formValue.area,
-            price: formValue.price,
+            price: currentCalculateType === 3 ? null : formValue.price,
             youtubeLink: formValue.youtubeLink,
             postTypeId: postType,
             realEstateTypeId: formValue.realEstateTypeId,
@@ -1052,7 +1052,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                             </Form.Item>
 
                                             {
-                                                (status !== postStatus.POSTED && status !== postStatus.PENDING && status !== postStatus.REMOVED) ?
+                                                (status !== postStatus.POSTED && status !== postStatus.PENDING && status !== postStatus.EXPIRED) ?
                                                     !isChange ?
                                                         <Form.Item>
                                                             <Button
@@ -1116,7 +1116,7 @@ const WatchEditForm = ({ type, postId }: { type: number; postId: number }) => {
                                                         >
                                                             {status === postStatus.INIT ? "Đăng tin" : 
                                                             status === postStatus.CANCEL ? "Trình duyệt" :
-                                                            status === postStatus.REMOVED ? "Đăng lại" : "Tiếp tục"}
+                                                            status === postStatus.EXPIRED ? "Đăng lại" : "Tiếp tục"}
                                                         </Button>
                                                     </Form.Item>
                                             }

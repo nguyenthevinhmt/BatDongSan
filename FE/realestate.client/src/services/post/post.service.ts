@@ -264,7 +264,7 @@ export const approvedPost = async (id: number) => {
   }
 };
 
-export const removePost = async (id: number) => {
+export const deletePost = async (id: number) => {
   try {
     const response = await axiosInstance.delete(
       `${environment.baseUrl}/api/post/remove?id=${id}`
@@ -301,12 +301,15 @@ export const updateStatus = async (info: IUpdateStatus) => {
   }
 };
 
-export const recommendPost = async ({ pageSize, pageNumber }: { pageSize: number, pageNumber: number }) => {
+export const recommendPost = async ({ pageSize, pageNumber, postType, realEstateType, keyword }: { pageSize: number, pageNumber?: number, postType?: number, realEstateType?: number, keyword?: string }) => {
   try {
     const response = await axiosInstance.get(`${environment.baseUrl}/api/post/public/find-all`, {
       params: {
         pageSize: pageSize || -1,
-        pageNumber: pageNumber
+        pageNumber: pageNumber || null,
+        postType: postType || null,
+        realEstateType: realEstateType || null,
+        keyword: keyword || null,
       },
     })
     return response?.data;
@@ -494,3 +497,72 @@ export const getByIdHome = async (id: number) => {
     return error;
   }
 };
+
+export const getSalePostByAuthor = async (params: IFindAllPost, id: any) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/sale-post/find-all`, {
+      params: {
+        ...params,
+        UserId: id
+      }}
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api get sale post by author của post bị lỗi!!!");
+    return error;
+  }
+}
+
+export const getRentPostByAuthor = async (params: IFindAllPost, id: any) => {
+  try {
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/rent-post/find-all`, {
+      params: {
+        ...params,
+        UserId: id
+      }}
+    );
+    if (response.status === HTTP_STATUS_CODE.OK) {
+      return response?.data;
+    }
+  } catch (error) {
+    console.log("Error: Gọi api get rent post by author của post bị lỗi!!!");
+    return error;
+  }
+};
+
+export const getAllPostByProvince = async ({ pageSize, pageNumber, keyword} : { pageSize: number, pageNumber?: number, keyword?: string }) => {
+  try {
+    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/find-all-by-province`, {
+      params: {
+        pageSize: pageSize || -1,
+        pageNumber: pageNumber || 1,
+        keyword: keyword || null,
+      },
+    })
+    return response?.data;
+  } catch (error) {
+    console.log("Error: Gọi api get all post by province của post bị lỗi!!!");
+    return null;
+  }
+};
+
+export const getAllPostByIds = async (ids: number[]) => {
+  try {
+    const response = await axios.get(`${environment.baseUrl}/post/find-post-by-ids`, {
+      params: {
+        ids: ids
+      },
+      paramsSerializer: {
+        indexes: null, // use brackets with indexes
+      }
+    })
+    return response?.data;
+  } catch (error) {
+    console.log("Error: Gọi api get all post by ids của post bị lỗi!!!");
+    return error;
+  }
+}

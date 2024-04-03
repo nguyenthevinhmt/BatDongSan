@@ -1,4 +1,5 @@
 "use client";
+import SlideSecond from "@/app/components/detailComponent/SlideSecond";
 import AreaFilter from "@/components/public/FilterComponent/AreaFilter";
 import { AreaConst } from "@/components/public/FilterComponent/DataConst/AreaConst";
 import {
@@ -15,10 +16,13 @@ import { FilterOutlined } from "@ant-design/icons";
 import Flex from "antd/lib/flex";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import QC3 from "@/assets/image/QC3.png";
 
 const SearchResult = () => {
   const searchParam = useSearchParams();
   const [data, setData] = useState<any>();
+  
   useEffect(() => {
     const params = {
       keyword: searchParam?.get("keyword"),
@@ -30,9 +34,11 @@ const SearchResult = () => {
       province: searchParam?.get("province"),
       realEstateType: searchParam?.get("realEstateType"),
     };
+
     const filteredParams = Object.fromEntries(
       Object.entries(params).filter(([_, value]) => value !== undefined)
     );
+
     const searchPost = async (param: any) => {
       const res = await SearchPost(param);
       if (res.code === HTTP_STATUS_CODE.OK) {
@@ -41,6 +47,7 @@ const SearchResult = () => {
     };
     searchPost(filteredParams);
   }, [searchParam]);
+
   return (
     <Flex justify="center">
       <div style={{ width: "1050px" }}>
@@ -60,7 +67,15 @@ const SearchResult = () => {
             <AreaFilter data={AreaConst} />
           </Flex>
         </Flex>
-        <RecommendPost />
+        
+        <div>
+          <Image src={QC3} alt='' width={1120} height={200} style={{ objectFit: "cover", margin: '20px 0' }} />
+        </div>
+
+        <div style={{width: '70%'}}>
+          <SlideSecond />
+        </div>
+        {/* <RecommendPost /> */}
       </div>
     </Flex>
   );

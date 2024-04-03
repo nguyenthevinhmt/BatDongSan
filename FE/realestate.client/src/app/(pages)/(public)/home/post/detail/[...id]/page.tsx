@@ -20,7 +20,7 @@ import Link from "next/link";
 import { TiSocialFacebookCircular } from "react-icons/ti";
 import { SiZalo } from "react-icons/si";
 import { IoShareSocialOutline } from "react-icons/io5";
-import { IoIosHeartEmpty } from "react-icons/io";
+import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 import { CiLink } from "react-icons/ci";
 import type { MenuProps } from "antd";
 
@@ -35,6 +35,8 @@ import {
 } from "@/shared/utils/common-helpers";
 import Image from "next/image";
 import SlideSecond from "@/app/components/detailComponent/SlideSecond";
+import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
+import { PiHeart, PiHeartFill } from "react-icons/pi";
 const { Paragraph } = Typography;
 
 const Page = () => {
@@ -65,12 +67,12 @@ const Page = () => {
     latitude: 0,
     longitude: 0,
   });
+  const [isChange, setIsChange] = useState(false);
 
   const param = useParams();
   useEffect(() => {
     const fetchDetailPost = async () => {
       const response = await getByIdHome(+param?.id[0]);
-      console.log("data", response?.data?.medias);
       await setData(response?.data);
 
       const coordinatesRes = await axios.get(
@@ -94,6 +96,23 @@ const Page = () => {
     };
     fetchDetailPost();
   }, []);
+
+
+  useEffect(() => {
+    //re-render component when change localStorage
+  }, [isChange]);
+
+  const handleSavePost = (postId: any) => {
+    if (isFavorite(postId)) {
+        removeFromFavorites(postId);
+        console.log("localStorage: ", getFavorites());
+        console.log('remove', postId);
+    } else {
+        addToFavorites(postId);
+        console.log("localStorage: ", getFavorites());
+        console.log('add', postId);
+    }
+};
 
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
@@ -161,7 +180,7 @@ const Page = () => {
                       marginTop: "5px",
                     }}
                   >
-                    {data?.price}
+                    {data?.price ? formatCurrency(data?.price) : 'Giá thỏa thuận'}
                   </p>
                 </div>
                 <div>
@@ -196,9 +215,26 @@ const Page = () => {
                     </Button>
                   </Tooltip>
                 </Dropdown>
-                <Tooltip placement="top" title={"Lưu tin"}>
-                  <Button style={{ height: "44px" }} type="text">
-                    <IoIosHeartEmpty style={{ fontSize: "30px" }} />
+
+                <Tooltip placement="top" title={ isFavorite(data?.id) ? "Bỏ lưu" : "Lưu tin"}>
+                  <Button 
+                    style={{ height: "44px" }} 
+                    type="text"
+                    onClick={() => {
+                      handleSavePost(data?.id);
+                      setIsChange(!isChange);
+                    }}
+                    icon={
+                      isFavorite(data?.id) ? (
+                        <PiHeartFill
+                          style={{ color: "red", borderColor: "red", fontSize: '30px' }}
+                        />
+                      ) : (
+                        <PiHeart style={{fontSize: '30px'}}/>
+                      )
+                    }
+                  >
+                    {/* <IoIosHeartEmpty style={{ fontSize: "30px", color: isFavorite(data?.id) ? "#ff4d4f" : "black" }} /> */}
                   </Button>
                 </Tooltip>
               </div>
@@ -246,8 +282,8 @@ const Page = () => {
                   <TbCurrencyDong style={{ fontSize: "34px" }} />
                   <p style={styleIcon}>
                     Mức giá
-                    <span style={{ marginLeft: "122px", fontWeight: "400" }}>
-                      {formatCurrency(data?.price)}
+                    <span style={{ marginLeft: "110px", fontWeight: "400" }}>
+                      {data?.price ? formatCurrency(data?.price) : 'Giá thỏa thuận'}
                     </span>
                   </p>
                 </Flex>
@@ -375,7 +411,7 @@ const Page = () => {
                   style={{ color: "#fff" }}
                   copyable={{ text: `${data?.user?.phone}` }}
                 >
-                  {data?.userPhoneNumber}
+                  {data?.user?.phone}
                 </Paragraph>
               </Button>
               <Button style={styleButtonGroup} onClick={handleContactZalo}>

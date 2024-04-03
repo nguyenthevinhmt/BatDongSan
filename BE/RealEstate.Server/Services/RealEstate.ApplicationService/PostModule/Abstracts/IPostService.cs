@@ -20,7 +20,7 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input);
+        PagingResult<PostUserDto> FindAllPublic(PostPagingRequestDto input);
         /// <summary>
         /// Chi tiết bài viết
         /// </summary>
@@ -106,13 +106,13 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        PagingResult<PostDto> FindAllPostByProvince(PagingRequestBaseDto input);
+        PagingResult<PostUserDto> FindAllPostByProvince(PagingRequestBaseDto input);
         /// <summary>
         /// Tìm kiếm post trang chủ
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        PagingResult<PostDto> SearchPost(SearchPostRequestDto input);
+        PagingResult<PostUserDto> SearchPost(SearchPostRequestDto input);
         /// <summary>
         /// Danh sách bài đăng bán theo user id
         /// </summary>
@@ -125,5 +125,11 @@ namespace RealEstate.ApplicationService.PostModule.Abstracts
         /// <param name="input"></param>
         /// <returns></returns>
         PagingResult<PostDto> FindAllRentPostByUserCreated(PagingRequestByPostTypeDto input);
+        /// <summary>
+        /// Danh sách bài đăng theo danh sách id
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        List<PostUserDto> getPostByIds(int[] ids);
     }
 }

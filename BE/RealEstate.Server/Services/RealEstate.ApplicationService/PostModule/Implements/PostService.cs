@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RealEstate.ApplicationBase.Common;
+using RealEstate.ApplicationService.AuthModule.Dtos;
 using RealEstate.ApplicationService.Common;
 using RealEstate.ApplicationService.PostModule.Abstracts;
 using RealEstate.ApplicationService.PostModule.Dtos;
@@ -80,7 +81,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         public void Delete(int id)
         {
             _logger.LogInformation($"{nameof(Delete)}: id : {id}");
-            var post = _dbContext.Posts.FirstOrDefault(c => !c.Deleted && c.Id == id) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+            var post = _dbContext.Posts.FirstOrDefault(c => !c.Deleted && c.Id == id && (c.Status == PostStatuses.INIT || c.Status == PostStatuses.CANCEL || c.Status == PostStatuses.EXPIRED )) ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             post.Deleted = true;
             _dbContext.SaveChanges();
         }
@@ -222,34 +223,35 @@ namespace RealEstate.ApplicationService.PostModule.Implements
         public PostDetailInHome FindByIdInHome(int id)
         {
             var result = (from post in _dbContext.Posts
-                          join user in _dbContext.Users on post.UserId equals user.Id
-                          where post.Id == id
-                          select new PostDetailInHome
-                          {
-                              Id = post.Id,
-                              Area = post.Area,
-                              Description = post.Description,
-                              DetailAddress = post.DetailAddress,
-                              District = post.District,
-                              PostTypeId = post.PostTypeId,
-                              Medias = _mapper.Map<List<MediaDto>>(post.Medias ?? new List<Media>()),
-                              Price = post.Price,
-                              Province = post.Province,
-                              RealEstateTypeId = post.RealEstateTypeId,
-                              Status = post.Status,
-                              Street = post.Street,
-                              Ward = post.Ward,
-                              Title = post.Title,
-                              User = new()
-                              {
-                                  Id = user.Id,
-                                  Username = user.Username,
-                                  FullName = user.Fullname,
-                                  Phone = user.PhoneNumber,
-                                  Email = user.Email,
-                                  AvatarUrl = user.AvatarUrl,
-                              }
-                          }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
+                         join user in _dbContext.Users on post.UserId equals user.Id
+                         where post.Id == id
+                         select new PostDetailInHome
+                         {
+                             Id = post.Id,
+                             Area = post.Area,
+                             Description = post.Description,
+                             DetailAddress = post.DetailAddress,
+                             District = post.District,
+                             PostTypeId = post.PostTypeId,
+                             Medias = _mapper.Map<List<MediaDto>>(post.Medias ?? new List<Media>()),
+                             Price = post.Price,
+                             Province = post.Province,
+                             RealEstateTypeId = post.RealEstateTypeId,
+                             Status = post.Status,
+                             Street = post.Street,
+                             Ward = post.Ward,
+                             Title = post.Title,
+                             Options = post.Options,
+                             User = new()
+                             {
+                                 Id = user.Id,
+                                 Username = user.Username,
+                                 FullName = user.Fullname,
+                                 Phone = user.PhoneNumber,
+                                 Email = user.Email,
+                                 AvatarUrl = user.AvatarUrl,
+                             }
+                         }).FirstOrDefault() ?? throw new UserFriendlyException(ErrorCode.PostNotFound);
             return result;
         }
 
@@ -498,10 +500,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             _dbContext.SaveChanges();
         }
 
-        public PagingResult<PostDto> FindAllPublic(PostPagingRequestDto input)
+        public PagingResult<PostUserDto> FindAllPublic(PostPagingRequestDto input)
         {
             _logger.LogInformation($"{nameof(FindAllPublic)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
+                        join user in _dbContext.Users on post.UserId equals user.Id
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
@@ -510,7 +513,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 && (input.RealEstateType == null || post.RealEstateTypeId == input.RealEstateType)
                                 && !post.Deleted
                                 && post.Status == PostStatuses.POSTED && post.IsPayment
-                        select new PostDto
+                        select new PostUserDto
                         {
                             Title = post.Title,
                             ApproveAt = DateTime.Now,
@@ -536,8 +539,18 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
+                            User = new () {
+                                Id = user.Id,
+                                Username = user.Username,
+                                FullName = user.Fullname,
+                                Phone = user.PhoneNumber,
+                                Email = user.Email,
+                                AvatarUrl = user.AvatarUrl,
+                                UserType = user.UserType,
+                                Status = user.Status
+                            }
                         };
-            var result = new PagingResult<PostDto>()
+            var result = new PagingResult<PostUserDto>()
             {
                 TotalItems = query.Count(),
             };
@@ -606,16 +619,17 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             return result;
         }
 
-        public PagingResult<PostDto> FindAllPostByProvince(PagingRequestBaseDto input)
+        public PagingResult<PostUserDto> FindAllPostByProvince(PagingRequestBaseDto input)
         {
             _logger.LogInformation($"{nameof(FindAllPostByProvince)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
+                        join user in _dbContext.Users on post.UserId equals user.Id
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Province.ToLower().Contains(input.Keyword.ToLower()))
                                 && !post.Deleted
                                 && post.Status == PostStatuses.POSTED && post.IsPayment
-                        select new PostDto
+                        select new PostUserDto
                         {
                             Title = post.Title,
                             ApproveAt = DateTime.Now,
@@ -641,8 +655,20 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
+                            User = new ()
+                            {
+                                Id = user.Id,
+                                Username = user.Username,
+                                FullName = user.Fullname,
+                                Phone = user.PhoneNumber,
+                                Email = user.Email,
+                                AvatarUrl = user.AvatarUrl,
+                                UserType = user.UserType,
+                                Status = user.Status
+                            }
+
                         };
-            var result = new PagingResult<PostDto>()
+            var result = new PagingResult<PostUserDto>()
             {
                 TotalItems = query.Count(),
             };
@@ -655,10 +681,11 @@ namespace RealEstate.ApplicationService.PostModule.Implements
             return result;
         }
 
-        public PagingResult<PostDto> SearchPost(SearchPostRequestDto input)
+        public PagingResult<PostUserDto> SearchPost(SearchPostRequestDto input)
         {
             _logger.LogInformation($"{nameof(SearchPost)}: input: {JsonSerializer.Serialize(input)}");
             var query = from post in _dbContext.Posts
+                        join user in _dbContext.Users on post.UserId equals user.Id
                         join media in _dbContext.Medias on post.Id equals media.PostId into pm
                         from postmedia in pm.Take(1).DefaultIfEmpty()
                         where (input.Keyword == null || post.Title.ToLower().Contains(input.Keyword.ToLower()))
@@ -671,7 +698,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                                 && (input.EndPrice == null || post.Price <= input.EndPrice)
                                 && (input.Province == null || post.Province.ToLower().Contains(input.Province.ToLower()))
                                 && post.Status == PostStatuses.POSTED && post.IsPayment
-                        select new PostDto
+                        select new PostUserDto
                         {
                             Title = post.Title,
                             ApproveAt = DateTime.Now,
@@ -697,8 +724,19 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                             FirstImageUrl = postmedia.MediaUrl,
                             Options = post.Options,
                             PostStartDate = post.PostStartDate,
+                            User = new()
+                            {
+                                Id = user.Id,
+                                Username = user.Username,
+                                FullName = user.Fullname,
+                                Phone = user.PhoneNumber,
+                                Email = user.Email,
+                                AvatarUrl = user.AvatarUrl,
+                                UserType = user.UserType,
+                                Status = user.Status
+                            }
                         };
-            var result = new PagingResult<PostDto>()
+            var result = new PagingResult<PostUserDto>()
             {
                 TotalItems = query.Count(),
             };
@@ -837,6 +875,63 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 query = query.Skip((input.PageNumber - 1) * input.PageSize).Take(input.PageSize);
             }
             result.Items = query;
+            return result;
+        }
+
+        public List<PostUserDto> getPostByIds(int[] ids)
+        {
+            List<PostUserDto> result = new();
+            foreach (var id in ids)
+            {
+                if (_dbContext.Posts.FirstOrDefault(c => c.Id == id)?.Status == PostStatuses.POSTED && _dbContext.Posts.FirstOrDefault(c => c.Id == id)?.IsPayment == true && !_dbContext.Posts.FirstOrDefault(c => c.Id == id)?.Deleted == true)
+                {
+                    var query = from post in _dbContext.Posts
+                                join user in _dbContext.Users on post.UserId equals user.Id
+                                join media in _dbContext.Medias on post.Id equals media.PostId into pm
+                                from postmedia in pm.Take(1).DefaultIfEmpty()
+                                where post.Id == id
+                                select new PostUserDto
+                                {
+                                    Title = post.Title,
+                                    ApproveAt = DateTime.Now,
+                                    ApproveBy = post.ApproveBy,
+                                    Area = post.Area,
+                                    Description = post.Description,
+                                    DetailAddress = post.DetailAddress,
+                                    District = post.District,
+                                    Id = post.Id,
+                                    PostTypeId = post.PostTypeId,
+                                    Price = post.Price,
+                                    Province = post.Province,
+                                    RealEstateTypeId = post.RealEstateTypeId,
+                                    Status = post.Status,
+                                    Street = post.Street,
+                                    UserId = post.UserId,
+                                    Ward = post.Ward,
+                                    PostEndDate = post.PostEndDate,
+                                    CreatedBy = post.CreatedBy,
+                                    CreatedDate = post.CreatedDate,
+                                    ModifiedBy = post.ModifiedBy,
+                                    ModifiedDate = post.ModifiedDate,
+                                    FirstImageUrl = postmedia.MediaUrl,
+                                    Options = post.Options,
+                                    PostStartDate = post.PostStartDate,
+                                    User = new()
+                                    {
+                                        Id = user.Id,
+                                        Username = user.Username,
+                                        FullName = user.Fullname,
+                                        Phone = user.PhoneNumber,
+                                        Email = user.Email,
+                                        AvatarUrl = user.AvatarUrl,
+                                        UserType = user.UserType,
+                                        Status = user.Status
+                                    }
+                                };
+                    result.Add(query.FirstOrDefault());
+                }
+            };
+            
             return result;
         }
     }

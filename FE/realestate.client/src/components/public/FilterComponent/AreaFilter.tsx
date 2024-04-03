@@ -1,6 +1,6 @@
 import Checkbox from "antd/lib/checkbox";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -35,7 +35,6 @@ const AreaFilter = ({ data }: any) => {
               onChange={() => {
                 params.set("startArea", item.value.startArea);
                 params.set("endArea", item.value.endArea);
-                console.log(params.toString());
                 router.push(`${pathName}?${params.toString()}`);
               }}
             >

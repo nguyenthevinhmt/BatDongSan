@@ -60,38 +60,65 @@ export const PriceSaleConst = [
 export const PriceRentConst = [
   {
     label: "2 - 3 triệu",
-    value: "3",
+    value: {
+      startPrice: 2000000,
+      endPrice: 3000000,
+    },
   },
   {
     label: "3 - 4 triệu",
-    value: "4",
+    value: {
+      startPrice: 3000000,
+      endPrice: 4000000,
+    },
   },
   {
     label: "4 - 5 triệu",
-    value: "5",
+    value: {
+      startPrice: 4000000,
+      endPrice: 5000000,
+    },
   },
   {
     label: "5 - 10 triệu",
-    value: "10",
+    value: {
+      startPrice: 5000000,
+      endPrice: 10000000,
+    },
   },
   {
     label: "10 - 20 triệu",
-    value: "20",
+    value: {
+      startPrice: 10000000,
+      endPrice: 20000000,
+    },
   },
   {
     label: "20 - 30 triệu",
-    value: "30",
+    value: {
+      startPrice: 20000000,
+      endPrice: 30000000,
+    },
   },
   {
     label: "30 - 40 triệu",
-    value: "40",
+    value: {
+      startPrice: 30000000,
+      endPrice: 40000000,
+    },
   },
   {
     label: "50 - 70 triệu",
-    value: "70",
+    value: {
+      startPrice: 50000000,
+      endPrice: 70000000,
+    },
   },
   {
     label: "Thỏa thuận",
-    value: "",
+    value: {
+      startPrice: null,
+      endPrice: null,
+    },
   },
 ];

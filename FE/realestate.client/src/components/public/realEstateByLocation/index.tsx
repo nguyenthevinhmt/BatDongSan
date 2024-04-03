@@ -18,7 +18,7 @@ const RealEstateByLocation = () => {
       <Flex gap={30} style={{ marginTop: "30px" }}>
         <div style={{ position: "relative", width: "554px", height: "410px" }}>
           <Link
-            href="#"
+            href="/list-post-by-province/detail/79"
             className="absolute_label"
             style={{ color: "white", fontWeight: "700" }}
           >
@@ -36,7 +36,7 @@ const RealEstateByLocation = () => {
           <div>
             <div style={{ position: "relative" }}>
               <Link
-                href="#"
+                href="/list-post-by-province/detail/1"
                 className="absolute_label"
                 style={{ color: "white", fontWeight: "700" }}
               >
@@ -52,7 +52,7 @@ const RealEstateByLocation = () => {
             </div>
             <div style={{ position: "relative" }}>
               <Link
-                href="#"
+                href="/list-post-by-province/detail/74"
                 className="absolute_label white_text"
                 style={{ color: "white", fontWeight: "700" }}
               >
@@ -70,7 +70,7 @@ const RealEstateByLocation = () => {
           <div>
             <div style={{ position: "relative" }}>
               <Link
-                href="#"
+                href="/list-post-by-province/detail/50"
                 className="absolute_label white_text"
                 style={{ color: "white", fontWeight: "700" }}
               >
@@ -90,7 +90,7 @@ const RealEstateByLocation = () => {
             </div>
             <div style={{ position: "relative" }}>
               <Link
-                href="#"
+                href="/list-post-by-province/detail/75"
                 className="absolute_label"
                 style={{ color: "white", fontWeight: "700" }}
               >
