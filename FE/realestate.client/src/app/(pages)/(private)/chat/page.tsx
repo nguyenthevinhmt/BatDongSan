@@ -10,8 +10,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { RootState } from "@/redux/store";
 import isAuth from "@/app/isAuth";
+import { useSearchParams } from "next/navigation";
 
 const Chat = () => {
+    const searchParams = useSearchParams();
+
     const user = useSelector((state: RootState) => state.auth.user.data);
     const [chats, setChats] = useState<any>([]);
     const [onlineUsers, setOnlineUsers] = useState<any>([]);
@@ -26,6 +29,11 @@ const Chat = () => {
                 const res: any = await getUserByAcountUserId(user?.id);
                 await setUserId(res?.data?._id);
                 const data = await userChats(res?.data?._id);
+                data?.data?.filter((chat: any) => {
+                    if (chat?._id === searchParams.get('chatId')) {
+                        setCurrentChat(chat);
+                    }
+                });
                 setChats(data?.data);
                 return res?.data?._id;
             } catch (error) {

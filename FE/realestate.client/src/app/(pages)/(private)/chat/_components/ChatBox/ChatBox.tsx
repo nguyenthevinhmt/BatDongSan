@@ -59,22 +59,26 @@ const ChatBox = ({
 
     // Send Message
     const handleSend = async (e: any) => {
-        e.preventDefault();
-        const message = {
-            senderId: currentUser,
-            text: newMessage,
-            chatId: chat._id,
-        };
-        const receiverId = chat.members.find((id: any) => id !== currentUser);
-        // send message to socket server
-        setSendMessage({ ...message, receiverId });
-        // send message to database
-        try {
-            const { data } = await addMessage(message);
-            setMessages([...messages, data]);
-            setNewMessage("");
-        } catch {
-            console.log("error");
+        if (newMessage !== "") {
+            e.preventDefault();
+            const message = {
+                senderId: currentUser,
+                text: newMessage,
+                chatId: chat._id,
+            };
+            const receiverId = chat.members.find((id: any) => id !== currentUser);
+            // send message to socket server
+            setSendMessage({ ...message, receiverId });
+            // send message to database
+            try {
+                const { data } = await addMessage(message);
+                setMessages([...messages, data]);
+                setNewMessage("");
+            } catch {
+                console.log("error");
+            }
+        } else {
+            console.log("empty message");
         }
     };
 
@@ -142,8 +146,22 @@ const ChatBox = ({
                         </div>
                         {/* chat-sender */}
                         <div className="chat-sender">
-                            <InputEmoji value={newMessage} onChange={handleChange} />
-                            <div className="send-button button" onClick={handleSend}>
+                            <InputEmoji 
+                                value={newMessage} onChange={handleChange} 
+                                onKeyDown={(event) => {
+                                    // Check if the key pressed was the Enter key
+                                    if (event.key === 'Enter' || event.key === 'NumpadEnter') {
+                                        // Prevent the default action
+                                        event.preventDefault();
+                                        // Call the handleSend function
+                                        handleSend(event);
+                                    }
+                                }}    
+                            />
+                            <div 
+                                className="send-button button" 
+                                onClick={handleSend}
+                            >
                                 <SendOutlined />
                             </div>
                             <input

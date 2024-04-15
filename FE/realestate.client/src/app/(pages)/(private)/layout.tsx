@@ -70,8 +70,8 @@ const PrivateLayout = ({ children }: { children: React.JSX.Element }) => {
       getItem(<Link href={"/wallet/detail"}>Thông tin số dư</Link>, "wallet/detail"),
       getItem(<Link href={"/wallet/history"}>Lịch sử giao dịch</Link>, "wallet/history"),
       getItem(<Link href={"/wallet/recharge"}>Nạp tiền</Link>, "wallet/recharge"),
-      getItem(<Link href={"/wallet/withdraw"}>Rút tiền</Link>, "wallet/withdraw"),
-      getItem(<Link href={"/wallet/bank"}>Ngân hàng</Link>, "wallet/bank"),
+      //getItem(<Link href={"/wallet/withdraw"}>Rút tiền</Link>, "wallet/withdraw"),
+      //getItem(<Link href={"/wallet/bank"}>Ngân hàng</Link>, "wallet/bank"),
     ]),
 
     getItem("Báo giá & hướng dẫn", "guide", <AppstoreOutlined />, [

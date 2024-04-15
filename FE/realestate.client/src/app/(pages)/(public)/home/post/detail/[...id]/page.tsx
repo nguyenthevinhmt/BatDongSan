@@ -14,7 +14,7 @@ import {
   Card,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
+import { ShareAltOutlined, UserOutlined, WechatOutlined } from "@ant-design/icons";
 import ZaloIcon from "@/assets/image/zalo_icon.png";
 import Link from "next/link";
 import { TiSocialFacebookCircular } from "react-icons/ti";
@@ -37,9 +37,15 @@ import Image from "next/image";
 import SlideSecond from "@/app/components/detailComponent/SlideSecond";
 import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
 import { PiHeart, PiHeartFill } from "react-icons/pi";
+import { createChat, findChat, getUserByAcountUserId } from "@/app/(pages)/(private)/chat/_services/chat.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
 const { Paragraph } = Typography;
 
 const Page = () => {
+  const user = useSelector((state: RootState) => state.auth.user.data);
   const router = useRouter();
   const items: MenuProps["items"] = [
     {
@@ -68,6 +74,7 @@ const Page = () => {
     longitude: 0,
   });
   const [isChange, setIsChange] = useState(false);
+  const [userChat, setUserChat] = useState<any>();
 
   const param = useParams();
   useEffect(() => {
@@ -93,6 +100,11 @@ const Page = () => {
           coordinatesRes.data.resourceSets[0].resources[0].point.coordinates[1],
       };
       await setLocation(coordinates);
+
+      //chat
+      const ressponse = await getUserByAcountUserId(response?.data?.user?.id);
+      console.log('ressponse', ressponse?.data);
+      response ?? setUserChat(ressponse?.data);
     };
     fetchDetailPost();
   }, []);
@@ -117,6 +129,7 @@ const Page = () => {
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
   };
+
   const handleContactZalo = () => {
     if (
       window.confirm(
@@ -125,6 +138,32 @@ const Page = () => {
     ) {
       window.location.href = `https://zalo.me/${data?.userPhoneNumber}`;
     }
+  };
+
+  const handleChat = async () => {
+    const firstUser = await getUserByAcountUserId(user?.id);
+    const secondUser = await getUserByAcountUserId(data?.user?.id);
+    const firstId = firstUser?.data?._id;
+    const secondId = secondUser?.data?._id;
+
+    var currChat;
+    const find = await findChat(firstId, secondId);
+    
+    if (find?.data === null && firstId !== secondId) {
+      const params = {
+        "senderId": firstId,
+        "receiverId": secondId,
+      };
+      const create = await createChat(params);
+      console.log('create', create);
+      const getCurrChat = await findChat(firstId, secondId);
+      currChat = getCurrChat?.data?._id;
+    } else {
+      console.log('đoạn chat đã tồn tại!');
+      currChat = find?.data?._id;
+    }
+    
+    router.push(`/chat?chatId=${currChat}`);
   };
 
   return (
@@ -370,7 +409,7 @@ const Page = () => {
               align="center"
               style={{
                 width: "250px",
-                height: "300px",
+                height: "400px",
                 border: "1px solid #F2F2F2",
                 borderRadius: "6px",
               }}
@@ -423,6 +462,27 @@ const Page = () => {
                 />
                 Chat qua Zalo
               </Button>
+              {userChat ?? (
+                <Button style={{
+                  height: "50px",
+                  fontSize: "14px",
+                  lineHeight: "24px",
+                  padding: "13px 15px",
+                  margin: "5px 20px",
+                  width: "220px",
+                  fontWeight: "600",
+                  fontFamily: "Lexend Medium, Roboto, Arial",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }} 
+                  onClick={handleChat}
+                >
+                  Chat với người môi giới
+                  <WechatOutlined style={{ fontSize: "25px" }} />
+                </Button>
+              )}
             </Flex>
             <img
               width="250px"

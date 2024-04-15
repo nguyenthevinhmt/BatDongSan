@@ -15,6 +15,6 @@ export const findChat = (firstId: any, secondId: any) => API.get(`/chat/find/${f
 
 export const getUser = (userId: any) => API.get(`/user/${userId}`);
 
-export const getAllUser = () => API.get('/user')
+export const getAllUser = () => API.get('/user');
 
-export const getUserByAcountUserId = (id: any) => API.get(`/user/get-by-account-id/${id}`)
+export const getUserByAcountUserId = (id: any) => API.get(`/user/get-by-account-id/${id}`);

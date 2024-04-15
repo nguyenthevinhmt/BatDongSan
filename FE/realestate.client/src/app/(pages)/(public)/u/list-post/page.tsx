@@ -27,6 +27,11 @@ import SlidePostByUser from "@/app/components/detailComponent/SlidePostByUser";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import QC4 from "@/assets/image/QC4.gif";
+import { createChat, findChat, getUserByAcountUserId } from "@/app/(pages)/(private)/chat/_services/chat.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useRouter } from "next/navigation";
+import WechatOutlined from "@ant-design/icons/lib/icons/WechatOutlined";
 
 interface IUser {
   id: number,
@@ -47,6 +52,8 @@ interface IPost {
 };
 
 const ListPostsAuthor = ()  => {
+  const user = useSelector((state: RootState) => state.auth.user.data);
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { Paragraph } = Typography;
   const copyToClipboard = () => {
@@ -102,6 +109,33 @@ const ListPostsAuthor = ()  => {
   setTimeout(() => {
     setLoading(false);
   }, 3000);
+
+  const handleChat = async () => {
+    const firstUser = await getUserByAcountUserId(user?.id);
+    const secondUser = await getUserByAcountUserId(userInfo?.id);
+    const firstId = firstUser?.data?._id;
+    const secondId = secondUser?.data?._id;
+
+    var currChat;
+    const find = await findChat(firstId, secondId);
+    
+    if (find?.data === null && firstId !== secondId) {
+      const params = {
+        "senderId": firstId,
+        "receiverId": secondId,
+      };
+      const create = await createChat(params);
+      console.log('create', create);
+      const getCurrChat = await findChat(firstId, secondId);
+      currChat = getCurrChat?.data?._id;
+    } else {
+      console.log('đoạn chat đã tồn tại!');
+      currChat = find?.data?._id;
+    }
+    
+    router.push(`/chat?chatId=${currChat}`);
+  };
+
   return (
     <>
       <div
@@ -136,6 +170,22 @@ const ListPostsAuthor = ()  => {
             </h3>
           </Flex>
           <Flex style={{ marginTop: "30px" }}>
+            <Button
+              style={{
+                height: "44px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "16px",
+                fontWeight: "600",
+                marginRight: "10px",
+              }}
+              onClick={handleChat}
+            >    
+              <WechatOutlined style={{ fontSize: "25px" }} />
+              Chat với người bán
+            </Button>
+
             <Dropdown menu={{ items }} trigger={["click"]}>
               <Tooltip placement="top" title={"Chia sẻ"}>
                 <Button
