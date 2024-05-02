@@ -9,12 +9,15 @@ import VerificationForm from "./components/VerificationForm";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import isAuth from "@/app/isAuth";
+import UserType from "@/shared/consts/userType";
 
-const UserPage = () => {
+const UserPage = (): any => {
 
   const userSelector = useSelector((state: RootState) => {
     return state.auth.user.data;
   });
+   const authStore = useSelector((state: RootState) => state.auth);
+    const role = authStore?.user?.data?.userType;
 
   const items: TabsProps["items"] = [
     {
@@ -35,7 +38,10 @@ const UserPage = () => {
       key: "2",
       children: <AccountSetting />,
     },
-    {
+  ];
+
+  if(role === UserType.CUSTOMER) {
+    items.push({
       label: (
         <Badge dot={!userSelector?.isConfirm} style={{ fontSize: "14px", fontWeight: "normal" }}>
           Xác thực
@@ -43,9 +49,8 @@ const UserPage = () => {
       ),
       key: "3",
       children: <VerificationForm />,
-    },
-  ];
-
+    })
+  }
   return (
     <Flex
       justify="center"
@@ -73,4 +78,4 @@ const UserPage = () => {
   );
 };
 
-export default isAuth(UserPage);
+export default isAuth(UserPage, [UserType.ADMIN, UserType.CUSTOMER]);

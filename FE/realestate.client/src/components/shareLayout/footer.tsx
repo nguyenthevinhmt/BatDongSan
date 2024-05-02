@@ -1,4 +1,3 @@
-import LogoGray from "@/assets/image/LogoGray";
 import Button from "antd/es/button";
 import Flex from "antd/es/flex";
 import Input from "antd/es/input";
@@ -6,6 +5,8 @@ import React from "react";
 import { IoSend } from "react-icons/io5";
 import { MdOutlineHeadphones, MdOutlinePhoneInTalk } from "react-icons/md";
 import { TbUserQuestion } from "react-icons/tb";
+import Image from "next/image";
+import logo from "@/assets/image/logo-footer.png";
 
 const Footer = () => {
   return (
@@ -21,7 +22,14 @@ const Footer = () => {
       >
         <div style={{ width: "1200px" }}>
           <Flex justify="space-around">
-            <LogoGray />
+            {/* <LogoGray /> */}
+            <Image
+              src={logo}
+              alt="batdongsan"
+              width={164}
+              height={48}
+              priority={true}
+            />
             <Flex align="center">
               <MdOutlinePhoneInTalk
                 style={{

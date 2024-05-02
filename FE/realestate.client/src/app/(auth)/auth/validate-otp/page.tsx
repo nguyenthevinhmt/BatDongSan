@@ -20,8 +20,7 @@ const ValidateOtp = () => {
   let email = hideEmail(getEmailFromStore);
   let userId =
     localStorage.getItem("userId") ?? (registerSelector as any).data.id;
-  let username =
-    (loginSelector as any).username ?? (registerSelector as any).data.username;
+  let username = localStorage.getItem('username') ?? (loginSelector as any).username;
   const time = 2;
   const router = useRouter();
   const [ValidateOtp, { data, error, isError, isLoading, isSuccess }] =
@@ -37,7 +36,8 @@ const ValidateOtp = () => {
     try {
       const res = await ValidateOtp(body);
       const avatarUrl = localStorage.getItem("avatar")
-      const fullname = localStorage.getItem("username")
+      const fullname = localStorage.getItem("fullname")
+      const username = localStorage.getItem("username")
       console.log(avatarUrl, fullname)
       await CreateChatAccount({
         accountUserId: userId,
@@ -55,7 +55,7 @@ const ValidateOtp = () => {
       if (response.data.status === authConst.ResponseStatus.SUCCESS) {
         message.success("Mã OTP đã được tạo lại!");
       } else if (response.data.status === authConst.ResponseStatus.ERROR) {
-        message.success("Đã có lỗi xảy ra");
+        message.error("Đã có lỗi xảy ra");
       }
     } catch {
       console.error("Lỗi khi refresh otp");
@@ -77,6 +77,7 @@ const ValidateOtp = () => {
       (data as any).status === authConst.ResponseStatus.SUCCESS
     ) {
       message.success("Hoàn tất xác thực");
+      localStorage.clear();
       router.replace("/auth/login");
     }
   }, [

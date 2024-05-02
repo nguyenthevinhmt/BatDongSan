@@ -18,7 +18,7 @@ import ClockCircleOutlined from "@ant-design/icons/ClockCircleOutlined";
 import CloseCircleOutlined from "@ant-design/icons/CloseCircleOutlined";
 import MinusCircleOutlined from "@ant-design/icons/MinusCircleOutlined";
 import SyncOutlined from "@ant-design/icons/SyncOutlined";
-import type { TableColumnsType } from "antd";
+import { message, type TableColumnsType } from "antd";
 import {
   findAll,
   approvedPost,
@@ -32,6 +32,7 @@ import { useRouter } from "next/navigation";
 import CheckOutlined from "@ant-design/icons/lib/icons/CheckOutlined";
 import CloseOutlined from "@ant-design/icons/lib/icons/CloseOutlined";
 import Modal from "antd/es/modal";
+import { toast } from "react-toastify";
 
 interface IPost {
   id: number;
@@ -140,7 +141,7 @@ const Status = [
   },
   {
     value: postStatus.EXPIRED,
-    label: "Đã hết hạn",
+    label: "Hết hạn",
     accept: [UserType.ADMIN, UserType.CUSTOMER],
   },
 ];
@@ -209,25 +210,37 @@ const ManagePost = () => {
   const actions = [
     {
       key: 1,
-      label: "phê duyệt",
+      label: "Phê duyệt",
       onClick: async (id: number) => {
-        const res = await approvedPost(id);
+        await approvedPost(id).then((res) => {
+          if (res?.data?.code === 200) {
+            message.success("Thao tác thành công");
+          } else {
+            message.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+          }
+        });
         await handleSearch(pageNumber, pageSize);
       },
       accept: [UserType.ADMIN],
     },
     {
       key: 2,
-      label: "hủy duyệt",
+      label: "Hủy duyệt",
       onClick: async (id: number) => {
-        const res = await cancelRequest(id);
+        await cancelRequest(id).then((res) => {
+          if (res?.data?.code === 200) {
+            message.success("Thao tác thành công");
+          } else {
+            message.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+          }
+        });
         await handleSearch(pageNumber, pageSize);
       },
       accept: [UserType.ADMIN],
     },
     {
       key: 3,
-      label: "xem chi tiết",
+      label: "Xem chi tiết",
       onClick: (id: number) => {
         const role = authStore?.user?.data?.userType;
         return router.push(`/post/edit/?role=${role}&postId=${id}`);
@@ -236,7 +249,7 @@ const ManagePost = () => {
     },
     {
       key: 4,
-      label: "xóa",
+      label: "Xóa",
       onClick: async (id: number) => {
         Modal.confirm({
           title: "Bạn có chắc chắn muốn xóa?",
@@ -245,7 +258,9 @@ const ManagePost = () => {
           cancelText: "Hủy",
           onOk() {
             const handleDelete = async (id: number) => {
-              await deletePost(id);
+              await deletePost(id).then((res) =>
+                message.success("Xóa bài đăng thành công!")
+              );
               setChange(!change);
             };
 
@@ -255,11 +270,9 @@ const ManagePost = () => {
             console.log("cancel");
           },
         });
-
-
       },
       accept: [UserType.CUSTOMER],
-    }
+    },
   ];
 
   const columns: TableColumnsType<IPost> = [
@@ -357,8 +370,7 @@ const ManagePost = () => {
                 Đã phê duyệt, chờ đăng
               </Tag>
             );
-          }
-          else if (statusItem.value === postStatus.POSTED) {
+          } else if (statusItem.value === postStatus.POSTED) {
             return (
               <Tag icon={<CheckCircleOutlined />} color="success">
                 Đã đăng
@@ -373,7 +385,7 @@ const ManagePost = () => {
           } else if (statusItem.value === postStatus.EXPIRED) {
             return (
               <Tag icon={<MinusCircleOutlined />} color="#ccc">
-                Đã gỡ
+                Hết hạn
               </Tag>
             );
           }
@@ -589,9 +601,7 @@ const ManagePost = () => {
         <Table
           columns={columns}
           tableLayout="auto"
-
           pagination={{
-
             position: ["none", "bottomCenter"],
             pageSize: pageSize,
             showSizeChanger: true,

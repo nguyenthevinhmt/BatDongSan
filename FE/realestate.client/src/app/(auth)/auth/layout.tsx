@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react";
 import HeaderComponent from "@/components/shareLayout/header";
 import { Affix, Flex, MenuProps } from "antd";
-import loginBg from "@/assets/image/loginbackgroud.png";
+import loginBg from "@/assets/image/img_login.png";
 import Image from "next/image";
 import SpinComponent from "@/components/shareComponents/spinComponent";
 

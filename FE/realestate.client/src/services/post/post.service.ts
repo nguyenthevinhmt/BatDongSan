@@ -1,4 +1,4 @@
-import { options } from './../../app/utils/index';
+import { options } from "./../../app/utils/index";
 import { postStatus } from "@/shared/consts/postStatus";
 
 import { environment } from "@/shared/environment/environment";
@@ -80,7 +80,7 @@ export const deleteImage = async (id: number, publicId: string) => {
     console.log("Error: Gọi api delete của image bị lỗi!!!");
     return null;
   }
-}
+};
 
 interface IPost {
   title: string;
@@ -301,23 +301,38 @@ export const updateStatus = async (info: IUpdateStatus) => {
   }
 };
 
-export const recommendPost = async ({ pageSize, pageNumber, postType, realEstateType, keyword }: { pageSize: number, pageNumber?: number, postType?: number, realEstateType?: number, keyword?: string }) => {
+export const recommendPost = async ({
+  pageSize,
+  pageNumber,
+  postType,
+  realEstateType,
+  keyword,
+}: {
+  pageSize: number;
+  pageNumber?: number;
+  postType?: number;
+  realEstateType?: number;
+  keyword?: string;
+}) => {
   try {
-    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/public/find-all`, {
-      params: {
-        pageSize: pageSize || -1,
-        pageNumber: pageNumber || null,
-        postType: postType || null,
-        realEstateType: realEstateType || null,
-        keyword: keyword || null,
-      },
-    })
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/public/find-all`,
+      {
+        params: {
+          pageSize: pageSize || -1,
+          pageNumber: pageNumber || null,
+          postType: postType || null,
+          realEstateType: realEstateType || null,
+          keyword: keyword || null,
+        },
+      }
+    );
     return response?.data;
   } catch (error) {
     console.log("Error: Gọi api get public của post bị lỗi!!!");
     return null;
   }
-}
+};
 
 interface IUpdatePost {
   id: number;
@@ -339,7 +354,7 @@ interface IUpdatePost {
   calculateType: number;
   lifeTime: number;
   listMedia?: UpdateMediaType[];
-};
+}
 
 interface UpdateMediaType {
   id: number;
@@ -381,18 +396,19 @@ export const updatePost = async (info: IUpdatePost) => {
     console.log("Error: Gọi api update của post bị lỗi!!!");
     return null;
   }
-}
+};
 
 export const SearchPost = async (param: any) => {
   try {
     const response = await axiosInstance.get(
-      `${environment.baseUrl}/api/post/search-post`, {
-      params: {
-        ...param,
-        pageSize: 25,
-        pageNumber: 1
+      `${environment.baseUrl}/api/post/search-post`,
+      {
+        params: {
+          ...param,
+          pageSize: 25,
+          pageNumber: 1,
+        },
       }
-    }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
       return response?.data;
@@ -401,17 +417,18 @@ export const SearchPost = async (param: any) => {
     console.log("Error: Gọi api searh post bị lỗi!!!");
     return null;
   }
-}
+};
 
 export const GetListPostNewest = async () => {
   try {
     const response = await axiosInstance.get(
-      `${environment.baseUrl}/api/post/find-all-newest`, {
-      params: {
-        pageSize: 10,
-        pageNumber: 1
+      `${environment.baseUrl}/api/post/find-all-newest`,
+      {
+        params: {
+          pageSize: 10,
+          pageNumber: 1,
+        },
       }
-    }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
       return response?.data;
@@ -420,7 +437,7 @@ export const GetListPostNewest = async () => {
     console.log("Error: Gọi api danh sách bài viết mới nhất bị lỗi!!!");
     return null;
   }
-}
+};
 
 export const findAllPersonal = async (info: IFindAllPost) => {
   try {
@@ -444,14 +461,14 @@ export const findAllPersonal = async (info: IFindAllPost) => {
     console.log("Error: Gọi api findAllPersional của post bị lỗi!!!");
     return null;
   }
-}
+};
 
 export interface IRepublishPost {
-  id: number | undefined,
-  lifeTime: number,
-  options: number,
-  walletNumber: string,
-  postEndDate?: string
+  id: number | undefined;
+  lifeTime: number;
+  options: number;
+  walletNumber: string;
+  postEndDate?: string;
 }
 
 export const republishPost = async (info: IRepublishPost) => {
@@ -467,7 +484,7 @@ export const republishPost = async (info: IRepublishPost) => {
     console.log("Error: Gọi api republish của post bị lỗi!!!");
     return null;
   }
-}
+};
 
 export const cancelRequest = async (id: number) => {
   try {
@@ -481,7 +498,7 @@ export const cancelRequest = async (id: number) => {
     console.log("Error: Gọi api cancelRequest của post bị lỗi!!!");
     return null;
   }
-}
+};
 
 //lấy thông tin bài viết với tư cách khách hàng
 export const getByIdHome = async (id: number) => {
@@ -501,11 +518,13 @@ export const getByIdHome = async (id: number) => {
 export const getSalePostByAuthor = async (params: IFindAllPost, id: any) => {
   try {
     const response = await axiosInstance.get(
-      `${environment.baseUrl}/api/post/sale-post/find-all`, {
-      params: {
-        ...params,
-        UserId: id
-      }}
+      `${environment.baseUrl}/api/post/sale-post/find-all`,
+      {
+        params: {
+          ...params,
+          UserId: id,
+        },
+      }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
       return response?.data;
@@ -514,16 +533,18 @@ export const getSalePostByAuthor = async (params: IFindAllPost, id: any) => {
     console.log("Error: Gọi api get sale post by author của post bị lỗi!!!");
     return error;
   }
-}
+};
 
 export const getRentPostByAuthor = async (params: IFindAllPost, id: any) => {
   try {
     const response = await axiosInstance.get(
-      `${environment.baseUrl}/api/post/rent-post/find-all`, {
-      params: {
-        ...params,
-        UserId: id
-      }}
+      `${environment.baseUrl}/api/post/rent-post/find-all`,
+      {
+        params: {
+          ...params,
+          UserId: id,
+        },
+      }
     );
     if (response.status === HTTP_STATUS_CODE.OK) {
       return response?.data;
@@ -534,15 +555,26 @@ export const getRentPostByAuthor = async (params: IFindAllPost, id: any) => {
   }
 };
 
-export const getAllPostByProvince = async ({ pageSize, pageNumber, keyword} : { pageSize: number, pageNumber?: number, keyword?: string }) => {
+export const getAllPostByProvince = async ({
+  pageSize,
+  pageNumber,
+  keyword,
+}: {
+  pageSize: number;
+  pageNumber?: number;
+  keyword?: string;
+}) => {
   try {
-    const response = await axiosInstance.get(`${environment.baseUrl}/api/post/find-all-by-province`, {
-      params: {
-        pageSize: pageSize || -1,
-        pageNumber: pageNumber || 1,
-        keyword: keyword || null,
-      },
-    })
+    const response = await axiosInstance.get(
+      `${environment.baseUrl}/api/post/find-all-by-province`,
+      {
+        params: {
+          pageSize: pageSize || -1,
+          pageNumber: pageNumber || 1,
+          keyword: keyword || null,
+        },
+      }
+    );
     return response?.data;
   } catch (error) {
     console.log("Error: Gọi api get all post by province của post bị lỗi!!!");
@@ -552,17 +584,20 @@ export const getAllPostByProvince = async ({ pageSize, pageNumber, keyword} : { 
 
 export const getAllPostByIds = async (ids: number[]) => {
   try {
-    const response = await axios.get(`${environment.baseUrl}/post/find-post-by-ids`, {
-      params: {
-        ids: ids
-      },
-      paramsSerializer: {
-        indexes: null, // use brackets with indexes
+    const response = await axios.get(
+      `${environment.baseUrl}/post/find-post-by-ids`,
+      {
+        params: {
+          ids: ids,
+        },
+        paramsSerializer: {
+          indexes: null, // use brackets with indexes
+        },
       }
-    })
+    );
     return response?.data;
   } catch (error) {
     console.log("Error: Gọi api get all post by ids của post bị lỗi!!!");
     return error;
   }
-}
+};

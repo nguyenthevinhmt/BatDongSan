@@ -14,7 +14,11 @@ import {
   Card,
 } from "antd";
 import React, { useEffect, useState } from "react";
-import { ShareAltOutlined, UserOutlined, WechatOutlined } from "@ant-design/icons";
+import {
+  ShareAltOutlined,
+  UserOutlined,
+  WechatOutlined,
+} from "@ant-design/icons";
 import ZaloIcon from "@/assets/image/zalo_icon.png";
 import Link from "next/link";
 import { TiSocialFacebookCircular } from "react-icons/ti";
@@ -35,12 +39,22 @@ import {
 } from "@/shared/utils/common-helpers";
 import Image from "next/image";
 import SlideSecond from "@/app/components/detailComponent/SlideSecond";
-import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
+import {
+  addToFavorites,
+  getFavorites,
+  isFavorite,
+  removeFromFavorites,
+} from "@/shared/utils/SavePosts-localStorage";
 import { PiHeart, PiHeartFill } from "react-icons/pi";
-import { createChat, findChat, getUserByAcountUserId } from "@/app/(pages)/(private)/chat/_services/chat.service";
+import {
+  createChat,
+  findChat,
+  getUserByAcountUserId,
+} from "@/app/(pages)/(private)/chat/_services/chat.service";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { NavigateOptions } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { AiOutlineMessage } from "react-icons/ai";
 
 const { Paragraph } = Typography;
 
@@ -85,12 +99,12 @@ const Page = () => {
       const coordinatesRes = await axios.get(
         `http://dev.virtualearth.net/REST/v1/Locations?q=${encodeURIComponent(
           response?.data?.street +
-          " " +
-          response?.data?.ward +
-          " " +
-          response?.data?.district +
-          " " +
-          response?.data?.province
+            " " +
+            response?.data?.ward +
+            " " +
+            response?.data?.district +
+            " " +
+            response?.data?.province
         )}&key=${environment.BingMapsApiKey}`
       );
       const coordinates = {
@@ -103,12 +117,11 @@ const Page = () => {
 
       //chat
       const ressponse = await getUserByAcountUserId(response?.data?.user?.id);
-      console.log('ressponse', ressponse?.data);
+      console.log("ressponse", ressponse?.data);
       response ?? setUserChat(ressponse?.data);
     };
     fetchDetailPost();
   }, []);
-
 
   useEffect(() => {
     //re-render component when change localStorage
@@ -116,15 +129,15 @@ const Page = () => {
 
   const handleSavePost = (postId: any) => {
     if (isFavorite(postId)) {
-        removeFromFavorites(postId);
-        console.log("localStorage: ", getFavorites());
-        console.log('remove', postId);
+      removeFromFavorites(postId);
+      console.log("localStorage: ", getFavorites());
+      console.log("remove", postId);
     } else {
-        addToFavorites(postId);
-        console.log("localStorage: ", getFavorites());
-        console.log('add', postId);
+      addToFavorites(postId);
+      console.log("localStorage: ", getFavorites());
+      console.log("add", postId);
     }
-};
+  };
 
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
@@ -148,21 +161,21 @@ const Page = () => {
 
     var currChat;
     const find = await findChat(firstId, secondId);
-    
+
     if (find?.data === null && firstId !== secondId) {
       const params = {
-        "senderId": firstId,
-        "receiverId": secondId,
+        senderId: firstId,
+        receiverId: secondId,
       };
       const create = await createChat(params);
-      console.log('create', create);
+      console.log("create", create);
       const getCurrChat = await findChat(firstId, secondId);
       currChat = getCurrChat?.data?._id;
     } else {
-      console.log('đoạn chat đã tồn tại!');
+      console.log("đoạn chat đã tồn tại!");
       currChat = find?.data?._id;
     }
-    
+
     router.push(`/chat?chatId=${currChat}`);
   };
 
@@ -219,7 +232,9 @@ const Page = () => {
                       marginTop: "5px",
                     }}
                   >
-                    {data?.price ? formatCurrency(data?.price) : 'Giá thỏa thuận'}
+                    {data?.price
+                      ? formatCurrency(data?.price)
+                      : "Giá thỏa thuận"}
                   </p>
                 </div>
                 <div>
@@ -255,9 +270,12 @@ const Page = () => {
                   </Tooltip>
                 </Dropdown>
 
-                <Tooltip placement="top" title={ isFavorite(data?.id) ? "Bỏ lưu" : "Lưu tin"}>
-                  <Button 
-                    style={{ height: "44px" }} 
+                <Tooltip
+                  placement="top"
+                  title={isFavorite(data?.id) ? "Bỏ lưu" : "Lưu tin"}
+                >
+                  <Button
+                    style={{ height: "44px" }}
                     type="text"
                     onClick={() => {
                       handleSavePost(data?.id);
@@ -266,14 +284,17 @@ const Page = () => {
                     icon={
                       isFavorite(data?.id) ? (
                         <PiHeartFill
-                          style={{ color: "red", borderColor: "red", fontSize: '30px' }}
+                          style={{
+                            color: "red",
+                            borderColor: "red",
+                            fontSize: "30px",
+                          }}
                         />
                       ) : (
-                        <PiHeart style={{fontSize: '30px'}}/>
+                        <PiHeart style={{ fontSize: "30px" }} />
                       )
                     }
-                  >
-                  </Button>
+                  ></Button>
                 </Tooltip>
               </div>
             </Flex>
@@ -321,7 +342,9 @@ const Page = () => {
                   <p style={styleIcon}>
                     Mức giá
                     <span style={{ marginLeft: "110px", fontWeight: "400" }}>
-                      {data?.price ? formatCurrency(data?.price) : 'Giá thỏa thuận'}
+                      {data?.price
+                        ? formatCurrency(data?.price)
+                        : "Giá thỏa thuận"}
                     </span>
                   </p>
                 </Flex>
@@ -418,7 +441,11 @@ const Page = () => {
                 size={54}
                 style={{ margin: "20px 0 10px 0" }}
                 icon={<UserOutlined />}
-                src={data?.user?.avatarUrl ? data?.user?.avatarUrl : "https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+                src={
+                  data?.user?.avatarUrl
+                    ? data?.user?.avatarUrl
+                    : "https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                }
               />
               <p
                 style={{
@@ -429,14 +456,15 @@ const Page = () => {
               >
                 Được đăng bởi
               </p>
-              <Link href={{
-                pathname: "/u/list-post",
-                query: { 
-                  id: data?.user?.id,
-                  fullName: data?.user?.fullName,
-                  avatarUrl: data?.user?.avatarUrl,
-                  phone: data?.user?.phone,
-                },
+              <Link
+                href={{
+                  pathname: "/u/list-post",
+                  query: {
+                    id: data?.user?.id,
+                    fullName: data?.user?.fullName,
+                    avatarUrl: data?.user?.avatarUrl,
+                    phone: data?.user?.phone,
+                  },
                 }}
               >
                 <p style={contentStyle}>{data?.user?.fullName}</p>
@@ -458,29 +486,33 @@ const Page = () => {
                   style={{
                     borderRadius: "2px",
                     marginBottom: "2px",
+                    marginRight: "10px",
                   }}
                 />
                 Chat qua Zalo
               </Button>
               {userChat ?? (
-                <Button style={{
-                  height: "50px",
-                  fontSize: "14px",
-                  lineHeight: "24px",
-                  padding: "13px 15px",
-                  margin: "5px 20px",
-                  width: "220px",
-                  fontWeight: "600",
-                  fontFamily: "Lexend Medium, Roboto, Arial",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  display: "flex",
-                  flexDirection: "column",
-                }} 
+                <Button
+                  style={{
+                    height: "50px",
+                    fontSize: "14px",
+                    lineHeight: "24px",
+                    padding: "13px 15px",
+                    margin: "5px 20px",
+                    width: "220px",
+                    fontWeight: "600",
+                    fontFamily: "Lexend Medium, Roboto, Arial",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex",
+                    // flexDirection: "column",
+                  }}
                   onClick={handleChat}
                 >
-                  Chat với người môi giới
-                  <WechatOutlined style={{ fontSize: "25px" }} />
+                  <AiOutlineMessage
+                    style={{ fontSize: "18px", marginRight: "10px" }}
+                  />
+                  Chat với người đăng
                 </Button>
               )}
             </Flex>
@@ -495,7 +527,7 @@ const Page = () => {
 
         <Divider style={{ margin: "35px 0" }} />
 
-        <SlideSecond/>
+        <SlideSecond />
       </div>
     </>
   );

@@ -65,7 +65,8 @@ const Register = () => {
         response?.data?.data?.fullName,
         response?.data?.data?.avatarUrl
       )
-      localStorage.setItem("username", response?.data?.data?.fullName);
+      localStorage.setItem("username", response?.data?.data?.username);
+      localStorage.setItem("fullname", response?.data?.data?.fullName);
       localStorage.setItem("avatar", response?.data?.data?.avatarUrl);
 
     } catch (error) {

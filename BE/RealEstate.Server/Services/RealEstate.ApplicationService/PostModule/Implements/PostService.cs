@@ -406,7 +406,7 @@ namespace RealEstate.ApplicationService.PostModule.Implements
                 );
                 post.BackgroundJobOnShowPostId = jobId;
             }
-            if (post.PostEndDate.Date <= DateTime.Now.Date)
+            if (post.PostEndDate.Date > DateTime.Now.Date)
             {
                 var jobId = BackgroundJob.Schedule<IPostService>(
                 x => x.ShowOffPost(post.Id),

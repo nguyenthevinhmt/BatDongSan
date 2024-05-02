@@ -11,6 +11,7 @@ import { io } from "socket.io-client";
 import { RootState } from "@/redux/store";
 import isAuth from "@/app/isAuth";
 import { useSearchParams } from "next/navigation";
+import UserType from "@/shared/consts/userType";
 
 const Chat = () => {
     const searchParams = useSearchParams();
@@ -117,4 +118,4 @@ const Chat = () => {
     );
 };
 
-export default isAuth(Chat);
+export default isAuth(Chat, [UserType.ADMIN, UserType.CUSTOMER]);

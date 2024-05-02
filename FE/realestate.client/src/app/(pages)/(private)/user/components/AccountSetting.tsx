@@ -10,6 +10,9 @@ import message from "antd/lib/message";
 import { changePassword } from "@/services/user/user.service";
 import { CommonStatus } from "@/shared/consts/CommonStatus";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import UserType from "@/shared/consts/userType";
 
 type FormType = {
   oldPassword: string;
@@ -19,11 +22,17 @@ type FormType = {
 
 const AccountSetting = ({ tab }: { tab?: number }) => {
   const [form] = Form.useForm();
+  const userSelector = useSelector((state: RootState) => {
+    return state.auth.user.data;
+  });
+  const role = (userSelector as any)?.userType;
+
   const [formData, setFormData] = useState<FormType>({
     oldPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
+
   const collapseItem = [
     {
       key: "1",
@@ -177,19 +186,24 @@ const AccountSetting = ({ tab }: { tab?: number }) => {
           </Flex>
         </Form>
       </div>
-      <Collapse
-        bordered={false}
-        size="large"
-        items={collapseItem}
-        style={{
-          backgroundColor: "#fff",
-          border: "none",
-          boxShadow: "none",
-          marginLeft: "-20px",
-          paddingLeft: "-10px",
-          width: "100%",
-        }}
-      />
+      <>
+      {
+        role === UserType.CUSTOMER 
+        && <Collapse
+            bordered={false}
+            size="large"
+            items={collapseItem}
+            style={{
+              backgroundColor: "#fff",
+              border: "none",
+              boxShadow: "none",
+              marginLeft: "-20px",
+              paddingLeft: "-10px",
+              width: "100%",
+            }}
+          />
+      }
+      </>
     </div>
   );
 };

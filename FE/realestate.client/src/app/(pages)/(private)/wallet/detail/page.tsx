@@ -385,21 +385,6 @@ const WalletDetail = () => {
                   </svg>
                   <span style={{ marginLeft: "10px" }}>Nạp tiền</span>
                 </Button>
-                <Flex justify="center" align="center">
-                  <Button
-                    type="primary"
-                    style={{
-                      width: "100%",
-                      backgroundColor: "#fff",
-                      color: "#ff4d4f",
-                      border: "1px solid #ff4d4f",
-                    }}
-                    onClick={handleWithdraw}
-                    icon={<BiMoneyWithdraw />}
-                  >
-                    Rút tiền
-                  </Button>
-                </Flex>
               </div>
             ) : null}
           </div>

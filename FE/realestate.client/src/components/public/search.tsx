@@ -231,7 +231,16 @@ const SearchComponent = () => {
                     };
                   });
                 }}
-                prefix={<FaSearch style={{ marginRight: "10px" }} />}
+                style={{
+                  fontFamily: `'__Lexend_126e48', '__Lexend_Fallback_126e48'`,
+                }}
+                prefix={
+                  <FaSearch
+                    style={{
+                      marginRight: "10px",
+                    }}
+                  />
+                }
                 placeholder="Nhập địa chỉ hoặc dự án ...."
                 suffix={
                   <Button

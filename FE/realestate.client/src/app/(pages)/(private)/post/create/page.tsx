@@ -13,4 +13,4 @@ const CreatePost = () => {
   );
 };
 
-export default isAuth(CreatePost, [UserType.ADMIN, UserType.CUSTOMER]);
+export default isAuth(CreatePost, [UserType.CUSTOMER]);

@@ -79,7 +79,7 @@ const PaymentCallbackPage = () => {
             vnp_BankCode +
             " bằng " +
             vnp_CardType +
-            " thành công, cảm ơn quý bạn." +
+            " thành công, cảm ơn bạn đã sử dụng dịch vụ của chúng tôi." +
             <br /> +
             " Số dư hiện tại: " +
 

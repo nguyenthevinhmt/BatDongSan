@@ -373,7 +373,7 @@ const ListPostPaginationComponent: React.FC<ListPostPaginationProps> = (props) =
                                             >
                                                 <List.Item.Meta
                                                     style={{ width: 50 }}
-                                                    avatar={<Avatar size={40} src={item?.user?.avatarUrl ? item?.user.avatarUrl : "https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"} />}
+                                                    avatar={<Avatar size={40} src={item?.user?.avatarUrl ? item?.user.avatarUrl : "https://res.cloudinary.com/deurdoich/image/upload/v1711596102/DATN/xwtalq8bbiwdxefobfwn.png"} />}
                                                     title={<p className="ellipsis-multiline2"
                                                         style={{
                                                             width: 200,

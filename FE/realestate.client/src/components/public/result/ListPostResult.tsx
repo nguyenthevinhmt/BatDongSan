@@ -39,6 +39,7 @@ const ListPostResult = ({ data }: { data?: any }) => {
               <>
                 <Link href={`/home/post/detail/${item?.id}`}>
                   <PostHorizon
+                    key={item?.id}
                     data={item}
                     option={item?.options}
                     loading={loading}

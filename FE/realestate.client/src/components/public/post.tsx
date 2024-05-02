@@ -11,7 +11,12 @@ import { OptionConst } from "@/shared/consts/PostOption.const";
 import { FaRegHeart } from "react-icons/fa";
 import dayjs from "dayjs";
 import { formatCurrency, formatDate } from "@/shared/utils/common-helpers";
-import { addToFavorites, getFavorites, isFavorite, removeFromFavorites } from "@/shared/utils/SavePosts-localStorage";
+import {
+  addToFavorites,
+  getFavorites,
+  isFavorite,
+  removeFromFavorites,
+} from "@/shared/utils/SavePosts-localStorage";
 import { IoMdHeart } from "react-icons/io";
 import { PiHeart, PiHeartFill } from "react-icons/pi";
 import Link from "next/link";
@@ -20,11 +25,11 @@ const handleSavePost = (postId: any) => {
   if (isFavorite(postId)) {
     removeFromFavorites(postId);
     console.log("localStorage: ", getFavorites());
-    console.log('remove', postId);
+    console.log("remove", postId);
   } else {
     addToFavorites(postId);
     console.log("localStorage: ", getFavorites());
-    console.log('add', postId);
+    console.log("add", postId);
   }
 };
 
@@ -65,9 +70,7 @@ const PostCard = ({
           )
         }
       >
-        <Link
-          href={`/home/post/detail/${data?.id}`}
-        >
+        <Link href={`/home/post/detail/${data?.id}`}>
           <h2
             className="ellipsis-multiline"
             style={{
@@ -83,9 +86,7 @@ const PostCard = ({
           </h2>
         </Link>
 
-        <Link
-          href={`/home/post/detail/${data?.id}`}
-        >
+        <Link href={`/home/post/detail/${data?.id}`}>
           <span
             style={{
               color: "#E03C31",
@@ -98,16 +99,15 @@ const PostCard = ({
           </span>
         </Link>
 
-        <Link
-          href={`/home/post/detail/${data?.id}`}
-        >
+        <Link href={`/home/post/detail/${data?.id}`}>
           <p
             style={{
               marginTop: "4px",
-              //marginBottom: "10px", 
+              //marginBottom: "10px",
               fontSize: "13px",
               maxHeight: "40px",
               height: "40px",
+              color: "rgba(0,0,0,0.6)",
             }}
           >
             <EnvironmentOutlined style={{ marginRight: "5px" }} />
@@ -148,17 +148,13 @@ const PostCard = ({
               }}
               icon={
                 isFavorite(data?.id) ? (
-                  <PiHeartFill
-                    style={{ color: "red", borderColor: "red" }}
-                  />
+                  <PiHeartFill style={{ color: "red", borderColor: "red" }} />
                 ) : (
                   <PiHeart />
                 )
               }
-            >
-            </Button>
+            ></Button>
           </Tooltip>
-
         </Flex>
       </Card>
     );
@@ -175,7 +171,11 @@ const PostCard = ({
       <Card
         hoverable
         loading={loading}
-        style={{ width: 260, height: 360 }}
+        style={{
+          width: 260,
+          height: 360,
+          fontFamily: `'__Lexend_126e48', '__Lexend_Fallback_126e48'`,
+        }}
         bodyStyle={{ padding: 14 }}
         cover={
           loading ? (
@@ -191,9 +191,7 @@ const PostCard = ({
           )
         }
       >
-        <Link
-          href={`/home/post/detail/${data?.id}`}
-        >
+        <Link href={`/home/post/detail/${data?.id}`}>
           <h2
             className="ellipsis-multiline"
             style={{
@@ -209,9 +207,7 @@ const PostCard = ({
           </h2>
         </Link>
 
-        <Link
-          href={`/home/post/detail/${data?.id}`}
-        >
+        <Link href={`/home/post/detail/${data?.id}`}>
           <span
             style={{
               color: "#E03C31",
@@ -224,19 +220,23 @@ const PostCard = ({
           </span>
         </Link>
 
-        <Link
-          href={`/home/post/detail/${data?.id}`}
-        >
+        <Link href={`/home/post/detail/${data?.id}`}>
           <p
             style={{
               marginTop: "4px",
-              //marginBottom: "10px", 
+              //marginBottom: "10px",
               fontSize: "13px",
               maxHeight: "40px",
               height: "40px",
+              color: "rgba(0,0,0,0.6)",
+              fontFamily: `'__Lexend_126e48', '__Lexend_Fallback_126e48'`,
             }}
           >
-            <EnvironmentOutlined style={{ marginRight: "5px" }} />
+            <EnvironmentOutlined
+              style={{
+                marginRight: "5px",
+              }}
+            />
             {`${data.district}, ${data.province}`}
           </p>
         </Link>
@@ -274,17 +274,13 @@ const PostCard = ({
               }}
               icon={
                 isFavorite(data?.id) ? (
-                  <PiHeartFill
-                    style={{ color: "red", borderColor: "red" }}
-                  />
+                  <PiHeartFill style={{ color: "red", borderColor: "red" }} />
                 ) : (
                   <PiHeart />
                 )
               }
-            >
-            </Button>
+            ></Button>
           </Tooltip>
-
         </Flex>
       </Card>
     </LabelCard>

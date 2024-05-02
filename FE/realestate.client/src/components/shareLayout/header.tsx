@@ -17,7 +17,7 @@ import UnorderedListOutlined from "@ant-design/icons/UnorderedListOutlined";
 import UserOutlined from "@ant-design/icons/UserOutlined";
 import WalletOutlined from "@ant-design/icons/WalletOutlined";
 import { usePathname, useRouter } from "next/navigation";
-import logo from "@/assets/image/logo.svg";
+import logo from "@/assets/image/logo-clone.png";
 import { CookieService } from "@/shared/services/cookies.service";
 import axiosInstance from "@/shared/configs/axiosInstance";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,7 @@ import { clearUserInfo, saveUserInfo } from "@/redux/slices/authSlice";
 import { HTTP_STATUS_CODE } from "@/shared/consts/http";
 import { formatVietnameseToString } from "@/shared/utils/common-helpers";
 import Badge from "antd/lib/badge";
+import UserType from "@/shared/consts/userType";
 
 const HeaderComponent = () => {
   const router = useRouter();
@@ -81,6 +82,7 @@ const HeaderComponent = () => {
   }, [userInfo, dispatch]);
   const fullname = (userSelector as any)?.fullname;
   const avatarUrl = (userSelector as any)?.avatarUrl;
+  const role = (userSelector as any)?.userType;
   const handleLogout = async () => {
     dispatch(clearUserInfo());
     try {
@@ -149,7 +151,7 @@ const HeaderComponent = () => {
         />
       ),
       onClick: () => {
-        router.push("/wallet");
+        router.push("/wallet/detail");
       },
     },
     {
@@ -344,7 +346,8 @@ const HeaderComponent = () => {
           )}
         </div>
 
-        <Button
+        <>
+          {role === UserType.CUSTOMER && <Button
           size="large"
           type="primary"
           danger
@@ -356,6 +359,8 @@ const HeaderComponent = () => {
         >
           Đăng tin
         </Button>
+        }
+        </>
       </div>
     </Header>
   );

@@ -27,17 +27,22 @@ import SlidePostByUser from "@/app/components/detailComponent/SlidePostByUser";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import QC4 from "@/assets/image/QC4.gif";
-import { createChat, findChat, getUserByAcountUserId } from "@/app/(pages)/(private)/chat/_services/chat.service";
+import {
+  createChat,
+  findChat,
+  getUserByAcountUserId,
+} from "@/app/(pages)/(private)/chat/_services/chat.service";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import WechatOutlined from "@ant-design/icons/lib/icons/WechatOutlined";
+import { AiOutlineMessage } from "react-icons/ai";
 
 interface IUser {
-  id: number,
-  fullname?: string,
-  phoneNumber?: string,
-  avatarUrl?: string,
+  id: number;
+  fullname?: string;
+  phoneNumber?: string;
+  avatarUrl?: string;
 }
 
 interface IPost {
@@ -49,9 +54,9 @@ interface IPost {
   price: number;
   postStartDate: Date;
   firstImageUrl: string;
-};
+}
 
-const ListPostsAuthor = ()  => {
+const ListPostsAuthor = () => {
   const user = useSelector((state: RootState) => state.auth.user.data);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,7 +66,7 @@ const ListPostsAuthor = ()  => {
   };
   const [loading, setLoading] = useState(true);
   const [label, setLabel] = useState<string>("0965552762");
- 
+
   const [userInfo, setUserInfo] = useState<IUser>();
   const [isHidden, setIsHidden] = useState(true);
 
@@ -71,13 +76,12 @@ const ListPostsAuthor = ()  => {
       fullname: searchParams?.get("fullName") || "",
       phoneNumber: searchParams?.get("phone") || "",
       avatarUrl: searchParams?.get("avatarUrl") || "",
-    })
+    });
   }, []);
-  
+
   const handleButtonClick = () => {
     setIsHidden(!isHidden);
   };
-
 
   const items: MenuProps["items"] = [
     {
@@ -118,21 +122,21 @@ const ListPostsAuthor = ()  => {
 
     var currChat;
     const find = await findChat(firstId, secondId);
-    
+
     if (find?.data === null && firstId !== secondId) {
       const params = {
-        "senderId": firstId,
-        "receiverId": secondId,
+        senderId: firstId,
+        receiverId: secondId,
       };
       const create = await createChat(params);
-      console.log('create', create);
+      console.log("create", create);
       const getCurrChat = await findChat(firstId, secondId);
       currChat = getCurrChat?.data?._id;
     } else {
-      console.log('đoạn chat đã tồn tại!');
+      console.log("đoạn chat đã tồn tại!");
       currChat = find?.data?._id;
     }
-    
+
     router.push(`/chat?chatId=${currChat}`);
   };
 
@@ -155,7 +159,11 @@ const ListPostsAuthor = ()  => {
           <Flex style={{ margin: "20px 20px" }}>
             <Avatar
               size={90}
-              src={userInfo ? userInfo.avatarUrl : "https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
+              src={
+                userInfo
+                  ? userInfo.avatarUrl
+                  : "https://images.unsplash.com/photo-1627376652834-9d2afec4ff2c?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              }
             />
             <h3
               style={{
@@ -181,9 +189,11 @@ const ListPostsAuthor = ()  => {
                 marginRight: "10px",
               }}
               onClick={handleChat}
-            >    
-              <WechatOutlined style={{ fontSize: "25px" }} />
-              Chat với người bán
+            >
+              <AiOutlineMessage
+                style={{ fontSize: "20px", marginRight: "10px" }}
+              />
+              Liên hệ chat
             </Button>
 
             <Dropdown menu={{ items }} trigger={["click"]}>
@@ -198,7 +208,7 @@ const ListPostsAuthor = ()  => {
                     fontWeight: "600",
                   }}
                 >
-                  <ShareAltOutlined style={{ fontSize: "27px" }} />
+                  <ShareAltOutlined style={{ fontSize: "20px" }} />
                   Chia sẻ
                 </Button>
               </Tooltip>
@@ -212,7 +222,13 @@ const ListPostsAuthor = ()  => {
               onClick={handleButtonClick}
             >
               <Paragraph style={styleButton} copyable={{ text: `${label}` }}>
-                <PhoneOutlined style={{ fontSize: "25px" }} /> {isHidden ? searchParams.get('phone')?.toString().replace(/\d(?=\d{4})/g, "*") : searchParams.get('phone')}
+                <PhoneOutlined style={{ fontSize: "25px" }} />{" "}
+                {isHidden
+                  ? searchParams
+                      .get("phone")
+                      ?.toString()
+                      .replace(/\d(?=\d{4})/g, "*")
+                  : searchParams.get("phone")}
                 <LuDot />
                 Hiện số
               </Paragraph>
@@ -231,9 +247,18 @@ const ListPostsAuthor = ()  => {
         >
           Danh sách tin đăng bán
         </h1>
-        <SlidePostByUser userId={parseInt(searchParams?.get("id") || "")} postType={1} />
+        <SlidePostByUser
+          userId={parseInt(searchParams?.get("id") || "")}
+          postType={1}
+        />
 
-        <Image src={QC4} alt='' width={1120} height={200} style={{ objectFit: "cover", marginBottom: 20 }} />
+        <Image
+          src={QC4}
+          alt=""
+          width={1120}
+          height={200}
+          style={{ objectFit: "cover", marginBottom: 20 }}
+        />
         <Divider />
 
         <h1
@@ -247,7 +272,10 @@ const ListPostsAuthor = ()  => {
         >
           Danh sách tin đăng cho thuê
         </h1>
-        <SlidePostByUser userId={parseInt(searchParams?.get("id") || "")} postType={2} />
+        <SlidePostByUser
+          userId={parseInt(searchParams?.get("id") || "")}
+          postType={2}
+        />
       </div>
     </>
   );
